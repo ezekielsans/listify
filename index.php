@@ -12,10 +12,10 @@ print_r($items);
 <main>
 
 <div class="container">
+<h1 class="mt-5">Products</h1>
 
-<h1>Hello World!</h1>
-<div class="mt-5">
-
+<div class="mt-2">
+<a href="addProduct.php" class="btn btn-lg bg-primary text-white"> Add New Product</a>
 <table class="table table-bordered table-hover">
     <thead>
         <tr>
