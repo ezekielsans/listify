@@ -4,10 +4,15 @@ class DbConnection
     public function connect()
     {
 
-        $host = 'sql203.infinityfree.com';
-        $username = 'if0_37244580';
-        $password = 'cM5ewTFPByJw';
-        $db = 'if0_37244580_listify_db';
+        // $host = 'sql203.infinityfree.com';
+        // $username = 'if0_37244580';
+        // $password = 'cM5ewTFPByJw';
+        // $db = 'if0_37244580_listify_db';
+
+        $host = 'db';
+        $username = 'admin';
+        $password = 'password'; 
+        $db = 'products';
 
         try {
 
