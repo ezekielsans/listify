@@ -1,18 +1,23 @@
 <?php
-error_reporting(E_ALL);
-
 include_once 'productController.php';
+include_once 'usersController.php';
+$users->startSession();
+// if(!){
+
+// header("Location: login.php");
+
+// }
+
+
 if (isset($_POST['submit'])) {
     $productName = $_POST['productName'];
     $productDescription = $_POST['productDescription'];
     $productCategory = $_POST['productCategory'];
-    $id = $products->insertProduct($productName, $productDescription, $productCategory);
+    $id = $products->insertProduct($productName, $productDescription, $productCategory,$_SESSION['LoginUser']);
     if ($id) {
         $imageName = $products->uploadImage('image', 'uploads', $id);
         if ($imageName != "Failed") {
-
             $products->updateImageData($id,$imageName);
-            
         }
         header("Location: details.php?ID= " . $id);
     }
@@ -20,7 +25,7 @@ if (isset($_POST['submit'])) {
 
 ?>
 
-<?php include_once 'templates/header.php';?>
+<?php include_once 'components/header.php';?>
 
 <main>
 
@@ -38,7 +43,7 @@ if (isset($_POST['submit'])) {
 
 <div class="mb-3">
 <label class="form-label">Product Image</label>
-<input type="file" name="image" id="image" class="form-control form-control-lg"required>
+<input type="file" name="image" id="image" class="form-control form-control-lg">
 </div>
 <div class="mb-3">
     <label class="form-label">Product Description</label>
@@ -52,4 +57,4 @@ if (isset($_POST['submit'])) {
 </div>
 </main>
 
-<?php include_once 'templates/footer.php';?>
+<?php include_once 'components/footer.php';?>

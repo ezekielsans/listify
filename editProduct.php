@@ -1,6 +1,7 @@
 <?php
-error_reporting(E_ALL);
 include_once 'productController.php';
+include_once 'usersController.php';
+$users->startSession();
 $productId = $_GET['ID'];
 
 if (isset($productId)) {
@@ -11,7 +12,7 @@ if (isset($productId)) {
 
 if (isset($_POST['save'])) {
     //print_r($_POST);
-    $products->editProduct($_POST['product_name'], $_POST['product_category'], $_POST['product_description'], $_POST['ID']);
+    $products->editProduct($_POST['product_name'], $_POST['product_category'], $_POST['product_description'],$_SESSION['LoginUser'], $_POST['ID']);
     if ($_FILES['image']['name']) {
 
         $milliseconds = intval(microtime(true)*1000);
@@ -26,7 +27,7 @@ if (isset($_POST['save'])) {
 }
 ?>
 
-<?php include_once 'templates/header.php';?>
+<?php include_once 'components/header.php';?>
 
 <main>
 
@@ -63,4 +64,4 @@ if (isset($_POST['save'])) {
 </div>
 </main>
 
-<?php include_once 'templates/footer.php';?>
+<?php include_once 'components/footer.php';?>

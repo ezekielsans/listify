@@ -2,52 +2,27 @@
 require_once 'dbConfig.php';
 error_reporting(E_ALL);
 $dbConn->connect();
-class Products extends DbConnection
+class Users extends DbConnection
 {
 
-    // public function startSession()
-    // {
-
-    //     error_reporting(E_ALL);
-    //     if (session_status() === PHP_SESSION_NONE) {
-    //         session_start();
-    //     }
-
-    // }
-
-    public function insertProduct($productName, $productDescription, $productCategory, $LoginUser)
+    public function startSession()
     {
-        try {
-            $pdo = $this->connect();
-
-            $sqlSetTimeZone = "SET time_zone = '+8:00'";
-            $pdo->exec($sqlSetTimeZone);
-
-            $statement = $pdo->prepare("INSERT INTO products(product_name,product_description,product_category,added_by,updated_by,created_at)
-                                        VALUES (?,?,?,?,?, NOW())");
-            $statement->execute([$productName,
-                $productDescription,
-                $productCategory,
-                $LoginUser['email'],
-                $LoginUser['email'],
-
-            ]);
-
-            return $pdo->lastInsertId();
-
-        } catch (PDOException $e) {
-            echo "Insertion failed" . $e->getMessage();
-
+        error_reporting(E_ALL);
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
         }
 
     }
 
-    public function deleteProduct($productId)
+
+
+    public function deleteUser($userId)
     {
         try {
             $pdo = $this->connect();
-            $statement = $pdo->prepare("DELETE FROM products WHERE ID = ?");
-            $statement->execute([$productId]);
+            $statement = $pdo->prepare("DELETE FROM users WHERE ID = :userId");
+            $statement->bindParam(':userId',$userId);
+            $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
             echo "Insertion failed" . $e->getMessage();
@@ -55,7 +30,27 @@ class Products extends DbConnection
 
     }
 
-    public function editProduct($newProductName, $newProductCategory, $newProductDescription, $LoginUser, $productId)
+    public function deactivateUser($userId)
+    {
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("UPDATE users
+                                               SET status = 'inactive' 
+                                               WHERE ID = :userId");
+            $statement->bindParam(':userId',$userId);
+            $statement->execute();
+            //echo "Product deleted successfully";
+        } catch (PDOException $e) {
+            echo "Insertion failed" . $e->getMessage();
+        }
+
+    }
+
+
+
+
+
+    public function editUser($newProductName, $newProductCategory, $newProductDescription, $LoginUser, $productId)
     {
         try {
             $pdo = $this->connect();
@@ -78,25 +73,26 @@ class Products extends DbConnection
 
     }
 
-    public function getAllProducts($currentPage, $itemsPerPage, $searchTerm)
+    public function getAllUsers($currentPage, $itemsPerPage,$searchTerm)
     {
         try {
             $pdo = $this->connect();
             $offset = ($currentPage - 1) * $itemsPerPage;
 
-            if (!empty($searchTerm)) {
-                print_r($searchTerm);
 
+            if (!empty($searchTerm)) {
+                //print_r($searchTerm);
+                
                 $query = "SELECT *
-                          FROM products
-                          WHERE product_name LIKE :searchTerm
+                          FROM users
+                          WHERE CONCAT(first_name,' ',last_name) LIKE :searchTerm 
                           LIMIT  $offset , $itemsPerPage";
                 $statement = $pdo->prepare($query);
                 // Bind the parameters
                 $statement->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
             } else {
                 $query = "SELECT *
-                          FROM products
+                          FROM users
                           LIMIT $offset , $itemsPerPage";
                 $statement = $pdo->prepare($query);
             }
@@ -107,26 +103,26 @@ class Products extends DbConnection
             $statement->execute();
 
             $statement->debugDumpParams();
-            $products = $statement->fetchAll(PDO::FETCH_ASSOC);
+            $users = $statement->fetchAll(PDO::FETCH_ASSOC);
 
-            return $products;
+            return $users;
 
         } catch (PDOException $e) {
-            echo "Product Retrieval failed" . $e->getMessage();
+            echo "Users Retrieval failed" . $e->getMessage();
 
         }
 
     }
 
-    public function generatePageLinks($totalPages, $currentPage, $searchTerm)
+    public function generatePageLinks($totalPages, $currentPage, $searchTerm )
     {
 
         if ($totalPages > 1) {
 
-            $links = "";
+            $links =  ""; 
             if ($currentPage > 1) {
 
-                $prevPageLink = ($searchTerm !== "") ? "?page=" . ($currentPage - 1) . "&search=$searchTerm" : "?page=" . ($currentPage - 1);
+                $prevPageLink = ($searchTerm !== "") ? "?page=".($currentPage - 1)."&search=$searchTerm" : "?page=".($currentPage - 1 );
                 $links .= "<li class='page-item'><a class='page-link' href='$prevPageLink'>&laquo; Previous </a></li>";
 
             }
@@ -134,24 +130,25 @@ class Products extends DbConnection
             for ($page = 1; $page <= $totalPages; $page++) {
 
                 $activeClass = ($page == $currentPage) ? 'active' : '';
-
-                $pageLink = ($searchTerm !== "") ? "?page=$page&search=$searchTerm" : "?page=$page";
+               
+               $pageLink = ($searchTerm !== "") ? "?page=$page&search=$searchTerm" : "?page=$page";
                 $links .= "<li class='page-item'><a href='$pageLink' class='$activeClass page-link'>$page </a></li>";
 
             }
 
             if ($currentPage < $totalPages) {
 
-                $nextPageLink = ($searchTerm !== "") ? "?page=" . ($currentPage + 1) . "&search=$searchTerm" : "?page=" . ($currentPage + 1);
+                $nextPageLink =($searchTerm !== "") ? "?page=".($currentPage + 1)."&search=$searchTerm":"?page=".($currentPage + 1 );
                 $links .= "<li class='page-item'><a href='$nextPageLink' class='$activeClass page-link'>Next &raquo;</a></li>";
 
             }
             return $links;
         }
 
+
     }
 
-    public function totalProducts($searchTerm)
+    public function totalUsers($searchTerm)
     {
 
         try {
@@ -162,13 +159,13 @@ class Products extends DbConnection
                 $statement = $pdo->prepare("SELECT COUNT(*)
                                                     FROM products
                                                     WHERE product_name LIKE :searchTerm");
-
-                $statement->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
+                                                     
+                $statement->bindValue(':searchTerm', "%$searchTerm%",PDO::PARAM_STR);
             } else {
 
                 $statement = $pdo->prepare("SELECT COUNT(*)
                                      FROM products");
-            }
+                                      }
 
             $statement->execute();
             $totalItems = $statement->fetchColumn();
@@ -181,7 +178,7 @@ class Products extends DbConnection
 
     }
 
-    public function getProductById($productId)
+    public function getUserById($userId)
     {
 
         try {
@@ -189,9 +186,9 @@ class Products extends DbConnection
             $statement = $pdo->prepare("SELECT *
                                 FROM products
                                 WHERE ID = ?");
-            $statement->execute([$productId]);
-            $product = $statement->fetch(PDO::FETCH_ASSOC);
-            return $product;
+            $statement->execute([$userId]);
+            $user = $statement->fetch(PDO::FETCH_ASSOC);
+            return $user;
 
         } catch (PDOException $e) {
             echo "Product Updated successfully" . $e->getMessage();
@@ -262,6 +259,124 @@ class Products extends DbConnection
         }
 
     }
-}
 
-$products = new Products();
+    /* USER CREATION */
+
+    public function registerUser($first_name,$last_name,$email, $password)
+    {try {
+        $pdo = $this->connect();
+        //check if user exist
+        $statement = $pdo->prepare("SELECT *
+                                 FROM users WHERE email = ? ");
+        $statement->execute([$email]);
+        $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
+        if ($statementResult) {
+
+            return "User already exists";
+
+        }
+        //encrypt password
+        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+        $statement = $pdo->prepare("INSERT INTO users(email,password,first_name,last_name,role,status)
+                                           VALUES(:email,:password,:first_name,:last_name,'customer','active')");
+        $statement->bindParam(':email',$email);
+        $statement->bindParam(':password', $hashPassword);
+        $statement->bindParam(':first_name', $first_name);
+        $statement->bindParam(':last_name', $last_name);
+        $statement->execute();
+        return "success";
+    } catch (PDOException $e) {
+        echo "Register failed" . $e->getMessage();
+    }}
+
+    public function login($email, $password)
+    {try {
+        $pdo = $this->connect();
+        //check if user exist
+        $statement = $pdo->prepare("SELECT *
+                                 FROM users WHERE email = ?");
+        $statement->execute([$email]);
+
+        $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
+
+        if ($statementResult) {
+            if (password_verify($password, $statementResult['password'])) {
+                return $statementResult;
+            } else {
+                return "Invalid Credentials";
+
+            }
+
+        } else {
+            return "User not found";
+
+        }
+
+    } catch (PDOException $e) {
+        echo "Register failed" . $e->getMessage();
+    }}
+
+    public function getUserId($userId)
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT *
+                            FROM users
+                            WHERE ID = ?");
+            $statement->execute([$userId]);
+            $user = $statement->fetch(PDO::FETCH_ASSOC);
+            return $user;
+
+        } catch (PDOException $e) {
+            echo "Product Updated successfully" . $e->getMessage();
+
+        }
+
+    }
+
+    public function editUserProfile($newFirstName, $newLastName, $newEmail, $newRole, $userId)
+    {
+        try {
+            $pdo = $this->connect();
+
+            $sqlSetTimeZone = "SET time_zone = '+8:00'";
+            $pdo->exec($sqlSetTimeZone);
+            $statement = $pdo->prepare("UPDATE users
+                                        SET
+                                            email = ?,
+                                            first_name = ?,
+                                            last_name = ?,
+                                            role = ?
+                                        WHERE ID = ?");
+            $statement->execute([$newEmail, $newFirstName, $newLastName, $newRole, $userId]);
+            // echo "Product Updated successfully";
+
+        } catch (PDOException $e) {
+            echo "Insertion failed" . $e->getMessage();
+        }
+
+    }
+
+    public function updateUserImage($userId, $imageName)
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("UPDATE users
+                                        SET user_image = ?
+                                        WHERE ID = ?");
+            $statement->execute([$imageName, $userId]);
+            // echo "Product Updated successfully";
+
+        } catch (PDOException $e) {
+            echo "Insertion failed" . $e->getMessage();
+        }
+
+    }
+
+    }
+
+
+
+$users = new Users();

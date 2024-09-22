@@ -1,0 +1,29 @@
+:root{
+
+
+    /* colors */
+--main-color:#0b1215;
+--secondary-color:#f4f4f4;
+--tertiary-color:#352f36;
+--misc-color:#3f50ba;
+
+
+/* fonts */
+--main-font : Arial, sans-serif;
+}
+
+
+
+
+#action-btn{
+
+background-color: #4CAF50;
+
+color: antiquewhite;
+}
+
+
+#action-btn:hover{
+    background-color: #8EF56A;
+    color: antiquewhite;
+    }
