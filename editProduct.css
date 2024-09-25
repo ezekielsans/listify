@@ -1,0 +1,10 @@
+.svg{
+stroke: black;
+fill: black;
+cursor: pointer;
+}
+
+.svg:hover{
+    stroke: gray;
+    fill: gray;
+    }

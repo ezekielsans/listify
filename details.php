@@ -19,6 +19,13 @@ if (isset($_POST['delete'])) {
     header("Location: index.php");
 }
 
+if (isset($_POST['add_to_cart'])) {
+    //print_r($_POST);
+    //print_r($productId );
+    $products->addToCart($_POST['userId'], $_POST['productId'], $_POST['quantity']);
+    echo "Added to cart";
+}
+
 ?>
 
 <?php include_once 'components/header.php';?>
@@ -27,6 +34,7 @@ if (isset($_POST['delete'])) {
 
 <div class="container">
 <?php if ($product): ?>
+
 <input type="hidden" value="<?=$product['ID'];?>">
  <h1 class="mt-5"><?=$product['product_category'];?> Details</h1>
 
@@ -35,7 +43,7 @@ if (isset($_POST['delete'])) {
   <img src="/uploads/<?=$product['product_image'];?>" class="card-img-top rounded img-fluid" alt="product-image" style="height: 400px; width: 400px; object-fit: cover;" >
   </div>
   <div class="col-md-6 mb-4">
-    <form action="" method="post" class="p-3 ">
+    <form id="addToCartForm"  method="post" class="p-3 ">
         <!-- Hidden Input for Product ID -->
         <input type="hidden" name="product_id" value="<?=$product['ID'];?>">
 
@@ -46,24 +54,61 @@ if (isset($_POST['delete'])) {
         <p class="mb-3"><?=$product['product_description'];?></p>
 
         <!-- Last Updated Info -->
-      
-        <p class="mb-3 text-muted"><small>Last updated <?=$product['updated_at'];?></small></p>
-  
-        <!-- Quantity Selector -->
-        <div class="mb-5 d-flex align-items-center">
-            <label for="form1" class="me-2">Quantity:</label>
-            <div class="d-flex gap-3 align-items-center justify-content-center">
-            <input id="form1" min="1" name="quantity" value="1" type="number" class="form-control"  style="width: 50px;">  
-            <p class="mb-3 text-muted"><?=$product['product_stocks'];?> stocks available</p>
-        </div>
-        </div>
 
+        <p class="mb-3 text-muted"><small>Last updated <?=$product['updated_at'];?></small></p>
+
+        <!-- Quantity Selector -->
+        <div class="mb-5 d-flex flex-column align-items-start">
+  <div class="d-flex align-items-center mb-2">
+      <?php if ($product['product_stocks'] === 0): ?>
+    <label for="quantity" class="me-2 text-muted">Quantity:</label>
+    <div class="input-group w-auto text-muted">
+      <button class="btn btn-secondary text-white" type="button" id="btn-decrement" aria-label="Decrease quantity" disabled>-</button>
+      <input type="number" name="quantity" id="quantity" class="form-control form-control-lg text-center text-muted"  value="0"   min="1" max="<?=$product['product_stocks'];?>" style="width: 80px;" disabled>
+      <button class="btn btn-secondary text-white" type="button" id="btn-increment" aria-label="Increase quantity" disabled>+</button>
+    </div>
+    <?php else: ?>
+    <div class="input-group w-auto">
+      <button class="btn btn-outline-secondary" type="button" id="btn-decrement" aria-label="Decrease quantity">-</button>
+      <input type="number" name="quantity" id="quantity" class="form-control form-control-lg text-center" value="1" min="1" max="<?=$product['product_stocks'];?>" style="width: 80px;">
+      <button class="btn btn-outline-secondary" type="button" id="btn-increment" aria-label="Increase quantity">+</button>
+    </div>
+    <?php endif;?>
+  </div>
+  <p class="mb-3 text-muted"><?=$product['product_stocks'];?> stocks available</p>
+</div>
+<?php if ($product['product_stocks'] === 0): ?>
         <!-- Buttons (Add to Cart & Buy Now) -->
+<input type="hidden" name="productId" value="<?=$product['ID'];?>">
+<input type="hidden" name="userId" value="<?=$user['ID'];?>">
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-            <button type="submit" name="add_to_cart" class="btn btn-primary me-2">Add to Cart</button>
+            <button type="submit" id="addToCart" name="add_to_cart" class="btn btn-secondary me-2" disabled>Add to Cart</button>
+            <button type="submit" name="buy_now" class="btn btn-secondary" disabled>Buy Now</button>
+        </div>
+<?php else: ?>
+          <!-- Buttons (Add to Cart & Buy Now) -->
+<input type="hidden" name="productId" value="<?=$product['ID'];?>">
+<input type="hidden" name="userId" value="<?=$user['ID'];?>">
+        <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+            <button type="submit" id="addToCart" name="add_to_cart" class="btn btn-primary me-2">Add to Cart</button>
             <button type="submit" name="buy_now" class="btn btn-success">Buy Now</button>
         </div>
+
+        <?php endif;?>
+
     </form>
+</div>
+
+
+
+<!-- Toast Notification -->
+<div class="toast align-items-center text-bg-primary border-0 top-50 start-50 translate-middle" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
+  <div class="d-flex">
+    <div class="toast-body">
+      Product added to cart!
+    </div>
+    <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+  </div>
 </div>
 
 </div>
@@ -93,4 +138,57 @@ if (isset($_POST['delete'])) {
 </div>
 </main>
 
+
+
+
 <?php include_once 'components/footer.php';?>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const quantityInput = document.getElementById('quantity');
+    const decrementBtn = document.getElementById('btn-decrement');
+    const incrementBtn = document.getElementById('btn-increment');
+    const maxStock = parseInt(quantityInput.max, 10);
+
+    decrementBtn.addEventListener('click', function () {
+      let currentValue = parseInt(quantityInput.value, 10);
+      if (currentValue > 0) {
+        quantityInput.value = currentValue - 1;
+      }
+    });
+
+    incrementBtn.addEventListener('click', function () {
+      let currentValue = parseInt(quantityInput.value, 10);
+      if (currentValue < maxStock) {
+        quantityInput.value = currentValue + 1;
+      }
+    });
+  });
+
+
+   // Handle Add to Cart via AJAX and Show Toast
+   const addToCartBtn = document.getElementById('addToCart');
+    const toastLive = document.getElementById('liveToast');
+
+    addToCartBtn.addEventListener('click', function () {
+        // Prepare form data
+        const formData = new FormData(document.getElementById('addToCartForm'));
+
+        // Send AJAX request to add to cart
+        fetch('', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())  // Handle response (could be JSON)
+        .then(data => {
+            // Show the toast after a successful request
+            const toastBootstrap = bootstrap.Toast.getOrCreateInstance(toastLive);
+            toastBootstrap.show();
+        })
+        .catch(error => {
+            console.error('Error adding to cart:', error);
+        });
+    });
+
+
+
+</script>

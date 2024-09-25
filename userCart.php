@@ -1,21 +1,13 @@
 <?php
 require_once 'usersController.php';
-
 require_once 'productController.php';
 $users->startSession();
 
-$searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
-$currentPage = $_GET['page'] ?? 1;
-$itemsPerPage = 10;
-$totalItems = $products->totalProducts($searchTerm);
-$totalPages = ceil($totalItems / $itemsPerPage);
+$user = $users->getUserId($_SESSION['LoginUser']['ID']);
+$userId = $user['ID'];
 
-//get all products
-$productsData = $products->getAllProducts($currentPage, $itemsPerPage, $searchTerm);
-$pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm);
-
+$items =  $products->showCartItems($userId);
 $counter = 1;
-
 //delete user
 if (isset($_POST['delete'])) {
     $productId = $_POST['delete_id'];
@@ -36,7 +28,7 @@ if (isset($_POST['delete'])) {
 <main>
 <div class="container">
 <div class="d-flex justify-content-between mt-5 gap-5" >
-<h2>Product Management Dashboard</h2>
+<h2>My Cart</h2>
 <form class="w-25" method="get">
     <div class="input-group mb-3 ">
         <input class="form-control" type="search" name="search" placeholder="Search a product..." required>
@@ -47,42 +39,32 @@ if (isset($_POST['delete'])) {
 <table class="table table-striped">
 <thead>
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Description</th>
-      <th scope="col">Category</th>
-      <th scope="col">Price</th>
+  
+      <th scope="col">Product</th>
+      <th scope="col">Unit Price</th>
       <th scope="col">Quantity</th>
-      <th scope="col">As Of</th>
-      <th scope="col">Action</th>
+      <th scope="col">Total Price</th>
+      <th scope="col">Actions</th>
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($productsData as $product) {?>
+    <?php foreach ($items as $item) {?>
     <tr>
-      <th scope="row"><?=$counter++?></th>
-      <input type="hidden" name="ID" value="<?=$product['ID']?>">
-      <td><img src="/uploads/<?=$product['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  <?=$product['product_name']?></td>
-      <td><?=$product['product_description']?></td>
-      <td><?=$product['product_category']?></td>
-      <td><?=number_format($product['product_price'], 2)?></td>
+     
+      <input type="hidden" name="ID" value="<?=$item['ID']?>">
+      <td><img src="/uploads/<?=$item['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  <?=$item['product_name']?></td>
+      <td><?=number_format($item['product_price'], 2)?></td>
+      <td><?=number_format($item['quantity'], 2)?></td>
+      <td><?= number_format($item['product_price']  *  $item['quantity'],2)?></td>
 
 
 
-      <?php if (isset($product['product_stocks'])) {?>
-      <?php if ($product['product_stocks'] != 0 && $product['product_stocks'] <=10 ){ ?>
-        <td><?=$product['product_stocks']?> <p class="text-muted" style="color:red">low stocks</p></td>
-        <?php } elseif ($product['product_stocks'] === 0){?>
-          <td><?=$product['product_stocks']?> <p  style="color:red">out of stock</p></td>
-          
-          <?php } else {?>
-          <td><?=$product['product_stocks']?></td>
-        <?php }?>
-        <?php }?>
-        <td><?=$product['updated_at']?></td>
+
       <td>
-        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$product['ID']?>">Remove</button>
-        <a class="btn btn-primary mx-2" href="editProduct.php?ID=<?=$product['ID'];?>">Edit</a>
+        <form  method="post">
+            <input type="hidden" value="<?=$product['ID']?>"/>
+        <button type="submit" class="btn btn-danger">Delete</button>
+        </form>
       </td>
     </tr>
     <?php }?>
@@ -92,14 +74,14 @@ if (isset($_POST['delete'])) {
 
 <div class="d-flex gap-5 align-items-center justify-content-center">
 
-<nav  aria-label="Page navigation">
+<!-- <nav  aria-label="Page navigation">
     <ul class="pagination">
         <?=$pageLinks;?>
     </ul>
-</nav>
+</nav> -->
 
-
-<p>showing total of <?=$totalItems?> products</p>
+<!-- 
+<p>showing total of <?=$totalItems?> products</p> -->
 </div>
 
    <!-- Modal for delete -->

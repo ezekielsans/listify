@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //get something from this button
         var userId = button.getAttribute('data-user-id');
 
-        var deleteInput = document.getElementById('deleteUserId');
+        var deleteInput = document.getElementById('deleteId');
         deleteInput.value = userId;
     });
 
@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", function () {
         //get something from this button
         var userId = button.getAttribute('data-user-id');
 
-        var deactivationInput = document.getElementById('deactUserId');
+        var deactivationInput = document.getElementById('deactId');
         deactivationInput.value = userId;
     });
 

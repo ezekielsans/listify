@@ -10,6 +10,7 @@ $totalPages = ceil($totalItems / $itemsPerPage);
 
 //get all users
 $usersData = $users->getAllUsers($currentPage, $itemsPerPage, $searchTerm);
+$pageLinks = $users->generatePageLinks($currentPage, $itemsPerPage, $searchTerm);
 $counter = 1;
 
 //delete user
@@ -125,6 +126,19 @@ if (isset($_POST['deactivate'])) {
         <?php }?>
   </tbody>
 </table>
+<div class="d-flex gap-5 align-items-center justify-content-center">
+
+<nav  aria-label="Page navigation">
+    <ul class="pagination">
+        <?=$pageLinks;?>
+    </ul>
+</nav>
+
+
+<p>showing total of <?=$totalItems?> products</p>
+</div>
+
+
 
    <!-- Modal for delete -->
    <div class="modal fade mt-5" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
@@ -139,7 +153,7 @@ if (isset($_POST['deactivate'])) {
             </div>
             <div class="modal-footer">
               <form action="" method="post">
-                <input type="hidden" id="deleteUserId" name="delete_user_id">
+                <input type="hidden" id="deleteId" name="delete_user_id">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" name="delete" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
               </form>
@@ -166,7 +180,7 @@ if (isset($_POST['deactivate'])) {
             </div>
             <div class="modal-footer">
               <form action="" method="post">
-                <input type="hidden" id="deactUserId" name="deactivate_user_id">
+                <input type="hidden" id="deactId" name="deactivate_user_id">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
                 <button type="submit" name="deactivate" class="btn btn-danger" id="confirmDeleteBtn">Deactivate</button>
               </form>

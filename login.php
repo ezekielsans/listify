@@ -39,7 +39,7 @@ if (isset($_POST['submit'])) {
 
 <div class="d-flex justify-content-center align-items-center gap-5 vh-100">
   <div class="col">
-<img class="rounded" src="/assets/login-page-design-2.png" height="750" alt="login-thumbnail">
+<img class="" src="/assets/login-page-design-2.png" height="830" alt="login-thumbnail">
   </div>
 <div class="col  mx-3 my-3 ">  
 <form method="POST" class="d-flex flex-column gap-3 mt-5  w-55 mx-auto  p-4 ">

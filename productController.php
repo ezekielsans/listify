@@ -55,7 +55,7 @@ class Products extends DbConnection
 
     }
 
-    public function editProduct($newProductName, $newProductCategory, $newProductDescription, $LoginUser, $productId)
+    public function editProduct($newProductName, $newProductCategory, $newProductPrice, $newProductStocks, $newProductDescription, $LoginUser, $productId)
     {
         try {
             $pdo = $this->connect();
@@ -63,13 +63,22 @@ class Products extends DbConnection
             $sqlSetTimeZone = "SET time_zone = '+8:00'";
             $pdo->exec($sqlSetTimeZone);
             $statement = $pdo->prepare("UPDATE products
-                                        SET product_name = ?,
-                                            product_category = ?,
-                                            product_description = ?,
-                                            updated_by = ?,
+                                        SET product_name = :newProductName,
+                                            product_category = :newProductCategory,
+                                            product_description = :newProductDescription,
+                                            product_price = :newProductPrice,
+                                            product_stocks = :newProductStocks,
+                                            updated_by = :LoginUser,
                                             updated_at = NOW()
-                                        WHERE ID = ?");
-            $statement->execute([$newProductName, $newProductCategory, $newProductDescription, $LoginUser['email'], $productId]);
+                                        WHERE ID = :productId");
+            $statement->bindParam(":newProductName", $newProductName);
+            $statement->bindParam(":newProductCategory", $newProductCategory);
+            $statement->bindParam(":newProductDescription", $newProductDescription);
+            $statement->bindParam(":newProductPrice", $newProductPrice);
+            $statement->bindParam(":newProductStocks", $newProductStocks);
+            $statement->bindParam(":LoginUser", $LoginUser['email']);
+            $statement->bindParam(":productId", $productId);
+            $statement->execute();
             // echo "Product Updated successfully";
 
         } catch (PDOException $e) {
@@ -260,6 +269,83 @@ class Products extends DbConnection
         } catch (PDOException $e) {
             echo "Insertion failed" . $e->getMessage();
         }
+
+    }
+
+    public function addToCart($userId, $productId, $quantity)
+    {
+
+        try {
+            $pdo = $this->connect();
+            //check if product is already added to cart
+            $statement = $pdo->prepare("SELECT * FROM
+                                        user_cart WHERE user_id = :user_id AND product_id = :product_id");
+
+            $statement->bindParam(':user_id', $userId);
+            $statement->bindParam(':product_id', $productId);
+            $statement->execute();
+
+            // Fetch the current product in the cart, if exists
+            $existingCartItem = $statement->fetch(PDO::FETCH_ASSOC);
+
+            if ($existingCartItem) {
+
+                // If the product already exists in the cart, update the quantity
+                $newQuantity = $existingCartItem['quantity'] + $quantity;
+                $updateStatement = $pdo->prepare("
+                UPDATE user_cart
+                SET quantity = :quantity
+                WHERE user_id = :user_id AND product_id = :product_id
+            ");
+                $updateStatement->bindParam(':user_id', $userId);
+                $updateStatement->bindParam(':product_id', $productId);
+                $updateStatement->bindParam(':quantity', $newQuantity);
+                $updateStatement->execute();
+
+            } else {
+                $statement = $pdo->prepare("INSERT INTO user_cart (user_id,product_id,quantity)
+                 VALUES (:user_id, :product_id, :quantity)");
+
+                $statement->bindParam(':user_id', $userId);
+                $statement->bindParam(':product_id', $productId);
+                $statement->bindParam(':quantity', $quantity);
+                $statement->execute();
+            }
+
+            // echo "Product Updated successfully";
+
+        } catch (PDOException $e) {
+            // Log the error or handle it appropriately
+            error_log("Cart operation failed: " . $e->getMessage());
+
+        }
+
+    }
+
+
+    public function showCartItems($userId){
+try{  $pdo = $this->connect();
+    //check if product is already added to cart
+    $statement = $pdo->prepare("SELECT *
+                                       FROM user_cart t1
+                                       INNER JOIN products t2
+                                       ON t1.product_id = t2.ID
+                                       WHERE user_id = :user_id");
+    $statement->bindParam(":user_id",$userId);
+    $statement->execute();
+    $items = $statement->fetchAll(PDO::FETCH_ASSOC);
+return  $items;
+
+}catch (PDOException $e) {
+    // Log the error or handle it appropriately
+    error_log("Cannot retrieve cart items: " . $e->getMessage());
+
+}
+
+
+
+
+
 
     }
 }

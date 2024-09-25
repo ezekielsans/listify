@@ -56,24 +56,21 @@ print_r($_SESSION['LoginUser']);
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 mb-5">
 <?php foreach ($items as $item) {?>
- <div class="col">
+    <a href="details.php?ID=<?=$item['ID'];?>" class="text-decoration-none">
+
  <div class="card" style="width: 18rem;">
   <img class="card-img-top" src="/uploads/<?=$item['product_image']?>" height="300" alt="Card image cap">
   <div class="card-body">
     <div class="d-flex">
         <div class="col">
     <h5 class="card-title"><?=$item['product_name']?></h5>
-    <!-- <p class="card-text"><?=$item['product_description']?></p> -->
+     <p class="card-text"><?=$item['product_description']?></p>
 </div>
 <h5 class="card-title"><?="₱".number_format(round($item['product_price'],2))?></h5>
-    </div>
-    <div class="d-flex text-center mt-3 justify-content-between">
-    <a href="details.php?ID=<?=$item['ID'];?>" class="btn btn-primary">View Product</a>
-    <a href="details.php?ID=<?=$item['ID'];?>" class="btn btn-success">Add to Cart </a>
-  </div>
-  </div>
 </div>
 </div>
+</div>
+</a>
 <?php }?>
 </div>
 
@@ -81,11 +78,6 @@ print_r($_SESSION['LoginUser']);
 
 <nav  aria-label="Page navigation">
     <ul class="pagination">
-    <!-- <li class="page-item"><a class="page-link" href="#">Previous</a></li>
-    <li class="page-item"><a class="page-link" href="#">1</a></li>
-    <li class="page-item"><a class="page-link" href="#">2</a></li>
-    <li class="page-item"><a class="page-link" href="#">3</a></li>
-    <li class="page-item"><a class="page-link" href="#">Next</a></li> -->
         <?=$pageLinks;?>
     </ul>
 </nav>

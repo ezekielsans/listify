@@ -12,21 +12,21 @@ if (isset($productId)) {
 
 if (isset($_POST['save'])) {
     //print_r($_POST);
-    $products->editProduct($_POST['product_name'], $_POST['product_category'], $_POST['product_description'],$_SESSION['LoginUser'], $_POST['ID']);
+    $products->editProduct($_POST['product_name'], $_POST['product_category'],$_POST['product_price'], $_POST['quantity'], $_POST['product_description'], $_SESSION['LoginUser'], $_POST['ID']);
     if ($_FILES['image']['name']) {
 
-        $milliseconds = intval(microtime(true)*1000);
-        $imageName = $products->uploadImage('image', 'uploads',$milliseconds."_".$_POST['ID']);
+        $milliseconds = intval(microtime(true) * 1000);
+        $imageName = $products->uploadImage('image', 'uploads', $milliseconds . "_" . $_POST['ID']);
         if ($imageName != "Failed") {
             $products->updateImageData($_POST['ID'], $imageName);
         }
 
     }
-   // header('Location: details.php?ID=' . $_POST['ID']);
+    // header('Location: details.php?ID=' . $_POST['ID']);
 
 }
 ?>
-
+<link rel="stylesheet" href="editProduct.css">
 <?php include_once 'components/header.php';?>
 
 <main>
@@ -41,8 +41,21 @@ if (isset($_POST['save'])) {
 <input type="text" name="product_name" id="product_name" class="form-control form-control-lg" value="<?=$product['product_name'];?>">
 </div>
 <div class="mb-3">
-<label class="form-label">Product Category</label>
-<input type="text" name="product_category" id="product_category" class="form-control form-control-lg" value="<?=$product['product_category'];?>">
+    <label class="form-label">Product Category</label>
+    <input type="text" name="product_category" id="product_category" class="form-control form-control-lg" value="<?=$product['product_category'];?>">
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Product Price</label>
+    <input type="text" name="product_price" id="product_price" class="form-control form-control-lg" value="<?=$product['product_price'];?>">
+</div>
+<div class="mb-3">
+<label class="form-label">Quantity</label>
+<div class="input-group w-25">
+        <button class="btn btn-outline-secondary" type="button" id="btn-decrement">-</button>
+        <input type="number" name="quantity" id="quantity" class="form-control form-control-lg" value="<?=$product['product_stocks'];?>" min="0" max="9999">
+        <button class="btn btn-outline-secondary" type="button" id="btn-increment">+</button>
+</div>
 </div>
 <div class="mb-3">
 <label class="form-label">Product Image</label>
@@ -54,6 +67,7 @@ if (isset($_POST['save'])) {
 </textarea>
 </div>
 
+
 <button type="submit" name="save" class="bg-primary btn btn-lg my-4">Update</button>
 
 </form>
@@ -63,5 +77,34 @@ if (isset($_POST['save'])) {
     <?php endif;?>
 </div>
 </main>
+<script>
 
+ const subtractBtn =    document.getElementById('btn-decrement');
+const quantityInput =    document.getElementById('quantity');
+const addBtn =     document.getElementById('btn-increment');
+
+   
+    // Handle increment
+    addBtn.addEventListener('click', function () {
+            var currentValue = parseInt(quantityInput.value);
+            if (!isNaN(currentValue) && currentValue < parseInt(quantityInput.max)) {
+                quantityInput.value = currentValue + 1;
+            }
+        });
+
+
+
+    // Handle decrement
+    subtractBtn.addEventListener('click', function () {
+            var currentValue = parseInt(quantityInput.value);
+            if (!isNaN(currentValue) && currentValue > 0) {
+                quantityInput.value = currentValue - 1;
+            }
+        });
+
+
+
+
+
+</script>
 <?php include_once 'components/footer.php';?>
