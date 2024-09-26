@@ -6,6 +6,11 @@ $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 $userId = $user['ID'];
 
+
+
+$itemCount = $products->countCartItems($userId);
+ echo "<br> Item Count";
+print_r($itemCount);
 $items =  $products->showCartItems($userId);
 $counter = 1;
 //delete user
@@ -34,7 +39,7 @@ if (isset($_POST['delete'])) {
         <input class="form-control" type="search" name="search" placeholder="Search a product..." required>
         <button type="submit" class="btn btn-primary text-white input-group-append" >Search</button>
     </div>
-  </form>
+</form>
 </div>
 <table class="table table-striped">
 <thead>
@@ -52,17 +57,19 @@ if (isset($_POST['delete'])) {
     <tr>
      
       <input type="hidden" name="ID" value="<?=$item['ID']?>">
-      <td><img src="/uploads/<?=$item['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  <?=$item['product_name']?></td>
+      
+      <td> 
+        <input type="checkbox" id="selectAll" class="me-2"> 
+        <img src="/uploads/<?=$item['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  
+        <?=$item['product_name']?>
+      </td>
       <td><?=number_format($item['product_price'], 2)?></td>
-      <td><?=number_format($item['quantity'], 2)?></td>
+      <td><?=$item['quantity'] ?></td>
       <td><?= number_format($item['product_price']  *  $item['quantity'],2)?></td>
-
-
-
 
       <td>
         <form  method="post">
-            <input type="hidden" value="<?=$product['ID']?>"/>
+            <input type="hidden" name="delete_id" value="<?=$product['ID']?>"/>
         <button type="submit" class="btn btn-danger">Delete</button>
         </form>
       </td>
@@ -71,6 +78,9 @@ if (isset($_POST['delete'])) {
        
   </tbody>
 </table>
+
+
+
 
 <div class="d-flex gap-5 align-items-center justify-content-center">
 
@@ -110,6 +120,33 @@ if (isset($_POST['delete'])) {
 </div>
 </main>
 
+<footer>
+<div class="fixed-bottom  container-fluid p-3 bg-white border w-75">
+    <div class="row justify-content-between align-items-center">
+        <!-- Left Section (Select All, Delete, Move to My Likes) -->
+        <div class="col-md-6 d-flex align-items-center">
+        <input type="checkbox" class="item-checkbox" data-price="<?= $item['product_price'] * $item['quantity'] ?>" id="selectItem-<?= $item['ID'] ?>" class="me-2">
+            <label for="selectAll" class="me-3">Select All (<?=$itemCount?>)</label>
+            <button class="btn btn-link text-muted">Delete</button>
+            <button class="btn btn-link text-muted">Remove inactive products</button>
+            <button class="btn btn-link text-danger">Move to My Likes</button>
+        </div>
+
+        <!-- Right Section (Total, Check Out Button) -->
+        <div class=" col-md-6 d-flex justify-content-end align-items-center">
+            <div class="me-4">
+                <span class="text-muted">Total (0 item):</span>
+                <span class="fw-bold">₱0</span>
+            </div>
+            <button class=" btn btn-danger btn-lg">Check Out</button>
+        </div>
+    </div>
+</div>
+
+
+
+</footer>
+
 <script>
 //referencing an id to a modal
 document.addEventListener("DOMContentLoaded", function () {
@@ -122,6 +159,46 @@ document.addEventListener("DOMContentLoaded", function () {
       
       var deleteInput = document.getElementById('deleteId');
       deleteInput.value = userId;
+    });
+
+
+
+    //handle checkbox
+const checkboxes = document.querySelectorAll('.item-checkbox');
+    const totalPriceElement = document.querySelector('.fw-bold'); // The span that shows total price
+    const totalItemsElement = document.querySelector('.text-muted'); // The span that shows total items
+    let totalPrice = 0;
+    let totalItems = 0;
+
+    // Function to calculate total price and items
+    function updateTotal() {
+        totalPrice = 0;
+        totalItems = 0;
+        checkboxes.forEach(checkbox => {
+            if (checkbox.checked) {
+                const itemPrice = parseFloat(checkbox.getAttribute('data-price'));
+                totalPrice += itemPrice;
+                totalItems++;
+            }
+        });
+
+        // Update the total price and item count in the footer
+        totalPriceElement.textContent = `₱${totalPrice.toFixed(2)}`;
+        totalItemsElement.textContent = `Total (${totalItems} item):`;
+    }
+
+    // Add event listeners to all checkboxes
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', updateTotal);
+    });
+
+    // Select all functionality
+    const selectAllCheckbox = document.getElementById('selectAll');
+    selectAllCheckbox.addEventListener('change', function () {
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = selectAllCheckbox.checked;
+        });
+        updateTotal();
     });
     
     

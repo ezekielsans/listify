@@ -342,12 +342,42 @@ return  $items;
 
 }
 
+}
 
 
 
 
+public function countCartItems($userId){
 
+
+    try{  $pdo = $this->connect();
+        //check if product is already added to cart
+        $statement = $pdo->prepare("SELECT COUNT(*)
+                                           FROM user_cart t1
+                                           INNER JOIN products t2
+                                           ON t1.product_id = t2.ID
+                                           WHERE user_id = :user_id");
+        $statement->bindParam(":user_id",$userId);
+        $statement->execute();
+        $itemCount = $statement->fetchColumn();
+    return  $itemCount;
+    
+    }catch (PDOException $e) {
+        // Log the error or handle it appropriately
+        error_log("Cannot retrieve cart items: " . $e->getMessage());
+    
     }
+
+
+
+
+
+
+
+}
+
+
+
 }
 
 $products = new Products();
