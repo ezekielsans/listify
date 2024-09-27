@@ -1,5 +1,6 @@
 <?php
 require_once '../controllers/usersController.php';
+require_once '../controllers/productController.php';
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);

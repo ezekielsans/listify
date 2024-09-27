@@ -2,6 +2,7 @@
 
 $userDetails = $users->getUserId($_SESSION['LoginUser']['ID']);
 $userId = $userDetails['ID'];
+
 $cartItems = $products->countCartItems($userId);
 
 //print_r($_SESSION['LoginUser']['ID']);
@@ -43,21 +44,25 @@ $cartItems = $products->countCartItems($userId);
 
 <?php if ($cartItems !== 0): ?>
 <div class="cart-icon" style="position: relative; margin-right:12px;">
-    <span class="badge bg-primary rounded-pill" style="position: absolute; top: -10px; right: -10px;"><?=$cartItems;?></span>
+    <span class="badge bg-primary rounded-pill" style="position: absolute; top: -3px; right: -5px;"><?=$cartItems;?></span>
     <a href="../../components/User/userCart.php" class="nav-link">
-        <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
-            <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
-            <g id="SVGRepo_iconCarrier">
-                <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
-            </g>
-        </svg>
+    <svg width="35px" height="35px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#fff0f0" stroke="#fff0f0">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier"> <title>shopping-cart</title> 
+        <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="icon" fill="#ffffff" transform="translate(42.666667, 85.333333)"> 
+        <path d="M7.10542736e-15,-1.42108547e-14 L70.3622093,-1.42108547e-14 L89.7493333,85.3333333 L378.389061,85.3333333 L337.246204,277.333333 L89.6377907,277.333333 L36.288,42.6666667 L7.10542736e-15,42.6666667 L7.10542736e-15,-1.42108547e-14 Z M325.610667,128 L99.456,128 L123.690667,234.666667 L302.741333,234.666667 L325.610667,128 Z M138.666667,384 C156.339779,384 170.666667,369.673112 170.666667,352 C170.666667,334.326888 156.339779,320 138.666667,320 C120.993555,320 106.666667,334.326888 106.666667,352 C106.666667,369.673112 120.993555,384 138.666667,384 Z M288,384 C305.673112,384 320,369.673112 320,352 C320,334.326888 305.673112,320 288,320 C270.326888,320 256,334.326888 256,352 C256,369.673112 270.326888,384 288,384 Z" id="Combined-Shape"> </path> 
+    </g> 
+</g> 
+</g>
+</svg>
     </a>
 </div>
 <?php else: ?>
     <div class="cart-icon" style="position: relative; margin-right:12px;">
-    <a href="../../components/User/userCart.php" class="nav-link">
-        <svg width="25px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <a href="../../components/User/userCart.php"  class="nav-link ">
+        <svg width="25px" height="25px"  viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
             <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
             <g id="SVGRepo_iconCarrier">
