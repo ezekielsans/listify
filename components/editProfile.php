@@ -1,5 +1,5 @@
 <?php
-include_once 'usersController.php';
+require_once '../controllers/usersController.php';
 $users->startSession();
 
 $userId = $_GET['ID'];
@@ -31,7 +31,7 @@ if (isset($_POST['save'])) {
 }
 ?>
 
-<?php include_once 'components/header.php';?>
+<?php include_once '../components/header.php';?>
 
 <main>
 
@@ -72,4 +72,4 @@ if (isset($_POST['save'])) {
 </div>
 </main>
 
-<?php include_once 'components/footer.php';?>
+<?php include_once '../components/Footer/footer.php';?>

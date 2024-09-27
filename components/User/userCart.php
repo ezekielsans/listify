@@ -1,6 +1,6 @@
 <?php
-require_once 'usersController.php';
-require_once 'productController.php';
+require_once '../../controllers/usersController.php';
+require_once '../../controllers/productController.php';
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
@@ -28,7 +28,7 @@ if (isset($_POST['delete'])) {
 
 ?>
 
-<?php include_once 'components/header.php';?>
+<?php include_once '../header.php';?>
 
 <main>
 <div class="container">
@@ -205,4 +205,4 @@ const checkboxes = document.querySelectorAll('.item-checkbox');
   });
   
 </script>
-  <?php include_once 'components/footer.php';?>
+  <?php include_once '../Footer/footer.php';?>

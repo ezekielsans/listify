@@ -1,5 +1,5 @@
 <?php
-include_once 'usersController.php';
+
 $users->startSession();
 print_r($_SESSION['LoginUser']);
 $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
@@ -18,8 +18,8 @@ $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 </head>
 <body>
     <?php if ($user['role']==="administrator"):?>
-        <?php include_once 'components/adminNavbar.php';?>
+        <?php include_once 'Navbar/adminNavbar.php';?>
         <?php else:?>
-        <?php include_once 'components/userNavbar.php';?>
+        <?php include_once 'Navbar/userNavbar.php';?>
         <?php endif; ?>
        

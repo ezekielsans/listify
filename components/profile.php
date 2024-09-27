@@ -1,14 +1,13 @@
 <?php
-
-include_once 'usersController.php';
+require_once '../controllers/usersController.php';
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 print_r($_SESSION['LoginUser']['ID']);
 
 ?>
-<?php include_once 'components/header.php';?>
-<div class="container">
+<?php include_once '../components/header.php';?>
+<div class="container mb-5">
   <h1 class="mb-5">My Profile</h1>
 
   <div class="row">
@@ -86,4 +85,4 @@ print_r($_SESSION['LoginUser']['ID']);
 </div>
 
 
-<?php include_once 'components/footer.php';?>
+<?php include_once '../components/Footer/footer.php';?>

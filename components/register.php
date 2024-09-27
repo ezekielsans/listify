@@ -1,6 +1,6 @@
 <?php
 error_reporting(E_ALL);
-include_once 'usersController.php';
+require_once '../controllers/usersController.php';
 
 if (isset($_POST['submit'])) {
     if ($_POST['password'] === $_POST['confirmed_password']) {
@@ -27,7 +27,7 @@ if (isset($_POST['submit'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listify</title>
-    <link rel="shortcut icon" href="assets/listify-fav-ico.png" type="image/x-icon">
+    <link rel="shortcut icon" href="../assets/listify-fav-ico.png" type="image/x-icon">
     <link rel="stylesheet" href="login.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -43,7 +43,7 @@ if (isset($_POST['submit'])) {
 <div class="col mx-3 my-3 ">
 <form method="POST" class="d-flex flex-column gap-3 w-55 mx-2  mt-5  py-3 ">
 <div class="text-center">
-<img src="assets/listify-fav-ico.png" alt="" height="75px" width="75px" srcset="">
+<img src="/assets/listify-fav-ico.png" alt="" height="75px" width="75px" srcset="">
 <h1 class="fw-normal text-center">Register to Listify</h1>
 </div>    
 
@@ -75,7 +75,7 @@ if (isset($_POST['submit'])) {
 
     <button class="w-100 btn btn-lg" id="action-btn" name="submit" type="submit">Register</button>
     <div class="d-flex flex-column gap-2 text-center ">
-    <a href="login.php">Already have an account? Login here</a>
+    <a href="../components/Login/login.php">Already have an account? Login here</a>
     <a href="">Forgot password</a>
 
     </div>
@@ -86,4 +86,4 @@ if (isset($_POST['submit'])) {
   </div>
 
 
-<?php include_once 'components/footer.php';?>
+<?php include_once '../components/Footer/footer.php';?>

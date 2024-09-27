@@ -1,6 +1,7 @@
 <?php
-include_once 'productController.php';
-include_once 'usersController.php';
+include_once '../controllers/productController.php';
+include_once '../controllers/usersController.php';
+
 $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 
@@ -28,7 +29,7 @@ if (isset($_POST['add_to_cart'])) {
 
 ?>
 
-<?php include_once 'components/header.php';?>
+<?php include_once '../components/header.php';?>
 
 <main>
 
@@ -141,7 +142,7 @@ if (isset($_POST['add_to_cart'])) {
 
 
 
-<?php include_once 'components/footer.php';?>
+<?php include_once '../components/Footer/footer.php';?>
 <script>
   document.addEventListener('DOMContentLoaded', function () {
     const quantityInput = document.getElementById('quantity');
