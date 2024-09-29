@@ -4,7 +4,7 @@ require_once '../controllers/usersController.php';
 
 if (isset($_POST['submit'])) {
     if ($_POST['password'] === $_POST['confirmed_password']) {
-        $status = $users->registerUser($_POST['first_name'],$_POST['last_name'],$_POST['email'], $_POST['password']);
+        $status = $users->registerUser($_POST['first_name'],$_POST['last_name'],$_POST['email'], $_POST['password'],$_POST['mobile_number'],$_POST['address']);
         if ($status === "success") {
             echo "<div class='bg-success bg-gradient text-white p-2'>User registered successfully!</div>";
 
@@ -28,7 +28,7 @@ if (isset($_POST['submit'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listify</title>
     <link rel="shortcut icon" href="../assets/listify-fav-ico.png" type="image/x-icon">
-    <link rel="stylesheet" href="login.css">
+    <link rel="stylesheet" href="register.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
@@ -36,32 +36,45 @@ if (isset($_POST['submit'])) {
 
 
 
-<div class="d-flex justify-content-center align-items-center gap-2 vh-100">
+<div class="d-flex justify-content-center align-items-center  gap-5 vh-100">
   <div class="col">
-<img class="rounded" src="/assets/login-page-design-2.png" height="750" alt="login-thumbnail">
+<img  src="/assets/login-page-design-2.png" height="830">
   </div>
 <div class="col mx-3 my-3 ">
-<form method="POST" class="d-flex flex-column gap-3 w-55 mx-2  mt-5  py-3 ">
+<form method="POST" class="d-flex flex-column gap-2 w-55 mx-2  mt-5  py-3 ">
 <div class="text-center">
 <img src="/assets/listify-fav-ico.png" alt="" height="75px" width="75px" srcset="">
 <h1 class="fw-normal text-center">Register to Listify</h1>
 </div>    
 
 <div class="d-flex justify-content-between gap-3">
-    <div class="form-floating mb-4 w-50">
+    <div class="form-floating mb-2 w-50">
       <input type="text" class="form-control" name="first_name" id="floatingInput" required>
       <label for="floatingInput">First Name</label>
       </div> 
-    <div class="form-floating mb-4 w-50">
+    <div class="form-floating mb-2 w-50">
       <input type="text" class="form-control" name="last_name" id="floatingInput" required>
       <label for="floatingInput">Last Name</label>
     </div>  
     </div>   
-    <div class="form-floating mb-3">
+    <div class="form-floating mb-2">
       <input type="email" class="form-control" name="email" id="floatingInput" required>
       <label for="floatingInput">Email address</label>
     </div>
-    <div class="form-floating  mb-3">
+
+
+  <div class="form-floating mb-2">
+      <input type="text" class="form-control" name="mobile_num" id="floatingInput" required>
+      <label for="floatingInput">Mobile Number</label>
+  </div>
+
+    <div class="form-floating mb-2">
+      <input type="text" class="form-control" name="address" id="floatingInput" required>
+      <label for="floatingInput">Address</label>
+    </div>  
+  
+
+    <div class="form-floating  mb-2">
       <input type="password" class="form-control" name="password" id="floatingPassword" required>
       <label for="floatingPassword">Password</label>
     </div>

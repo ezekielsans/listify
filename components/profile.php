@@ -1,13 +1,19 @@
 <?php
 require_once '../controllers/usersController.php';
 require_once '../controllers/productController.php';
-$users->startSession();
 
+$users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 print_r($_SESSION['LoginUser']['ID']);
 
 ?>
-<?php include_once '../components/header.php';?>
+  
+  <?php if ($user['role']==="administrator"):?>
+        <?php include_once './Navbar/adminNavbar.php';?>
+        <?php else:?>
+        <?php include_once './Navbar/userNavbar.php';?>
+        <?php endif; ?>
+
 <div class="container mb-5">
   <h1 class="mb-5">My Profile</h1>
 

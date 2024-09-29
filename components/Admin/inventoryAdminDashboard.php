@@ -1,9 +1,9 @@
 <?php
-require_once 'usersController.php';
 
-require_once 'productController.php';
+require_once '../../controllers/usersController.php';
+require_once '../../controllers/productController.php';
 $users->startSession();
-
+$user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
 $currentPage = $_GET['page'] ?? 1;
 $itemsPerPage = 10;
@@ -31,7 +31,11 @@ if (isset($_POST['delete'])) {
 
 ?>
 
-<?php include_once 'components/header.php';?>
+<?php if ($user['role']==="administrator"):?>
+        <?php include_once '../Navbar/adminNavbar.php';?>
+        <?php else:?>
+        <?php include_once '../Navbar/userNavbar.php';?>
+        <?php endif; ?>
 
 <main>
 <div class="container">
@@ -146,4 +150,4 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   
 </script>
-  <?php include_once 'components/footer.php';?>
+<?php include_once '../Footer/footer.php';?>

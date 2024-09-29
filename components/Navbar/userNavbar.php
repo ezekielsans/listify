@@ -1,17 +1,27 @@
 <?php
+$userId = $_SESSION['LoginUser']['ID']; 
 
-$userDetails = $users->getUserId($_SESSION['LoginUser']['ID']);
-$userId = $userDetails['ID'];
+$users->startSession();
+print_r($_SESSION['LoginUser']);
+$user =  $users->getUserId($_SESSION['LoginUser']['ID']);
+// $userDetails = $users->getUserId($_SESSION['LoginUser']['ID']);
+// $userId = $userDetails['ID'];
 
 $cartItems = $products->countCartItems($userId);
 
-//print_r($_SESSION['LoginUser']['ID']);
-// echo "<br> login values ";
-// print_r($_SESSION['LoginUser']);
-// echo "<br> user <br> ";
-// print_r($user);
 
 ?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Listify</title>
+    <link rel="shortcut icon" href="../assets/listify-fav-ico.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+</head>
+<body>
 <link rel="stylesheet" href="./userNavbar.css">
 
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
@@ -80,7 +90,7 @@ $cartItems = $products->countCartItems($userId);
           <ul id="dropdownMenu" class="dropdown-menu text-small " style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(0px, 34px, 0px);" data-popper-placement="bottom-start">
 
             <li><a class="dropdown-item" href="../profile.php">My Account</a></li>
-            <li><a class="dropdown-item" href="../User/userCart.php">My Purchases</a></li>
+            <li><a class="dropdown-item" href="./User/userCart.php">My Purchases</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="../logout.php">Sign out</a></li>
           </ul>

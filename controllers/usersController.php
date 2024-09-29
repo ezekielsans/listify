@@ -5,14 +5,6 @@ $dbConn->connect();
 class Users extends DbConnection
 {
 
-    public function startSession()
-    {
-        error_reporting(E_ALL);
-        if (session_status() === PHP_SESSION_NONE) {
-            session_start();
-        }
-
-    }
 
 
 
@@ -262,7 +254,7 @@ class Users extends DbConnection
 
     /* USER CREATION */
 
-    public function registerUser($first_name,$last_name,$email, $password)
+    public function registerUser($first_name,$last_name,$email, $password,$mobile_number,$address)
     {try {
         $pdo = $this->connect();
         //check if user exist
@@ -277,20 +269,35 @@ class Users extends DbConnection
         }
         //encrypt password
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-        $statement = $pdo->prepare("INSERT INTO users(email,password,first_name,last_name,role,status)
-                                           VALUES(:email,:password,:first_name,:last_name,'customer','active')");
+        $statement = $pdo->prepare("INSERT INTO users(email,password,first_name,last_name,mobile_number,address,role,status)
+                                           VALUES(:email,:password,:first_name,:last_name,:mobile_number,:address,'customer','active')");
         $statement->bindParam(':email',$email);
         $statement->bindParam(':password', $hashPassword);
         $statement->bindParam(':first_name', $first_name);
         $statement->bindParam(':last_name', $last_name);
+        $statement->bindParam(':mobile_number', $mobile_number);
+        $statement->bindParam(':address', $address);
         $statement->execute();
         return "success";
     } catch (PDOException $e) {
         echo "Register failed" . $e->getMessage();
     }}
 
+
+
+    
+    public function startSession()
+    {
+        error_reporting(E_ALL);
+        if (session_status() === PHP_SESSION_NONE) {
+            session_start();
+        }
+
+    }
+
     public function login($email, $password)
-    {try {
+    {
+        try {
         $pdo = $this->connect();
         //check if user exist
         $statement = $pdo->prepare("SELECT *
@@ -301,7 +308,9 @@ class Users extends DbConnection
 
         if ($statementResult) {
             if (password_verify($password, $statementResult['password'])) {
+               // session_start();
                 return $statementResult;
+          
             } else {
                 return "Invalid Credentials";
 

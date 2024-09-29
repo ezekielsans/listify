@@ -29,7 +29,12 @@ if (isset($_POST['add_to_cart'])) {
 
 ?>
 
-<?php include_once '../components/header.php';?>
+
+<?php if ($user['role']==="administrator"):?>
+        <?php include_once 'Navbar/adminNavbar.php';?>
+        <?php else:?>
+        <?php include_once 'Navbar/userNavbar.php';?>
+        <?php endif; ?>
 
 <main>
 
@@ -100,8 +105,6 @@ if (isset($_POST['add_to_cart'])) {
     </form>
 </div>
 
-
-
 <!-- Toast Notification -->
 <div class="toast align-items-center text-bg-primary border-0 top-50 start-50 translate-middle" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
   <div class="d-flex">
@@ -112,7 +115,9 @@ if (isset($_POST['add_to_cart'])) {
   </div>
 </div>
 
+
 </div>
+
 
 
 

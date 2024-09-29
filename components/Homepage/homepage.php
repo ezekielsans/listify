@@ -1,8 +1,6 @@
 <?php
 require_once '../../controllers/productController.php';
 require_once '../../controllers/usersController.php';
-
-
 $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 
@@ -26,11 +24,15 @@ $items = $products->getAllProducts($currentPage, $itemsPerPage, $searchTerm);
 $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm);
 
 // print_r($pageLinks);
-print_r($_SESSION['LoginUser']);
+
 ?>
 
 <?php include_once '../header.php';?>
-
+<?php if ($user['role']==="administrator"):?>
+        <?php include_once '../Navbar/adminNavbar.php';?>
+        <?php else:?>
+        <?php include_once '../Navbar/userNavbar.php';?>
+        <?php endif; ?>
 
 <main>
 
