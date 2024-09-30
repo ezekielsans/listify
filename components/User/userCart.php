@@ -16,7 +16,7 @@ $counter = 1;
 if (isset($_POST['delete'])) {
     $productId = $_POST['delete_id'];
     if ($productId) {
-        $products->deleteProduct($productId);
+        $products->removeFromCart($userId,$productId);
         echo "<div class='alert alert-success' role='alert'>User deleted successfully!</div>";
     } else {
         echo "Error deleting";
@@ -58,7 +58,7 @@ if (isset($_POST['delete'])) {
     </tr>
   </thead>
   <tbody>
-    <form method="post" action="userCheckout.php">
+
     <?php foreach ($items as $item) {?>
     <tr>
 
@@ -74,9 +74,9 @@ if (isset($_POST['delete'])) {
   <td id="productPrice-<?=$item['ID']?>"><?=number_format($item['product_price'] * $item['quantity'], 2)?></td>
 
   <td>
-
-      <input type="hidden" name="delete_id" value="<?=$product['ID']?>"/>
-      <button type="submit" class="btn btn-danger">Delete</button>
+  <form method="post" >
+      <input type="hidden" name="delete_id" value="<?=$item['ID']?>"/>
+      <button type="submit"  name="delete" class="btn btn-danger">Delete</button>
     </td>
   </tr>
 </form>
@@ -90,38 +90,10 @@ if (isset($_POST['delete'])) {
 
 <div class="d-flex gap-5 align-items-center justify-content-center">
 
-<!-- <nav  aria-label="Page navigation">
-    <ul class="pagination">
-        <?=$pageLinks;?>
-    </ul>
-</nav> -->
 
-<!--
-<p>showing total of <?=$totalItems?> products</p> -->
 </div>
 
-   <!-- Modal for delete -->
-   <div class="modal fade mt-5" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-          <div class="modal-content">
-            <div class="modal-header">
-              <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
-              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-              <p> Are you sure you want to delete this product?</p>
-            </div>
-            <div class="modal-footer">
-              <form action="" method="post">
-                <input type="hidden" id="deleteId" name="delete_id">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                <button type="submit" name="delete" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-
+ 
 
 </div>
 </main>
@@ -164,17 +136,6 @@ if (isset($_POST['delete'])) {
 <script>
 //referencing an id to a modal
 document.addEventListener("DOMContentLoaded", function () {
-
-  var deleteModal = document.getElementById('deleteConfirmModal');
-    deleteModal.addEventListener('show.bs.modal', function (event) {
-      //whatever button i click
-      var button = event.relatedTarget;
-      //get something from this button
-      var userId = button.getAttribute('data-user-id');
-
-      var deleteInput = document.getElementById('deleteId');
-      deleteInput.value = userId;
-    });
 
 
   // Select all checkboxes and total price/item elements

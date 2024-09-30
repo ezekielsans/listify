@@ -55,6 +55,25 @@ class Products extends DbConnection
 
     }
 
+
+
+    
+    public function removeFromCart($userId,$productId)
+    {
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("DELETE FROM user_cart WHERE user_id = :userId AND product_id = :productId");
+            $statement->bindParam(':userId',$userId);
+            $statement->bindParam(':productId',$productId);
+            $statement->execute();
+            //echo "Product deleted successfully";
+        } catch (PDOException $e) {
+            echo "Insertion failed" . $e->getMessage();
+        }
+
+    }
+
+
     public function editProduct($newProductName, $newProductCategory, $newProductPrice, $newProductStocks, $newProductDescription, $LoginUser, $productId)
     {
         try {
