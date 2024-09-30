@@ -10,7 +10,7 @@ $productId = $_GET['ID'];
 if (isset($productId)) {
     $product = $products->getProductById($productId);
 
-    print_r($product);
+   // print_r($product);
 }
 
 if (isset($_POST['delete'])) {

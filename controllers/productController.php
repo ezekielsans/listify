@@ -4,17 +4,6 @@ error_reporting(E_ALL);
 $dbConn->connect();
 class Products extends DbConnection
 {
-
-    // public function startSession()
-    // {
-
-    //     error_reporting(E_ALL);
-    //     if (session_status() === PHP_SESSION_NONE) {
-    //         session_start();
-    //     }
-
-    // }
-
     public function insertProduct($productName, $productDescription, $productCategory, $LoginUser)
     {
         try {
@@ -68,7 +57,7 @@ class Products extends DbConnection
             $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
-            echo "Insertion failed" . $e->getMessage();
+            echo "Deletion failed" . $e->getMessage();
         }
 
     }
@@ -132,9 +121,12 @@ class Products extends DbConnection
             // Bind the parameters as integers
             //$statement->bindValue(':offset', $offset, PDO::PARAM_INT);
             //$statement->bindValue(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
+
             $statement->execute();
 
-            $statement->debugDumpParams();
+           // $statement->debugDumpParams();
+
+
             $products = $statement->fetchAll(PDO::FETCH_ASSOC);
 
             return $products;
@@ -216,8 +208,9 @@ class Products extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("SELECT *
                                 FROM products
-                                WHERE ID = ?");
-            $statement->execute([$productId]);
+                                WHERE ID = :productId");
+            $statement->bindParam(':productId',$productId);
+            $statement->execute();
             $product = $statement->fetch(PDO::FETCH_ASSOC);
             return $product;
 
@@ -386,6 +379,30 @@ public function showCheckoutItems($userId,$itemId){
     }
     
     }
+
+
+
+
+
+
+    public function orderCheckout($userId,$itemId){
+        try{  $pdo = $this->connect();
+            //check if product is already added to cart
+            $statement = $pdo->prepare("INSERT INTO orders ()
+                                               VALUES()");
+            $statement->bindParam(":user_id",$userId);
+            $statement->bindParam(":product_id",$itemId);
+            $statement->execute();
+            $items = $statement->fetch(PDO::FETCH_ASSOC);
+        return  $items;
+        
+        }catch (PDOException $e) {
+            // Log the error or handle it appropriately
+            error_log("Cannot retrieve cart items: " . $e->getMessage());
+        
+        }
+        
+        }    
 
 
 

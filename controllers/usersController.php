@@ -17,7 +17,7 @@ class Users extends DbConnection
             $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
-            echo "Insertion failed" . $e->getMessage();
+            echo "Deletion failed" . $e->getMessage();
         }
 
     }
@@ -33,7 +33,7 @@ class Users extends DbConnection
             $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
-            echo "Insertion failed" . $e->getMessage();
+            echo "Deactivation failed" . $e->getMessage();
         }
 
     }
@@ -60,7 +60,7 @@ class Users extends DbConnection
             // echo "Product Updated successfully";
 
         } catch (PDOException $e) {
-            echo "Insertion failed" . $e->getMessage();
+            echo "Cannot Edit User" . $e->getMessage();
         }
 
     }
@@ -89,11 +89,7 @@ class Users extends DbConnection
                 $statement = $pdo->prepare($query);
             }
 
-            // Bind the parameters as integers
-            //$statement->bindValue(':offset', $offset, PDO::PARAM_INT);
-            //$statement->bindValue(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
             $statement->execute();
-
             $statement->debugDumpParams();
             $users = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -183,7 +179,7 @@ class Users extends DbConnection
             return $user;
 
         } catch (PDOException $e) {
-            echo "Product Updated successfully" . $e->getMessage();
+            echo "Cannot Retrieve User" . $e->getMessage();
 
         }
 
@@ -259,8 +255,9 @@ class Users extends DbConnection
         $pdo = $this->connect();
         //check if user exist
         $statement = $pdo->prepare("SELECT *
-                                 FROM users WHERE email = ? ");
-        $statement->execute([$email]);
+                                 FROM users WHERE email = :email");
+        $statement->bindParam(':email',$email);
+        $statement->execute();
         $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
         if ($statementResult) {
 
@@ -278,7 +275,9 @@ class Users extends DbConnection
         $statement->bindParam(':mobile_number', $mobile_number);
         $statement->bindParam(':address', $address);
         $statement->execute();
+       
         return "success";
+    
     } catch (PDOException $e) {
         echo "Register failed" . $e->getMessage();
     }}
@@ -301,8 +300,9 @@ class Users extends DbConnection
         $pdo = $this->connect();
         //check if user exist
         $statement = $pdo->prepare("SELECT *
-                                 FROM users WHERE email = ?");
-        $statement->execute([$email]);
+                                 FROM users WHERE email = :email");
+        $statement->bindParam(':email',$email);
+        $statement->execute();
 
         $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
 
@@ -332,9 +332,11 @@ class Users extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("SELECT *
                             FROM users
-                            WHERE ID = ?");
-            $statement->execute([$userId]);
+                            WHERE ID = :userId");
+            $statement->bindParam(':userId',$userId);
+            $statement->execute();
             $user = $statement->fetch(PDO::FETCH_ASSOC);
+         
             return $user;
 
         } catch (PDOException $e) {
@@ -353,12 +355,17 @@ class Users extends DbConnection
             $pdo->exec($sqlSetTimeZone);
             $statement = $pdo->prepare("UPDATE users
                                         SET
-                                            email = ?,
-                                            first_name = ?,
-                                            last_name = ?,
-                                            role = ?
-                                        WHERE ID = ?");
-            $statement->execute([$newEmail, $newFirstName, $newLastName, $newRole, $userId]);
+                                            email = :newEmail,
+                                            first_name = :newFirstName,
+                                            last_name = :newLastName,
+                                            role = :newRole
+                                        WHERE ID = :userId");
+            $statement->bindParam(':newEmail',$newEmail);
+            $statement->bindParam( ':newFirstName,',$newFirstName);
+            $statement->bindParam(':newLastName',$newLastName);
+            $statement->bindParam(':newRole', $newRole);
+            $statement->bindParam(':userId',  $userId);
+            $statement->execute();
             // echo "Product Updated successfully";
 
         } catch (PDOException $e) {
@@ -373,9 +380,11 @@ class Users extends DbConnection
         try {
             $pdo = $this->connect();
             $statement = $pdo->prepare("UPDATE users
-                                        SET user_image = ?
-                                        WHERE ID = ?");
-            $statement->execute([$imageName, $userId]);
+                                        SET user_image = :imageName
+                                        WHERE ID = :userId");
+            $statement->bindParam(':imageName', $imageName);
+            $statement->bindParam(':userId', $userId);
+            $statement->execute();
             // echo "Product Updated successfully";
 
         } catch (PDOException $e) {

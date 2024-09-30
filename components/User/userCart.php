@@ -7,8 +7,8 @@ $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 $userId = $user['ID'];
 
 $itemCount = $products->countCartItems($userId);
-echo "<br> Item Count";
-print_r($itemCount);
+// echo "<br> Item Count";
+// print_r($itemCount);
 $items = $products->showCartItems($userId);
 $counter = 1;
 
@@ -17,7 +17,7 @@ if (isset($_POST['delete'])) {
     $productId = $_POST['delete_id'];
     if ($productId) {
         $products->removeFromCart($userId,$productId);
-        echo "<div class='alert alert-success' role='alert'>User deleted successfully!</div>";
+        echo "<div class='alert alert-success' role='alert'>Item removed!</div>";
     } else {
         echo "Error deleting";
 

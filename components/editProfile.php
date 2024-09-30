@@ -1,5 +1,7 @@
 <?php
-require_once '../controllers/usersController.php';
+include_once '../controllers/productController.php';
+include_once '../controllers/usersController.php';
+
 $users->startSession();
 
 $userId = $_GET['ID'];
@@ -31,7 +33,11 @@ if (isset($_POST['save'])) {
 }
 ?>
 
-<?php include_once '../components/header.php';?>
+<?php if ($user['role'] === "administrator"): ?>
+        <?php include_once '../components/Navbar/adminNavbar.php';?>
+        <?php else: ?>
+        <?php include_once '../components/Navbar/userNavbar.php';?>
+        <?php endif;?>
 
 <main>
 
@@ -56,11 +62,12 @@ if (isset($_POST['save'])) {
 <label class="form-label">Email</label>
 <input type="text" name="email" id="email" class="form-control form-control-lg" value="<?=$user['email'];?>">
 </div>
-
+<?php if($user['role'] === 'administrator'):?>
 <div class="mb-3">
 <label class="form-label">Role</label>
 <input type="text" name="role" id="role" class="form-control form-control-lg" value="<?=$user['role'];?>">
 </div>
+<?php endif;?>
 
 <button type="submit" name="save" class="bg-primary btn btn-lg my-4">Update</button>
 

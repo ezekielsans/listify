@@ -1,8 +1,10 @@
 <?php
+
+
 $userId = $_SESSION['LoginUser']['ID']; 
 
 $users->startSession();
-print_r($_SESSION['LoginUser']);
+
 $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 // $userDetails = $users->getUserId($_SESSION['LoginUser']['ID']);
 // $userId = $userDetails['ID'];
@@ -19,15 +21,15 @@ $cartItems = $products->countCartItems($userId);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listify</title>
     <link rel="shortcut icon" href="../assets/listify-fav-ico.png" type="image/x-icon">
+    <link rel="stylesheet" href="userNavbar.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
 <body>
-<link rel="stylesheet" href="./userNavbar.css">
 
-<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+<nav class="navbar navbar-expand-sm" style="background-color:#2E7D32;">
 <div class="container-fluid">
     <!-- Logo on the left side -->
-    <a href="/" class="navbar-brand">logo</a>
+    <a href="/" class="navbar-brand"><img src="/assets/listify-fav-ico.png" height="40px"  alt="icon"></a>
 
     <!-- Toggler button for small screens -->
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
@@ -38,7 +40,7 @@ $cartItems = $products->countCartItems($userId);
     <div class="collapse navbar-collapse" id="collapsibleNavbar">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
-                <a href="/" class="nav-link">Products</a>
+                <a href="/" class="nav-link text-white">Products</a>
             </li>
         </ul>
             <?php if (isset($_SESSION['LoginUser'])): ?>
@@ -54,7 +56,7 @@ $cartItems = $products->countCartItems($userId);
 
 <?php if ($cartItems !== 0): ?>
 <div class="cart-icon" style="position: relative; margin-right:12px;">
-    <span class="badge bg-primary rounded-pill" style="position: absolute; top: -3px; right: -5px;"><?=$cartItems;?></span>
+    <span class="badge  rounded-pill" style="background-color:#4CAF50; position: absolute; top: -3px; right: -5px;"><?=$cartItems;?></span>
     <a href="../../components/User/userCart.php" class="nav-link">
     <svg width="35px" height="35px" viewBox="0 0 512 512" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#fff0f0" stroke="#fff0f0">
         <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
@@ -90,7 +92,7 @@ $cartItems = $products->countCartItems($userId);
           <ul id="dropdownMenu" class="dropdown-menu text-small " style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(0px, 34px, 0px);" data-popper-placement="bottom-start">
 
             <li><a class="dropdown-item" href="../profile.php">My Account</a></li>
-            <li><a class="dropdown-item" href="./User/userCart.php">My Purchases</a></li>
+            <li><a class="dropdown-item" href="../../components/User/userCart.php">My Purchases</a></li>
             <li><hr class="dropdown-divider"></li>
             <li><a class="dropdown-item" href="../logout.php">Sign out</a></li>
           </ul>
