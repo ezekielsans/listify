@@ -12,7 +12,7 @@ class Users extends DbConnection
     {
         try {
             $pdo = $this->connect();
-            $statement = $pdo->prepare("DELETE FROM users WHERE ID = :userId");
+            $statement = $pdo->prepare("DELETE FROM users WHERE user_id = :userId");
             $statement->bindParam(':userId',$userId);
             $statement->execute();
             //echo "Product deleted successfully";
@@ -28,7 +28,7 @@ class Users extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("UPDATE users
                                                SET status = 'inactive' 
-                                               WHERE ID = :userId");
+                                               WHERE user_id = :userId");
             $statement->bindParam(':userId',$userId);
             $statement->execute();
             //echo "Product deleted successfully";
@@ -55,7 +55,7 @@ class Users extends DbConnection
                                             product_description = ?,
                                             updated_by = ?,
                                             updated_at = NOW()
-                                        WHERE ID = ?");
+                                        WHERE user_id = ?");
             $statement->execute([$newProductName, $newProductCategory, $newProductDescription, $LoginUser['email'], $productId]);
             // echo "Product Updated successfully";
 
@@ -173,7 +173,7 @@ class Users extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("SELECT *
                                 FROM products
-                                WHERE ID = ?");
+                                WHERE user_id = ?");
             $statement->execute([$userId]);
             $user = $statement->fetch(PDO::FETCH_ASSOC);
             return $user;
@@ -332,7 +332,7 @@ class Users extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("SELECT *
                             FROM users
-                            WHERE ID = :userId");
+                            WHERE user_id = :userId");
             $statement->bindParam(':userId',$userId);
             $statement->execute();
             $user = $statement->fetch(PDO::FETCH_ASSOC);
@@ -359,7 +359,7 @@ class Users extends DbConnection
                                             first_name = :newFirstName,
                                             last_name = :newLastName,
                                             role = :newRole
-                                        WHERE ID = :userId");
+                                        WHERE user_id = :userId");
             $statement->bindParam(':newEmail',$newEmail);
             $statement->bindParam( ':newFirstName,',$newFirstName);
             $statement->bindParam(':newLastName',$newLastName);
@@ -381,7 +381,7 @@ class Users extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("UPDATE users
                                         SET user_image = :imageName
-                                        WHERE ID = :userId");
+                                        WHERE user_id = :userId");
             $statement->bindParam(':imageName', $imageName);
             $statement->bindParam(':userId', $userId);
             $statement->execute();

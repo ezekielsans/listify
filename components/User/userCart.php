@@ -4,7 +4,7 @@ require_once '../../controllers/productController.php';
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
-$userId = $user['ID'];
+$userId = $user['user_id'];
 
 $itemCount = $products->countCartItems($userId);
 // echo "<br> Item Count";
@@ -64,18 +64,18 @@ if (isset($_POST['delete'])) {
 
     <td>
     <!-- Add the checkbox with the data attributes for price and quantity -->
-    <input type="checkbox" class="item-checkbox" data-price="<?=$item['product_price'] * $item['quantity']?>" id="selectItem-<?=$item['ID']?>" class="me-2">
+    <input type="checkbox" class="item-checkbox" data-price="<?=$item['product_price'] * $item['quantity']?>" id="selectItem-<?=$item['product_id']?>" class="me-2">
     <img src="/uploads/<?=$item['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">
     <?=$item['product_name']?>
   </td>
 
   <td><?=number_format($item['product_price'], 2)?></td>
   <td><?=$item['quantity']?></td>
-  <td id="productPrice-<?=$item['ID']?>"><?=number_format($item['product_price'] * $item['quantity'], 2)?></td>
+  <td id="productPrice-<?=$item['product_id']?>"><?=number_format($item['product_price'] * $item['quantity'], 2)?></td>
 
   <td>
   <form method="post" >
-      <input type="hidden" name="delete_id" value="<?=$item['ID']?>"/>
+      <input type="hidden" name="delete_id" value="<?=$item['product_id']?>"/>
       <button type="submit"  name="delete" class="btn btn-danger">Delete</button>
     </td>
   </tr>

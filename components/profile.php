@@ -26,7 +26,7 @@ $user = $users->getUserId($_SESSION['LoginUser']['ID']);
       </div>
       <!-- Edit Profile Button -->
       <div class="mb-3">
-        <a href="editProfile.php?ID=<?=$user['ID']?>" class="btn btn-primary" >Edit Profile</a>
+        <a href="editProfile.php?ID=<?=$user['user_id']?>" class="btn btn-primary" >Edit Profile</a>
       </div>
 
       <!-- Profile Info -->

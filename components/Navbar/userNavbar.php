@@ -43,16 +43,11 @@ $cartItems = $products->countCartItems($userId);
                 <a href="/" class="nav-link text-white">Products</a>
             </li>
         </ul>
-            <?php if (isset($_SESSION['LoginUser'])): ?>
-            <a href="userCart.php" class="nav-link">
-               </a>
-            <?php else: ?>
-                <a href="../Login/login.php" class="nav-link">Login</a>
-            <?php endif;?>
+           
 
-        <!-- Profile image on the far right -->
+      
           <!-- Profile image on the far right -->
-          <?php if (isset($_SESSION['LoginUser'])): ?>
+<?php if (isset($_SESSION['LoginUser'])): ?>
 
 <?php if ($cartItems !== 0): ?>
 <div class="cart-icon" style="position: relative; margin-right:12px;">
@@ -84,7 +79,9 @@ $cartItems = $products->countCartItems($userId);
     </a>
 </div>
 <?php endif;?>
-                <div class="dropdown text-end ">
+                
+
+<div class="dropdown text-end ">
           <a href="#" id="dropdownToggle" class="d-block link-body-emphasis text-decoration-none dropdown-toggle  text-white mx-2" data-bs-toggle="dropdown" aria-expanded="true">
           <img src="/uploads/<?=$user['user_image']?>" alt="Profile Image" width="32" height="32" class="rounded-circle">
           <?=$user['first_name']?> <?=$user['last_name']?>

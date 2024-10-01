@@ -3,15 +3,6 @@ $users->startSession();
 print_r($_SESSION['LoginUser']);
 $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 
-// $users->startSession();
-
-// $user = $users->getUserId($_SESSION['LoginUser']['ID']);
-//print_r($_SESSION['LoginUser']['ID']);
-// echo "<br> login values ";
-// print_r($_SESSION['LoginUser']);
-// echo "<br> user <br> ";
-// print_r($user);
-
 ?>
 
 <!DOCTYPE html>
@@ -54,6 +45,7 @@ $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
             </li>
             
         </ul>
+        
         <!-- Profile image on the far right -->
         <?php if (isset($_SESSION['LoginUser'])):?>
             <div class="dropdown text-end ">

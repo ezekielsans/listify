@@ -5,25 +5,17 @@ $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 
 
-// print_r($user);
-// echo " user details <br>";
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
 
 $currentPage = $_GET['page'] ?? 1;
 $itemsPerPage = 10;
 $totalItems = $products->totalProducts($searchTerm);
 $totalPages = ceil($totalItems / $itemsPerPage);
-// print_r($currentPage);
-// echo " currentPage <br>";
-// print_r($totalItems);
-// echo " total Items <br>";
-// print_r($totalPages);
-// echo " totalPages <br>";
+
 
 $items = $products->getAllProducts($currentPage, $itemsPerPage, $searchTerm);
 $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm);
 
-// print_r($pageLinks);
 
 ?>
 
@@ -61,7 +53,7 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 
 <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 mb-5">
 <?php foreach ($items as $item) {?>
-    <a href="../details.php?ID=<?=$item['ID'];?>" class="text-decoration-none">
+    <a href="../details.php?ID=<?=$item['product_id'];?>" class="text-decoration-none">
 
  <div class="card" style="width: 18rem;">
   <img class="card-img-top" src="/uploads/<?=$item['product_image']?>" height="300" alt="Card image cap">

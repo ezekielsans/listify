@@ -5,11 +5,10 @@ include_once '../../controllers/usersController.php';
 $users->startSession();
 
 if (isset($_POST['submit'])) {
-
     $statementResult = $users->login($_POST['email'], $_POST['password']);
     if ($statementResult !="Invalid Credentials" && $statementResult != "User not found") {
         $_SESSION['LoginUser'] = array(
-            "ID" => $statementResult['ID'],
+            "ID" => $statementResult['user_id'],
             "first_name" => $statementResult['first_name'],
             "last_name" => $statementResult['last_name'],
             "email" => $statementResult['email'], );

@@ -23,7 +23,10 @@ if (isset($_POST['delete'])) {
 if (isset($_POST['add_to_cart'])) {
     //print_r($_POST);
     //print_r($productId );
-    $products->addToCart($_POST['userId'], $_POST['productId'], $_POST['quantity']);
+    $total_price = $_POST['product_price'] * $_POST['quantity'];
+    $products->createOrder($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']);
+    
+    $products->addToCart($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']);
     echo "Added to cart";
 }
 
@@ -41,7 +44,7 @@ if (isset($_POST['add_to_cart'])) {
 <div class="container">
 <?php if ($product): ?>
 
-<input type="hidden" value="<?=$product['ID'];?>">
+<input type="hidden" value="<?=$product['product_id'];?>">
  <h1 class="mt-5"><?=$product['product_category'];?> Details</h1>
 
 <div class="d-flex justify-content-between mb-5">
@@ -51,13 +54,14 @@ if (isset($_POST['add_to_cart'])) {
   <div class="col-md-6 mb-4">
     <form id="addToCartForm"  method="post" class="p-3 ">
         <!-- Hidden Input for Product ID -->
-        <input type="hidden" name="product_id" value="<?=$product['ID'];?>">
+        <input type="hidden" name="product_id" value="<?=$product['product_id'];?>">
 
         <!-- Product Name -->
-        <h5 class="mb-3"><?=$product['product_name'];?></h5>
+        <h2><?=$product['product_name'];?></h2>
 
         <!-- Product Description -->
-        <p class="mb-3"><?=$product['product_description'];?></p>
+        <p class="mb-1 text-muted"><?=$product['product_description'];?></p>
+        <h2 name="product_price" class="mb-3">₱<?=number_format($product['product_price']);?></h2>
 
         <!-- Last Updated Info -->
 
@@ -66,35 +70,40 @@ if (isset($_POST['add_to_cart'])) {
         <!-- Quantity Selector -->
         <div class="mb-5 d-flex flex-column align-items-start">
   <div class="d-flex align-items-center mb-2">
-      <?php if ($product['product_stocks'] === 0): ?>
+     
+  <?php if ($product['product_stocks'] === 0): ?>
+   
     <label for="quantity" class="me-2 text-muted">Quantity:</label>
     <div class="input-group w-auto text-muted">
       <button class="btn btn-secondary text-white" type="button" id="btn-decrement" aria-label="Decrease quantity" disabled>-</button>
       <input type="number" name="quantity" id="quantity" class="form-control form-control-lg text-center text-muted"  value="0"   min="1" max="<?=$product['product_stocks'];?>" style="width: 80px;" disabled>
       <button class="btn btn-secondary text-white" type="button" id="btn-increment" aria-label="Increase quantity" disabled>+</button>
     </div>
+  
     <?php else: ?>
+
     <div class="input-group w-auto">
       <button class="btn btn-outline-secondary" type="button" id="btn-decrement" aria-label="Decrease quantity">-</button>
       <input type="number" name="quantity" id="quantity" class="form-control form-control-lg text-center" value="1" min="1" max="<?=$product['product_stocks'];?>" style="width: 80px;">
       <button class="btn btn-outline-secondary" type="button" id="btn-increment" aria-label="Increase quantity">+</button>
     </div>
-    <?php endif;?>
+
+  <?php endif;?>
   </div>
   <p class="mb-3 text-muted"><?=$product['product_stocks'];?> stocks available</p>
 </div>
 <?php if ($product['product_stocks'] === 0): ?>
         <!-- Buttons (Add to Cart & Buy Now) -->
-<input type="hidden" name="productId" value="<?=$product['ID'];?>">
-<input type="hidden" name="userId" value="<?=$user['ID'];?>">
+<input type="hidden" name="productId" value="<?=$product['product_id'];?>">
+<input type="hidden" name="userId" value="<?=$user['user_id'];?>">
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
             <button type="submit" id="addToCart" name="add_to_cart" class="btn btn-secondary me-2" disabled>Add to Cart</button>
             <button type="submit" name="buy_now" class="btn btn-secondary" disabled>Buy Now</button>
         </div>
 <?php else: ?>
           <!-- Buttons (Add to Cart & Buy Now) -->
-<input type="hidden" name="productId" value="<?=$product['ID'];?>">
-<input type="hidden" name="userId" value="<?=$user['ID'];?>">
+<input type="hidden" name="productId" value="<?=$product['product_id'];?>">
+<input type="hidden" name="userId" value="<?=$user['user_id'];?>">
         <div class="d-grid gap-2 d-md-flex justify-content-md-start">
             <button type="submit" id="addToCart" name="add_to_cart" class="btn btn-primary me-2">Add to Cart</button>
             <button type="submit" name="buy_now" class="btn btn-success">Buy Now</button>
@@ -129,11 +138,11 @@ if (isset($_POST['add_to_cart'])) {
     <a class="btn btn-primary mx-2" href="editProduct.php?ID=<?=$product['ID'];?>">Edit Product</a>
     <button type="submit" class="btn btn-danger" name="delete">Delete Product</button>
 <?php endif;?>
-<input type="hidden" value="<?php $product['ID'];?>">
+<input type="hidden" value="<?php $product['product_id'];?>">
 </form>
 </div>
 <div class="col">
-<a class="mx-5 btn btn-primary" href="index.php"> Return </a>
+<!-- <a class="mx-5 btn btn-primary" href="index.php"> Return </a> -->
 
 </div>
 </div>

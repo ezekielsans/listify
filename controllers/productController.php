@@ -44,25 +44,6 @@ class Products extends DbConnection
 
     }
 
-
-
-    
-    public function removeFromCart($userId,$productId)
-    {
-        try {
-            $pdo = $this->connect();
-            $statement = $pdo->prepare("DELETE FROM user_cart WHERE user_id = :userId AND product_id = :productId");
-            $statement->bindParam(':userId',$userId);
-            $statement->bindParam(':productId',$productId);
-            $statement->execute();
-            //echo "Product deleted successfully";
-        } catch (PDOException $e) {
-            echo "Deletion failed" . $e->getMessage();
-        }
-
-    }
-
-
     public function editProduct($newProductName, $newProductCategory, $newProductPrice, $newProductStocks, $newProductDescription, $LoginUser, $productId)
     {
         try {
@@ -124,8 +105,7 @@ class Products extends DbConnection
 
             $statement->execute();
 
-           // $statement->debugDumpParams();
-
+            // $statement->debugDumpParams();
 
             $products = $statement->fetchAll(PDO::FETCH_ASSOC);
 
@@ -208,8 +188,8 @@ class Products extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("SELECT *
                                 FROM products
-                                WHERE ID = :productId");
-            $statement->bindParam(':productId',$productId);
+                                WHERE product_id = :productId");
+            $statement->bindParam(':productId', $productId);
             $statement->execute();
             $product = $statement->fetch(PDO::FETCH_ASSOC);
             return $product;
@@ -284,159 +264,182 @@ class Products extends DbConnection
 
     }
 
-    public function addToCart($userId, $productId, $quantity)
+    
+    public function createOrder($userId, $totalPrice, $productId, $productPrice, $quantity)
     {
-
         try {
             $pdo = $this->connect();
-            //check if product is already added to cart
-            $statement = $pdo->prepare("SELECT * FROM
-                                        user_cart WHERE user_id = :user_id AND product_id = :product_id");
-
+    
+            // Insert into the orders table
+            $statement = $pdo->prepare("INSERT INTO orders(user_id, total_price) 
+                                        VALUES (:user_id, :total_price)");
             $statement->bindParam(':user_id', $userId);
-            $statement->bindParam(':product_id', $productId);
+            $statement->bindParam(':total_price', $totalPrice);
             $statement->execute();
-
-            // Fetch the current product in the cart, if exists
-            $existingCartItem = $statement->fetch(PDO::FETCH_ASSOC);
-
-            if ($existingCartItem) {
-
-                // If the product already exists in the cart, update the quantity
-                $newQuantity = $existingCartItem['quantity'] + $quantity;
-                $updateStatement = $pdo->prepare("
-                UPDATE user_cart
-                SET quantity = :quantity
-                WHERE user_id = :user_id AND product_id = :product_id
-            ");
-                $updateStatement->bindParam(':user_id', $userId);
-                $updateStatement->bindParam(':product_id', $productId);
-                $updateStatement->bindParam(':quantity', $newQuantity);
-                $updateStatement->execute();
-
-            } else {
-                $statement = $pdo->prepare("INSERT INTO user_cart (user_id,product_id,quantity)
-                 VALUES (:user_id, :product_id, :quantity)");
-
-                $statement->bindParam(':user_id', $userId);
+    
+            // Get the last inserted order_id
+            $orderId = $pdo->lastInsertId();
+    
+            if ($orderId) {
+                // Insert into the order_items table
+                $statement = $pdo->prepare("INSERT INTO order_items (order_id, product_id, product_price, quantity) 
+                                            VALUES (:order_id, :product_id, :product_price, :quantity)");
+    
+                $statement->bindParam(':order_id', $orderId);
                 $statement->bindParam(':product_id', $productId);
+                $statement->bindParam(':product_price', $productPrice);
                 $statement->bindParam(':quantity', $quantity);
                 $statement->execute();
             }
-
-            // echo "Product Updated successfully";
-
+    
+            return $orderId; // Return the generated order_id
+    
+        } catch (PDOException $e) {
+            // Log the error or handle it appropriately
+            error_log("Order creation failed: " . $e->getMessage());
+            return false; // Return false in case of an error
+        }
+    }
+    
+    public function addToCart($userId, $totalPrice, $productId, $productPrice, $quantity)
+    {
+        try {
+            $pdo = $this->connect();
+    
+            // Check if the product is already added to cart (order_items table)
+            $statement = $pdo->prepare("SELECT * FROM order_items 
+                                        WHERE product_id = :product_id 
+                                        AND EXISTS (
+                                            SELECT 1 FROM orders WHERE orders.user_id = :user_id AND orders.order_id = order_items.order_id
+                                        )");
+    
+            $statement->bindParam(':user_id', $userId);
+            $statement->bindParam(':product_id', $productId);
+            $statement->execute();
+    
+            // Fetch the current product in the cart, if it exists
+            $existingCartItem = $statement->fetch(PDO::FETCH_ASSOC);
+            if ($existingCartItem) {
+                // If the product already exists in the cart, update the quantity
+                $newQuantity = $existingCartItem['quantity'] + $quantity;
+                $updateStatement = $pdo->prepare("UPDATE order_items 
+                                                  SET quantity = :quantity 
+                                                  WHERE product_id = :product_id 
+                                                  AND order_id = :order_id");
+    
+                $updateStatement->bindParam(':quantity', $newQuantity);
+                $updateStatement->bindParam(':product_id', $productId);
+                $updateStatement->bindParam(':order_id', $existingCartItem['order_id']); // update for the existing order
+                $updateStatement->execute();
+    
+            } else {
+                // Create a new order and add the item to it
+                $this->createOrder($userId, $totalPrice, $productId, $productPrice, $quantity);
+            }
+    
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cart operation failed: " . $e->getMessage());
+        }
+    }
+
+    public function removeFromCart($userId, $productId)
+    {
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("DELETE FROM orders_items WHERE user_id = :userId AND product_id = :productId");
+            $statement->bindParam(':userId', $userId);
+            $statement->bindParam(':productId', $productId);
+            $statement->execute();
+            //echo "Product deleted successfully";
+        } catch (PDOException $e) {
+            echo "Deletion failed" . $e->getMessage();
+        }
+
+    }
+
+    public function showCartItems($userId)
+    {
+        try { $pdo = $this->connect();
+            //check if product is already added to cart
+            $statement = $pdo->prepare("SELECT *
+                                FROM order_items t1
+                                INNER JOIN products t2
+                                ON t1.product_id = t2.product_id
+                                INNER JOIN orders t3
+                                ON t1.order_id = t3.order_id
+                                WHERE user_id = :user_id");
+            $statement->bindParam(":user_id", $userId);
+            $statement->execute();
+            $items = $statement->fetchAll(PDO::FETCH_ASSOC);
+            return $items;} catch (PDOException $e) {
+            // Log the error or handle it appropriately
+            error_log("Cannot retrieve cart items: " . $e->getMessage());
 
         }
 
     }
 
-
-    public function showCartItems($userId){
-try{  $pdo = $this->connect();
-    //check if product is already added to cart
-    $statement = $pdo->prepare("SELECT *
-                                       FROM user_cart t1
-                                       INNER JOIN products t2
-                                       ON t1.product_id = t2.ID
-                                       WHERE user_id = :user_id");
-    $statement->bindParam(":user_id",$userId);
-    $statement->execute();
-    $items = $statement->fetchAll(PDO::FETCH_ASSOC);
-return  $items;
-
-}catch (PDOException $e) {
-    // Log the error or handle it appropriately
-    error_log("Cannot retrieve cart items: " . $e->getMessage());
-
-}
-
-}
-
-
-public function showCheckoutItems($userId,$itemId){
-    try{  $pdo = $this->connect();
-        //check if product is already added to cart
-        $statement = $pdo->prepare("SELECT *
-                                           FROM user_cart t1
+    public function showCheckoutItems($userId, $itemId)
+    {
+        try { $pdo = $this->connect();
+            //check if product is already added to cart
+            $statement = $pdo->prepare("SELECT *
+                                           FROM orders t1
                                            INNER JOIN products t2
                                            ON t1.product_id = t2.ID
                                            WHERE user_id = :user_id
                                            AND t1.product_id = :product_id");
-        $statement->bindParam(":user_id",$userId);
-        $statement->bindParam(":product_id",$itemId);
-        $statement->execute();
-        $items = $statement->fetch(PDO::FETCH_ASSOC);
-    return  $items;
-    
-    }catch (PDOException $e) {
-        // Log the error or handle it appropriately
-        error_log("Cannot retrieve cart items: " . $e->getMessage());
-    
-    }
-    
+            $statement->bindParam(":user_id", $userId);
+            $statement->bindParam(":product_id", $itemId);
+            $statement->execute();
+            $items = $statement->fetch(PDO::FETCH_ASSOC);
+            return $items;} catch (PDOException $e) {
+            // Log the error or handle it appropriately
+            error_log("Cannot retrieve cart items: " . $e->getMessage());
+
+        }
+
     }
 
-
-
-
-
-
-    public function orderCheckout($userId,$itemId){
-        try{  $pdo = $this->connect();
+    public function orderCheckout($userId, $itemId)
+    {
+        try { $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("INSERT INTO orders ()
                                                VALUES()");
-            $statement->bindParam(":user_id",$userId);
-            $statement->bindParam(":product_id",$itemId);
+            $statement->bindParam(":user_id", $userId);
+            $statement->bindParam(":product_id", $itemId);
             $statement->execute();
             $items = $statement->fetch(PDO::FETCH_ASSOC);
-        return  $items;
-        
-        }catch (PDOException $e) {
+            return $items;} catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cannot retrieve cart items: " . $e->getMessage());
-        
+
         }
-        
-        }    
 
+    }
 
+    public function countCartItems($userId)
+    {
 
-
-public function countCartItems($userId){
-
-
-    try{  $pdo = $this->connect();
-        //check if product is already added to cart
-        $statement = $pdo->prepare("SELECT COUNT(*)
+        try { $pdo = $this->connect();
+            //check if product is already added to cart
+            $statement = $pdo->prepare("SELECT COUNT(*)
                                            FROM user_cart t1
                                            INNER JOIN products t2
                                            ON t1.product_id = t2.ID
                                            WHERE user_id = :user_id");
-        $statement->bindParam(":user_id",$userId);
-        $statement->execute();
-        $itemCount = $statement->fetchColumn();
-    return  $itemCount;
-    
-    }catch (PDOException $e) {
-        // Log the error or handle it appropriately
-        error_log("Cannot retrieve cart items: " . $e->getMessage());
-    
+            $statement->bindParam(":user_id", $userId);
+            $statement->execute();
+            $itemCount = $statement->fetchColumn();
+            return $itemCount;} catch (PDOException $e) {
+            // Log the error or handle it appropriately
+            error_log("Cannot retrieve cart items: " . $e->getMessage());
+
+        }
+
     }
-
-
-
-
-
-
-
-}
-
-
 
 }
 

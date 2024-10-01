@@ -45,7 +45,7 @@ if (isset($_POST['save'])) {
 <h1 class="my-5">Edit Profile</h1>
 <?php if ($user): ?>
 <form method="POST"  enctype="multipart/form-data">
-<input type="hidden" name="ID" id="product_id" class="form-control form-control-lg" value="<?=$user['ID'];?>">
+<input type="hidden" name="ID" id="product_id" class="form-control form-control-lg" value="<?=$user['user_id'];?>">
 <div class="mb-3">
 <label class="form-label">First Name</label>
 <input type="text" name="first_name" id="first_name" class="form-control form-control-lg" value="<?=$user['first_name'];?>">
