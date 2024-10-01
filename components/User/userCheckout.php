@@ -4,8 +4,8 @@ require_once '../../controllers/productController.php';
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
-$userId = $user['ID'];
-echo "<br> User";
+$userId = $user['user_id'];
+echo "<br> User  ";
 print_r($user);
 
 $date_today = date('F j, Y');
@@ -17,6 +17,7 @@ $totalItems = 0;
 if (isset($_POST['checkout'])) {
     $selectedItems = isset($_POST['selected_items']) ? explode(',', $_POST['selected_items']) : [];
     $totalPrice = isset($_POST['total_price']) ? floatval($_POST['total_price']) : 0;
+    print_r($selectedItems);
 }
 
 ?>
@@ -53,8 +54,12 @@ if (isset($_POST['checkout'])) {
         <div class="d-flex justify-content-between align-items-center">
             <!-- Order Date & Estimated Delivery -->  <p class="text-muted">
             <?=$user['first_name']?> <?=$user['last_name']?>        
-            <br> <?=$user['address']?><br>
-            <?= $user['mobile_number']?><br>
+            <?php if($user['address_line1'] === null): ?>
+                <br> <p class="text-muted">To continue order processing, update information first <a href="../../components/editProfile.php?ID=<?=$user['user_id']?>">update details</a></p><br>
+            <?php else: ?>
+                <br> <?=$user['address_line1']?><br>
+            <?php endif; ?>
+                <?= $user['mobile_number']?><br>
                    
                 </p>
             

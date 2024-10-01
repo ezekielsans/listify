@@ -39,44 +39,91 @@ if (isset($_POST['save'])) {
         <?php include_once '../components/Navbar/userNavbar.php';?>
         <?php endif;?>
 
-<main>
+        <main>
+    <div class="container">
+        <h1 class="my-5 text-center">Edit Profile</h1>
+        <?php if ($user): ?>
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="ID" id="user_id" class="form-control form-control-lg" value="<?=$user['user_id'];?>">
 
-<div class="container">
-<h1 class="my-5">Edit Profile</h1>
-<?php if ($user): ?>
-<form method="POST"  enctype="multipart/form-data">
-<input type="hidden" name="ID" id="product_id" class="form-control form-control-lg" value="<?=$user['user_id'];?>">
-<div class="mb-3">
-<label class="form-label">First Name</label>
-<input type="text" name="first_name" id="first_name" class="form-control form-control-lg" value="<?=$user['first_name'];?>">
-</div>
-<div class="mb-3">
-<label class="form-label">Last Name</label>
-<input type="text" name="last_name" id="last_name" class="form-control form-control-lg" value="<?=$user['last_name'];?>">
-</div>
-<div class="mb-3">
-<label class="form-label">Profile Picture</label>
-<input type="file" name="image" id="image" class="form-control form-control-lg">
-</div>
-<div class="mb-3">
-<label class="form-label">Email</label>
-<input type="text" name="email" id="email" class="form-control form-control-lg" value="<?=$user['email'];?>">
-</div>
-<?php if($user['role'] === 'administrator'):?>
-<div class="mb-3">
-<label class="form-label">Role</label>
-<input type="text" name="role" id="role" class="form-control form-control-lg" value="<?=$user['role'];?>">
-</div>
-<?php endif;?>
+                <!-- Profile Picture -->
+                <div class="row mb-3">
+                    <div class="col-md-3 text-center">
+                        <img src="../uploads/<?=$user['user_image'];?>" alt="Profile Picture" class="img-fluid" width="300px" height="300px">
+                        <input type="file" name="image" id="image" class="form-control mt-2">
+                    </div>
+                </div>
 
-<button type="submit" name="save" class="bg-primary btn btn-lg my-4">Update</button>
+                <!-- Form Inputs -->
+                <div class="row">
+                    <!-- Full Name -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label">Name</label>
+                        <input type="text" name="first_name" id="first_name" class="form-control form-control-lg" value="<?=$user['first_name'];?> <?=$user['last_name'];?>">
+                    </div>
+                    
+                   <!-- Email -->
+                   <div class="col-md-6 mb-3">
+                        <label class="form-label">Email</label>
+                        <input type="email" name="email" id="email" class="form-control form-control-lg" value="<?=$user['email'];?>">
+                    </div>
+                    
+                </div>
 
-</form>
 
-<?php else: ?>
-    <h1 class="my-5">User Does not exist</h1>
-    <?php endif;?>
-</div>
+                <div class="row">
+                      <!-- Present Address -->
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Present Address</label>
+                        <input type="text" name="present_address" id="present_address" class="form-control form-control-lg" value="<?=$user['address_line1'];?>">
+                    </div>
+                      <!-- Permanent Address -->
+                      <div class="col-md-6 mb-3">
+                        <label class="form-label">Permanent Address</label>
+                        <input type="text" name="address" id="address" class="form-control form-control-lg" value="<?=$user['address'];?>">
+                    </div>
+               
+                </div>
+
+                <div class="row">
+                  
+                   
+                    <!-- City -->
+                    <div class="col-4  col-md-4 mb-3">
+                        <label class="form-label">City</label>
+                        <input type="text" name="city" id="city" class="form-control form-control-lg" value="<?=$user['city'];?>">
+                    </div>
+
+                   <!-- Country -->
+                   <div class=" col-4 col-md-4 mb-3">
+                        <label class="form-label">Country</label>
+                        <input type="text" name="country" id="country" class="form-control form-control-lg" value="<?=$user['country'];?>">
+                    </div>
+                  
+
+                     <!-- Postal Code -->
+                     <div class="col-4 col-md-4 mb-3">
+                        <label class="form-label">Postal Code</label>
+                        <input type="text" name="postal_code" id="postal_code" class="form-control form-control-lg" value="<?=$user['postal_code'];?>">
+                    </div>
+                </div>
+              
+
+                     
+                 
+
+             
+               
+        <div class="row">
+                <button type="submit" name="save" class="bg-primary btn btn-lg my-4">Save</button>
+                </div>
+            </form>
+        <?php else: ?>
+            <h1 class="my-5">User Does not exist</h1>
+        <?php endif; ?>
+   
 </main>
+
+
 
 <?php include_once '../components/Footer/footer.php';?>

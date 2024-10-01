@@ -266,8 +266,8 @@ class Users extends DbConnection
         }
         //encrypt password
         $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-        $statement = $pdo->prepare("INSERT INTO users(email,password,first_name,last_name,mobile_number,address,role,status)
-                                           VALUES(:email,:password,:first_name,:last_name,:mobile_number,:address,'customer','active')");
+        $statement = $pdo->prepare("INSERT INTO users(email,password,first_name,last_name,mobile_number,role,status)
+                                           VALUES(:email,:password,:first_name,:last_name,:mobile_number,'customer','active')");
         $statement->bindParam(':email',$email);
         $statement->bindParam(':password', $hashPassword);
         $statement->bindParam(':first_name', $first_name);
@@ -280,7 +280,44 @@ class Users extends DbConnection
     
     } catch (PDOException $e) {
         echo "Register failed" . $e->getMessage();
-    }}
+    }
+
+
+}
+
+
+
+
+public function insertAddress($userId,$address,$city,$postalCode,$country)
+{
+    try {
+    $pdo = $this->connect();
+    //check if user exist
+    $statement = $pdo->prepare("INSERT INTO addresses (user_id, address_line1,city,postal_code,country) 
+                                       VALUES(:user_id, :address, :city, :postal_code, :country)");
+    $statement->bindParam(':user_id',$userId);
+    $statement->bindParam(':address',$address);
+    $statement->bindParam(':city',$city);
+    $statement->bindParam(':postal_code',$postalCode);
+    $statement->bindParam(':country',$country);
+    $statement->execute();
+
+    
+
+    $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
+    if ($statementResult) {
+        $statement = $pdo->prepare("INSERT INTO addresses (address_line2) VALUES (:address)");
+        $statement->bindParam(':address',$address);
+        $statement->execute();
+    }
+    return "success";
+
+} catch (PDOException $e) {
+    echo "Register failed" . $e->getMessage();
+}
+
+
+}
 
 
 
@@ -330,9 +367,23 @@ class Users extends DbConnection
 
         try {
             $pdo = $this->connect();
-            $statement = $pdo->prepare("SELECT *
-                            FROM users
-                            WHERE user_id = :userId");
+            $statement = $pdo->prepare("SELECT t1.user_id,
+                                                      t1.user_image, 
+                                                      t1.first_name,
+                                                      t1.last_name,
+                                                      t1.email,
+                                                      t1.mobile_number,
+                                                      t1.role,
+                                                      t1.status,
+                                                      t2.address_line1,
+                                                      t2.address_line2,
+                                                      t2.city,
+                                                      t2.postal_code,
+                                                      t2.country
+
+                                                FROM users t1
+                                                LEFT JOIN addresses t2 ON t1.user_id = t2.user_id 
+                                                WHERE t1.user_id = :userId");
             $statement->bindParam(':userId',$userId);
             $statement->execute();
             $user = $statement->fetch(PDO::FETCH_ASSOC);

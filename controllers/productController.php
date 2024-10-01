@@ -13,14 +13,14 @@ class Products extends DbConnection
             $pdo->exec($sqlSetTimeZone);
 
             $statement = $pdo->prepare("INSERT INTO products(product_name,product_description,product_category,added_by,updated_by,created_at)
-                                        VALUES (?,?,?,?,?, NOW())");
-            $statement->execute([$productName,
-                $productDescription,
-                $productCategory,
-                $LoginUser['email'],
-                $LoginUser['email'],
-
-            ]);
+                                        VALUES (:product_name,:product_description,:product_category,:added_by,:updated_by, NOW())");
+            
+            $statement->bindParam(':product_name',$productName);
+            $statement->bindParam(':product_description',$productDescription);
+            $statement->bindParam(':product_category',$productCategory);
+            $statement->bindParam(':added_by',$LoginUser['email']);
+            $statement->bindParam(':updated_by',$LoginUser['email']);
+            $statement->execute();
 
             return $pdo->lastInsertId();
 
@@ -35,8 +35,9 @@ class Products extends DbConnection
     {
         try {
             $pdo = $this->connect();
-            $statement = $pdo->prepare("DELETE FROM products WHERE ID = ?");
-            $statement->execute([$productId]);
+            $statement = $pdo->prepare("DELETE FROM products WHERE product_id = :product_id");
+            $statement->bindParam(':product_id',$productId);
+            $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
             echo "Insertion failed" . $e->getMessage();
@@ -59,7 +60,7 @@ class Products extends DbConnection
                                             product_stocks = :newProductStocks,
                                             updated_by = :LoginUser,
                                             updated_at = NOW()
-                                        WHERE ID = :productId");
+                                        WHERE product_id = :productId");
             $statement->bindParam(":newProductName", $newProductName);
             $statement->bindParam(":newProductCategory", $newProductCategory);
             $statement->bindParam(":newProductDescription", $newProductDescription);
@@ -99,9 +100,7 @@ class Products extends DbConnection
                 $statement = $pdo->prepare($query);
             }
 
-            // Bind the parameters as integers
-            //$statement->bindValue(':offset', $offset, PDO::PARAM_INT);
-            //$statement->bindValue(':itemsPerPage', $itemsPerPage, PDO::PARAM_INT);
+         
 
             $statement->execute();
 
@@ -254,7 +253,7 @@ class Products extends DbConnection
             $pdo = $this->connect();
             $statement = $pdo->prepare("UPDATE products
                                         SET product_image = ?
-                                        WHERE ID = ?");
+                                        WHERE product_id = ?");
             $statement->execute([$imageName, $productId]);
             // echo "Product Updated successfully";
 
@@ -405,6 +404,15 @@ class Products extends DbConnection
             error_log("Cannot retrieve cart items: " . $e->getMessage());
 
         }
+
+    }
+
+
+    public function generateTransactionId(){
+
+        uniqid('LIS') . time() . mt_rand(10000, 99999); 
+
+
 
     }
 
