@@ -264,6 +264,53 @@ class Products extends DbConnection
 
     }
 
+    public function addToCart($userId, $totalPrice, $productId, $productPrice, $quantity)
+    {
+        try {
+            $pdo = $this->connect();
+    
+            // Check if the product is already added to cart (order_items table)
+            $statement = $pdo->prepare("SELECT * 
+                                               FROM order_items 
+                                               WHERE product_id = :product_id 
+                                               AND EXISTS (
+                                                SELECT 1 
+                                                FROM orders 
+                                                WHERE orders.user_id = :user_id AND orders.order_id = order_items.order_id
+                                        )");
+    
+            $statement->bindParam(':user_id', $userId);
+            $statement->bindParam(':product_id', $productId);
+            $statement->execute();
+    
+            // Fetch the current product in the cart, if it exists
+            $existingCartItem = $statement->fetch(PDO::FETCH_ASSOC);
+            if ($existingCartItem) {
+                // If the product already exists in the cart, update the quantity
+                $newQuantity = $existingCartItem['quantity'] + $quantity;
+                $updateStatement = $pdo->prepare("UPDATE order_items 
+                                                  SET quantity = :quantity 
+                                                  WHERE product_id = :product_id 
+                                                  AND order_id = :order_id");
+    
+                $updateStatement->bindParam(':quantity', $newQuantity);
+                $updateStatement->bindParam(':product_id', $productId);
+                $updateStatement->bindParam(':order_id', $existingCartItem['order_id']); // update for the existing order
+                $updateStatement->execute();
+    
+            } else {
+                // Create a new order and add the item to it
+                $this->createOrder($userId, $totalPrice, $productId, $productPrice, $quantity);
+            }
+    
+        } catch (PDOException $e) {
+            // Log the error or handle it appropriately
+            error_log("Cart operation failed: " . $e->getMessage());
+        }
+    }
+
+
+    
     
     public function createOrder($userId, $totalPrice, $productId, $productPrice, $quantity)
     {
@@ -301,47 +348,6 @@ class Products extends DbConnection
         }
     }
     
-    public function addToCart($userId, $totalPrice, $productId, $productPrice, $quantity)
-    {
-        try {
-            $pdo = $this->connect();
-    
-            // Check if the product is already added to cart (order_items table)
-            $statement = $pdo->prepare("SELECT * FROM order_items 
-                                        WHERE product_id = :product_id 
-                                        AND EXISTS (
-                                            SELECT 1 FROM orders WHERE orders.user_id = :user_id AND orders.order_id = order_items.order_id
-                                        )");
-    
-            $statement->bindParam(':user_id', $userId);
-            $statement->bindParam(':product_id', $productId);
-            $statement->execute();
-    
-            // Fetch the current product in the cart, if it exists
-            $existingCartItem = $statement->fetch(PDO::FETCH_ASSOC);
-            if ($existingCartItem) {
-                // If the product already exists in the cart, update the quantity
-                $newQuantity = $existingCartItem['quantity'] + $quantity;
-                $updateStatement = $pdo->prepare("UPDATE order_items 
-                                                  SET quantity = :quantity 
-                                                  WHERE product_id = :product_id 
-                                                  AND order_id = :order_id");
-    
-                $updateStatement->bindParam(':quantity', $newQuantity);
-                $updateStatement->bindParam(':product_id', $productId);
-                $updateStatement->bindParam(':order_id', $existingCartItem['order_id']); // update for the existing order
-                $updateStatement->execute();
-    
-            } else {
-                // Create a new order and add the item to it
-                $this->createOrder($userId, $totalPrice, $productId, $productPrice, $quantity);
-            }
-    
-        } catch (PDOException $e) {
-            // Log the error or handle it appropriately
-            error_log("Cart operation failed: " . $e->getMessage());
-        }
-    }
 
     public function removeFromCart($userId, $productId)
     {
@@ -426,9 +432,9 @@ class Products extends DbConnection
         try { $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("SELECT COUNT(*)
-                                           FROM user_cart t1
-                                           INNER JOIN products t2
-                                           ON t1.product_id = t2.ID
+                                           FROM orders t1
+                                           INNER JOIN order_items t2
+                                           ON t1.order_id = t2.order_id
                                            WHERE user_id = :user_id");
             $statement->bindParam(":user_id", $userId);
             $statement->execute();

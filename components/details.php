@@ -24,8 +24,8 @@ if (isset($_POST['add_to_cart'])) {
     //print_r($_POST);
     //print_r($productId );
     $total_price = $_POST['product_price'] * $_POST['quantity'];
-    $products->createOrder($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']);
-    
+    print_r($total_price);
+    //$products->createOrder($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']); 
     $products->addToCart($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']);
     echo "Added to cart";
 }
@@ -61,7 +61,8 @@ if (isset($_POST['add_to_cart'])) {
 
         <!-- Product Description -->
         <p class="mb-1 text-muted"><?=$product['product_description'];?></p>
-        <h2 name="product_price" class="mb-3">₱<?=number_format($product['product_price']);?></h2>
+        <h2 class="mb-3">₱<?=number_format($product['product_price']);?></h2>
+        <input type="hidden" name="product_price" class="mb-3" value="<?=number_format($product['product_price']);?>"></input>
 
         <!-- Last Updated Info -->
 
