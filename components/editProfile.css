@@ -1,0 +1,48 @@
+/* General container and form styling */
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+}
+
+h1 {
+    font-size: 28px;
+}
+
+.form-control {
+    padding: 10px;
+    font-size: 16px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}
+
+.img-fluid {
+    object-fit: cover;
+}
+
+/* Profile picture */
+.profile-picture {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+img.rounded-circle {
+    border-radius: 50%;
+}
+
+/* Button styling */
+button[type="submit"] {
+    padding: 10px 20px;
+    font-size: 18px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: fit-content;
+}
+
+button[type="submit"]:hover {
+    background-color: #0056b3;
+}

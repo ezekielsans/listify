@@ -250,7 +250,7 @@ class Users extends DbConnection
 
     /* USER CREATION */
 
-    public function registerUser($first_name,$last_name,$email, $password,$mobile_number,$address)
+    public function registerUser($first_name,$last_name,$email, $password,$mobile_number)
     {try {
         $pdo = $this->connect();
         //check if user exist
@@ -273,7 +273,6 @@ class Users extends DbConnection
         $statement->bindParam(':first_name', $first_name);
         $statement->bindParam(':last_name', $last_name);
         $statement->bindParam(':mobile_number', $mobile_number);
-        $statement->bindParam(':address', $address);
         $statement->execute();
        
         return "success";
@@ -302,7 +301,6 @@ public function insertAddress($userId,$address,$city,$postalCode,$country)
     $statement->bindParam(':country',$country);
     $statement->execute();
 
-    
 
     $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
     if ($statementResult) {
@@ -425,6 +423,8 @@ public function insertAddress($userId,$address,$city,$postalCode,$country)
 
     }
 
+
+
     public function updateUserImage($userId, $imageName)
     {
 
@@ -443,8 +443,11 @@ public function insertAddress($userId,$address,$city,$postalCode,$country)
         }
 
     }
+    
 
-    }
+}
+
+    
 
 
 
