@@ -352,7 +352,14 @@ class Products extends DbConnection
     {
         try {
             $pdo = $this->connect();
-            $statement = $pdo->prepare("DELETE FROM orders_items WHERE user_id = :userId AND product_id = :productId");
+
+                                
+            $statement = $pdo->prepare("DELETE t1
+                                               FROM order_items t1
+                                               INNER JOIN products t2 ON t1.product_id = t2.product_id
+                                               INNER JOIN orders t3 ON t1.order_id = t3.order_id
+                                               WHERE user_id = :userId 
+                                               AND t1.product_id = :productId");
             $statement->bindParam(':userId', $userId);
             $statement->bindParam(':productId', $productId);
             $statement->execute();
@@ -390,9 +397,9 @@ class Products extends DbConnection
         try { $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("SELECT *
-                                           FROM orders t1
-                                           INNER JOIN products t2
-                                           ON t1.product_id = t2.ID
+                                           FROM products t1
+                                           INNER JOIN order_items t2 ON t1.product_id = t2.product_id
+                                           INNER JOIN orders t3 ON  t2.order_id = t3.order_id
                                            WHERE user_id = :user_id
                                            AND t1.product_id = :product_id");
             $statement->bindParam(":user_id", $userId);

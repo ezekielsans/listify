@@ -42,28 +42,7 @@ class Users extends DbConnection
 
 
 
-    public function editUser($newProductName, $newProductCategory, $newProductDescription, $LoginUser, $productId)
-    {
-        try {
-            $pdo = $this->connect();
-
-            $sqlSetTimeZone = "SET time_zone = '+8:00'";
-            $pdo->exec($sqlSetTimeZone);
-            $statement = $pdo->prepare("UPDATE products
-                                        SET product_name = ?,
-                                            product_category = ?,
-                                            product_description = ?,
-                                            updated_by = ?,
-                                            updated_at = NOW()
-                                        WHERE user_id = ?");
-            $statement->execute([$newProductName, $newProductCategory, $newProductDescription, $LoginUser['email'], $productId]);
-            // echo "Product Updated successfully";
-
-        } catch (PDOException $e) {
-            echo "Cannot Edit User" . $e->getMessage();
-        }
-
-    }
+    // public function editUser($newProductName, $newProductCategory, $newProductDescription, $LoginUser, $productId)
 
     public function getAllUsers($currentPage, $itemsPerPage,$searchTerm)
     {
@@ -287,36 +266,6 @@ class Users extends DbConnection
 
 
 
-public function insertAddress($userId,$address,$city,$postalCode,$country)
-{
-    try {
-    $pdo = $this->connect();
-    //check if user exist
-    $statement = $pdo->prepare("INSERT INTO addresses (user_id, address_line1,city,postal_code,country) 
-                                       VALUES(:user_id, :address, :city, :postal_code, :country)");
-    $statement->bindParam(':user_id',$userId);
-    $statement->bindParam(':address',$address);
-    $statement->bindParam(':city',$city);
-    $statement->bindParam(':postal_code',$postalCode);
-    $statement->bindParam(':country',$country);
-    $statement->execute();
-
-
-    $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
-    if ($statementResult) {
-        $statement = $pdo->prepare("INSERT INTO addresses (address_line2) VALUES (:address)");
-        $statement->bindParam(':address',$address);
-        $statement->execute();
-    }
-    return "success";
-
-} catch (PDOException $e) {
-    echo "Register failed" . $e->getMessage();
-}
-
-
-}
-
 
 
     
@@ -358,7 +307,10 @@ public function insertAddress($userId,$address,$city,$postalCode,$country)
 
     } catch (PDOException $e) {
         echo "Register failed" . $e->getMessage();
-    }}
+    }
+}
+
+
 
     public function getUserId($userId)
     {
@@ -395,7 +347,9 @@ public function insertAddress($userId,$address,$city,$postalCode,$country)
 
     }
 
-    public function editUserProfile($newFirstName, $newLastName, $newEmail, $newRole, $userId)
+
+
+    public function editUserProfile($newFirstName, $newLastName, $newEmail, $newRole, $userId, $address1,$address2,$city,$postalCode,$country)
     {
         try {
             $pdo = $this->connect();
@@ -410,11 +364,14 @@ public function insertAddress($userId,$address,$city,$postalCode,$country)
                                             role = :newRole
                                         WHERE user_id = :userId");
             $statement->bindParam(':newEmail',$newEmail);
-            $statement->bindParam( ':newFirstName,',$newFirstName);
+            $statement->bindParam( ':newFirstName',$newFirstName);
             $statement->bindParam(':newLastName',$newLastName);
             $statement->bindParam(':newRole', $newRole);
             $statement->bindParam(':userId',  $userId);
             $statement->execute();
+
+
+            $this->insertAddress($userId,$address1,$address2,$city,$postalCode,$country);
             // echo "Product Updated successfully";
 
         } catch (PDOException $e) {
@@ -422,6 +379,41 @@ public function insertAddress($userId,$address,$city,$postalCode,$country)
         }
 
     }
+
+
+
+
+    public function insertAddress($userId,$address1,$address2,$city,$postalCode,$country)
+    {
+        try {
+        $pdo = $this->connect();
+        //check if user exist
+        $statement = $pdo->prepare("INSERT INTO addresses (user_id, address_line1,address_line2,city,postal_code,country) 
+                                           VALUES(:user_id, :address_line1,:address_line2, :city, :postal_code, :country)");
+        $statement->bindParam(':user_id',$userId);
+        $statement->bindParam(':address_line1',$address1);
+        $statement->bindParam(':address_line2',$address2);
+        $statement->bindParam(':city',$city);
+        $statement->bindParam(':postal_code',$postalCode);
+        $statement->bindParam(':country',$country);
+        $statement->execute();
+    
+    
+        // $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
+        // if ($statementResult) {
+        //     $statement = $pdo->prepare("INSERT INTO addresses (address_line2) VALUES (:address)");
+        //     $statement->bindParam(':address',$address);
+        //     $statement->execute();
+        // }
+        return "success";
+    
+    } catch (PDOException $e) {
+        echo "Register failed" . $e->getMessage();
+    }
+    
+    
+    }
+
 
 
 

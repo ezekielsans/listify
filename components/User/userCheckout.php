@@ -57,7 +57,9 @@ if (isset($_POST['checkout'])) {
             <?php if($user['address_line1'] === null): ?>
                 <br> <p class="text-muted">To continue order processing, update information first <a href="../../components/editProfile.php?ID=<?=$user['user_id']?>">update details</a></p><br>
             <?php else: ?>
-                <br> <?=$user['address_line1']?><br>
+                <br> <?=$user['address_line1']?> <?=$user['city']?> , <?=$user['country']?>     <br>
+                 
+              
             <?php endif; ?>
                 <?= $user['mobile_number']?><br>
                    
