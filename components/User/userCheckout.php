@@ -11,6 +11,7 @@ print_r($user);
 $date_today = date('F j, Y');
 $totalOrderPrice = 0;
 $totalItems = 0;
+$shippingFee = 20;
 
 //if checkout button is clicked
 
@@ -185,14 +186,14 @@ if (isset($_POST['checkout'])) {
 
                 <div class="d-flex justify-content-between">
                     <span>Shipping Total</span>
-                    <span>₱36.00</span>
+                    <span id="shippingFee">₱<?=$shippingFee?></span>
                 </div>
 
                 <hr>
 
                 <div class="d-flex justify-content-between fw-bold">
                     <span>Total Payment</span>
-                    <span class="text-danger">₱<?=$totalPrice?></span>
+                    <span id="totalPayment" class="text-danger">₱<?=$totalPrice?></span>
                 </div>
 
                 <button class="btn btn-primary mt-4 w-100">Place Order</button>
@@ -206,6 +207,37 @@ if (isset($_POST['checkout'])) {
 
 
 </main>
+<script>
 
+document.addEventListener("DOMContentLoaded", function () {
+
+const shippingFee = document.getElementById('shippingFee');
+const totalPayment = document.getElementById('totalPayment');
+let result = 0;
+
+
+
+function calculateTotalPayment(){
+const shipping = Number(shippingFee.textContent.replace('₱', '').trim());
+const total = Number(totalPayment.textContent.replace('₱', '').trim());
+
+
+result = total+shipping;
+
+totalPayment.innerText='₱'+result.toFixed(2);
+}
+
+
+calculateTotalPayment();
+
+
+
+
+
+})
+
+
+
+</script>
 
 <?php include_once '../Footer/footer.php';?>

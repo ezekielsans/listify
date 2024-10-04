@@ -14,12 +14,12 @@ class Products extends DbConnection
 
             $statement = $pdo->prepare("INSERT INTO products(product_name,product_description,product_category,added_by,updated_by,created_at)
                                         VALUES (:product_name,:product_description,:product_category,:added_by,:updated_by, NOW())");
-            
-            $statement->bindParam(':product_name',$productName);
-            $statement->bindParam(':product_description',$productDescription);
-            $statement->bindParam(':product_category',$productCategory);
-            $statement->bindParam(':added_by',$LoginUser['email']);
-            $statement->bindParam(':updated_by',$LoginUser['email']);
+
+            $statement->bindParam(':product_name', $productName);
+            $statement->bindParam(':product_description', $productDescription);
+            $statement->bindParam(':product_category', $productCategory);
+            $statement->bindParam(':added_by', $LoginUser['email']);
+            $statement->bindParam(':updated_by', $LoginUser['email']);
             $statement->execute();
 
             return $pdo->lastInsertId();
@@ -36,7 +36,7 @@ class Products extends DbConnection
         try {
             $pdo = $this->connect();
             $statement = $pdo->prepare("DELETE FROM products WHERE product_id = :product_id");
-            $statement->bindParam(':product_id',$productId);
+            $statement->bindParam(':product_id', $productId);
             $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
@@ -99,8 +99,6 @@ class Products extends DbConnection
                           LIMIT $offset , $itemsPerPage";
                 $statement = $pdo->prepare($query);
             }
-
-         
 
             $statement->execute();
 
@@ -267,98 +265,93 @@ class Products extends DbConnection
     {
         try {
             $pdo = $this->connect();
-    
+
             // Check if the product is already added to cart (order_items table)
-            $statement = $pdo->prepare("SELECT * 
-                                               FROM order_items 
-                                               WHERE product_id = :product_id 
+            $statement = $pdo->prepare("SELECT *
+                                               FROM order_items
+                                               WHERE product_id = :product_id
                                                AND EXISTS (
-                                                SELECT 1 
-                                                FROM orders 
+                                                SELECT 1
+                                                FROM orders
                                                 WHERE orders.user_id = :user_id AND orders.order_id = order_items.order_id
                                         )");
-    
+
             $statement->bindParam(':user_id', $userId);
             $statement->bindParam(':product_id', $productId);
             $statement->execute();
-    
+
             // Fetch the current product in the cart, if it exists
             $existingCartItem = $statement->fetch(PDO::FETCH_ASSOC);
             if ($existingCartItem) {
                 // If the product already exists in the cart, update the quantity
                 $newQuantity = $existingCartItem['quantity'] + $quantity;
-                $updateStatement = $pdo->prepare("UPDATE order_items 
-                                                  SET quantity = :quantity 
-                                                  WHERE product_id = :product_id 
+                $updateStatement = $pdo->prepare("UPDATE order_items
+                                                  SET quantity = :quantity
+                                                  WHERE product_id = :product_id
                                                   AND order_id = :order_id");
-    
+
                 $updateStatement->bindParam(':quantity', $newQuantity);
                 $updateStatement->bindParam(':product_id', $productId);
                 $updateStatement->bindParam(':order_id', $existingCartItem['order_id']); // update for the existing order
                 $updateStatement->execute();
-    
+
             } else {
                 // Create a new order and add the item to it
                 $this->createOrder($userId, $totalPrice, $productId, $productPrice, $quantity);
             }
-    
+
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cart operation failed: " . $e->getMessage());
         }
     }
 
-
-    
-    
     public function createOrder($userId, $totalPrice, $productId, $productPrice, $quantity)
     {
         try {
             $pdo = $this->connect();
-    
+
             // Insert into the orders table
-            $statement = $pdo->prepare("INSERT INTO orders(user_id, total_price) 
+            $statement = $pdo->prepare("INSERT INTO orders(user_id, total_price)
                                         VALUES (:user_id, :total_price)");
             $statement->bindParam(':user_id', $userId);
             $statement->bindParam(':total_price', $totalPrice);
             $statement->execute();
-    
+
             // Get the last inserted order_id
             $orderId = $pdo->lastInsertId();
-    
+
             if ($orderId) {
                 // Insert into the order_items table
-                $statement = $pdo->prepare("INSERT INTO order_items (order_id, product_id, product_price, quantity) 
+                $statement = $pdo->prepare("INSERT INTO order_items (order_id, product_id, product_price, quantity)
                                             VALUES (:order_id, :product_id, :product_price, :quantity)");
-    
+
                 $statement->bindParam(':order_id', $orderId);
                 $statement->bindParam(':product_id', $productId);
                 $statement->bindParam(':product_price', $productPrice);
                 $statement->bindParam(':quantity', $quantity);
                 $statement->execute();
             }
-    
+
             return $orderId; // Return the generated order_id
-    
+
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Order creation failed: " . $e->getMessage());
             return false; // Return false in case of an error
         }
     }
-    
 
     public function removeFromCart($userId, $productId)
     {
         try {
             $pdo = $this->connect();
 
-                                
             $statement = $pdo->prepare("DELETE t1
                                                FROM order_items t1
                                                INNER JOIN products t2 ON t1.product_id = t2.product_id
                                                INNER JOIN orders t3 ON t1.order_id = t3.order_id
-                                               WHERE user_id = :userId 
+                                               WHERE user_id = :userId
                                                AND t1.product_id = :productId");
             $statement->bindParam(':userId', $userId);
             $statement->bindParam(':productId', $productId);
@@ -414,13 +407,11 @@ class Products extends DbConnection
 
     }
 
+    public function generateTransactionId()
+    {
 
-    public function generateTransactionId(){
-
-        uniqid('LIS') . time() . mt_rand(10000, 99999); 
-
-
-
+        $transactionId = uniqid('LIS') . time() . mt_rand(10000, 99999);
+        return $transactionId;
     }
 
     public function orderCheckout($userId, $itemId)
@@ -460,6 +451,72 @@ class Products extends DbConnection
 
         }
 
+    }
+
+    public function placeUserOrder()
+    {
+        try {
+            $pdo = $this->connect();
+
+            $statement = $pdo->prepare("");
+            $statement->bindParam(":user_id", $userId);
+            $statement->execute();
+
+            $this->generateTransactionId();
+
+        } catch (PDOException $e) {
+
+        }
+    }
+
+    public function insertPayments($orderId, $paymentMethod, $paymentStatus)
+    {
+
+        try {
+            $transactionId = $this->generateTransactionId();
+            $pdo = $this->connect();
+            
+            if ($paymentStatus === "pending") {
+                $statement = $pdo->prepare("INSERT INTO (order_id,payment_method,payment_status,transaction_id)
+                                           VALUES (:order_id,:payment_method,:payment_status,:transaction_id)");
+                $statement->bindParam(":order_id", $orderId);
+                $statement->bindParam(":payment_method", $paymentMethod);
+                $statement->bindParam(":payment_status", $paymentStatus);
+                $statement->bindParam(":transaction_id", $transactionId);
+
+                $statement->execute();
+
+            } elseif ($paymentStatus === "paid") {
+                $statement = $pdo->prepare("INSERT INTO (order_id,payment_method,payment_status,transaction_id)
+                                           VALUES (:order_id,:payment_method,:payment_status,:transaction_id)");
+                $statement->bindParam(":order_id", $orderId);
+                $statement->bindParam(":payment_method", $paymentMethod);
+                $statement->bindParam(":payment_status", $paymentStatus);
+                $statement->bindParam(":transaction_id",$transactionId );
+                $statement->execute();
+            }
+
+        } catch (PDOException $e) {
+
+        }
+    }
+
+    public function insertShippingDetails($orderId, $shippingAddress, $trackingNumber, $deliveryStatus, $shippedAt, $deliveredAt)
+    {
+
+        try {
+            $pdo = $this->connect();
+
+            $statement = $pdo->prepare("INSERT INTO shipping_details (order_id, shipping_address, tracking_number, delivery_status,)
+                                               VALUES(:order_id, :shipping_address, :tracking_number, :delivery_status,)");
+            $statement->bindParam(":user_id", $userId);
+            $statement->execute();
+
+            $this->generateTransactionId();
+
+        } catch (PDOException $e) {
+
+        }
     }
 
 }
