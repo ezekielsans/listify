@@ -1,22 +1,25 @@
 <?php
 require_once '../../controllers/usersController.php';
 require_once '../../controllers/productController.php';
+require_once '../../controllers/ordersController.php';
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 $userId = $user['user_id'];
 
-$itemCount = $products->countCartItems($userId);
+$itemCount = $orders->countCartItems($userId);
 // echo "<br> Item Count";
 // print_r($itemCount);
-$items = $products->showCartItems($userId);
+$items = $orders->showCartItems($userId);
+//print_r($items);
 $counter = 1;
 
 //delete user
 if (isset($_POST['delete'])) {
     $productId = $_POST['delete_id'];
+    $orderId = $_POST['order_id'];
     if ($productId) {
-        $products->removeFromCart($userId,$productId);
+        $orders->removeFromCart($userId,$productId,$orderId);
         echo "<div class='alert alert-success' role='alert'>Item removed!</div>";
     } else {
         echo "Error deleting";
@@ -76,6 +79,7 @@ if (isset($_POST['delete'])) {
   <td>
   <form method="post" >
       <input type="hidden" name="delete_id" value="<?=$item['product_id']?>"/>
+      <input type="hidden" name="order_id" value="<?=$item['order_id']?>"/>
       <button type="submit"  name="delete" class="btn btn-danger">Delete</button>
     </td>
   </tr>
@@ -125,7 +129,7 @@ if (isset($_POST['delete'])) {
    <input type="hidden" name="selected_items" id="selectedItems" value="">
    <input type="hidden" name="total_price" id="hiddenTotalPrice" value="">
    <button type="submit" name="checkout" class="btn btn-danger btn-lg">Check Out</button>
-  </form>
+  </f orm>
     </div>
 </div>
 

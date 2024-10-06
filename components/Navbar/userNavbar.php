@@ -9,7 +9,7 @@ $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 // $userDetails = $users->getUserId($_SESSION['LoginUser']['ID']);
 // $userId = $userDetails['ID'];
 
-$cartItems = $products->countCartItems($userId);
+$cartItems = $orders->countCartItems($userId);
 
 
 ?>

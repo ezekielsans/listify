@@ -1,6 +1,7 @@
 <?php
 include_once '../controllers/productController.php';
 include_once '../controllers/usersController.php';
+include_once '../controllers/ordersController.php';
 
 $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
@@ -21,12 +22,20 @@ if (isset($_POST['delete'])) {
 }
 
 if (isset($_POST['add_to_cart'])) {
-    //print_r($_POST);
+    print_r($_POST['userId']);
+    echo "<br>";
+    print_r($_POST['productId']);
+    echo "<br>";
+    print_r($_POST['product_price']);
+    echo "<br>";
+    print_r($_POST['quantity']);
+    echo "<br>";
+
     //print_r($productId );
-    $total_price = $_POST['product_price'] * $_POST['quantity'];
-    print_r($total_price);
+   // $total_price = $_POST['product_price'] * $_POST['quantity'];
+ //   print_r($total_price);
     //$products->createOrder($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']); 
-    $products->addToCart($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']);
+    $orders->addToCart($_POST['userId'],  $_POST['productId'], $_POST['product_price'],$_POST['quantity']);
     echo "Added to cart";
 }
 

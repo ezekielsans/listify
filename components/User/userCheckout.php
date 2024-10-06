@@ -1,6 +1,8 @@
 <?php
 require_once '../../controllers/usersController.php';
 require_once '../../controllers/productController.php';
+require_once '../../controllers/ordersController.php';
+
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
@@ -18,7 +20,40 @@ $shippingFee = 20;
 if (isset($_POST['checkout'])) {
     $selectedItems = isset($_POST['selected_items']) ? explode(',', $_POST['selected_items']) : [];
     $totalPrice = isset($_POST['total_price']) ? floatval($_POST['total_price']) : 0;
-    print_r($selectedItems);
+
+}
+
+if (isset($_POST['place_order'])) {
+
+    $userId = $user['user_id'];
+    $shippingAddress = $user['address_line2'];
+    $paymentMethod = $_POST['payment_method'];
+// Ensure that selected items are being retrieved correctly
+    $selectedItems = isset($_POST['selected_items']) ? explode(',', $_POST['selected_items']) : [];
+
+    $totalPrice = isset($_POST['total_price']) ? floatval($_POST['total_price']) : 0;
+    if (!empty($selectedItems)) {
+
+//place order for each selected item
+        foreach ($selectedItems as $item) {
+
+            $checkoutItems = $orders->showCheckoutItems($userId, $item);
+            if ($checkoutItems) {
+                print_r($userId);
+                print_r($item);
+                print_r($shippingAddress);
+                 $orders->placeOrder($userId, $paymentMethod, $shippingAddress);
+
+            }
+        }
+        echo "<br> Order successfully placed! <br>";
+        echo "Shipping Address: " . print_r($shippingAddress, true);
+        echo "<br> User ID: " . print_r($userId, true);
+        echo "<br> Total Price: " . print_r($totalPrice, true);
+    } else {
+        echo "<br>No items selected for order.<br>";
+        
+    }
 }
 
 ?>
@@ -50,23 +85,27 @@ if (isset($_POST['checkout'])) {
           <p class="text-muted"> <span class="fw-bold">Order date:</span>  <?=$date_today?></p>
         </div>
         </div>
-        
+
 
         <div class="d-flex justify-content-between align-items-center">
-            <!-- Order Date & Estimated Delivery -->  <p class="text-muted">
-            <?=$user['first_name']?> <?=$user['last_name']?>        
-            <?php if($user['address_line1'] === null): ?>
-                <br> <p class="text-muted">To continue order processing, update information first <a href="../../components/editProfile.php?ID=<?=$user['user_id']?>">update details</a></p><br>
+            <!-- Order Date & Estimated Delivery -->
+                <div class="col">
+                    <p class="text-muted">
+            <?=$user['first_name']?> <?=$user['last_name']?>
+            </p>
+            <?php if ($user['address_line1'] === null): ?>
+                <p class="text-muted">To continue order processing, update information first <a href="../../components/editProfile.php?ID=<?=$user['user_id']?>">update details</a></p>
             <?php else: ?>
-                <br> <?=$user['address_line1']?> <?=$user['city']?> , <?=$user['country']?>     <br>
-                 
-              
-            <?php endif; ?>
-                <?= $user['mobile_number']?><br>
-                   
+               <p class="text-muted"><?=$user['address_line1']?> <?=$user['city']?> , <?=$user['country']?>     </p>
+
+
+            <?php endif;?>
+            <p class="text-muted">
+                <?=$user['mobile_number']?><br>
+
                 </p>
-            
-       
+                </div>
+
         </div>
         </div>
         </div>
@@ -95,15 +134,16 @@ if (isset($_POST['checkout'])) {
         <!-- Products List -->
         <div class="row mt-4">
             <?php foreach ($selectedItems as $item) {
-                $checkoutItems = $products->showCheckoutItems($userId, $item);
-                 // Calculate the subtotal for each product
-                 $subtotal = $checkoutItems['quantity'] * $checkoutItems['product_price'];
-                 $totalOrderPrice += $subtotal; // Add to the total order price
-            
-                 $totalItems += $checkoutItems['quantity'];
+    $checkoutItems = $orders->showCheckoutItems($userId, $item);
 
-                // Add to the total order price
-                ?>
+    // Calculate the subtotal for each product
+    $subtotal = $checkoutItems['quantity'] * $checkoutItems['product_price'];
+    $totalOrderPrice += $subtotal; // Add to the total order price
+    print_r($checkoutItems);
+    $totalItems += $checkoutItems['quantity'];
+
+    // Add to the total order price
+    ?>
 
                 <!-- Single Product Row -->
                 <div class="row align-items-center mb-3">
@@ -128,13 +168,14 @@ if (isset($_POST['checkout'])) {
 
                     <!-- Product Subtotal -->
                     <div class="col-2 text-center">
-                        <p class="mb-0 fw-bold">₱<?= number_format($subtotal, 2)?></p>
+                        <p class="mb-0 fw-bold">₱<?=number_format($subtotal, 2)?></p>
                     </div>
-                    
+
                 </div>
-               
-            <?php } ?>
-         
+
+            <?php
+}?>
+
         </div>
 
         <!-- Order Total Section -->
@@ -158,21 +199,21 @@ if (isset($_POST['checkout'])) {
             <div class="col-md-6 mt-3">
                 <!-- Payment Info -->
                 <h5>Payment</h5>
-                <form>
+                <form method="post">
                     <div class="form-check">
-                        <input class="form-check-input" type="radio" name="plan" id="plan1">
+                        <input class="form-check-input"  name="payment_method" type="radio" name="plan" id="plan1">
                         <label class="form-check-label" for="plan1">
                             Cash on Delivery
-                           
+
                         </label>
                     </div>
 
-              
 
 
-                   
-                </form>
-           
+
+
+
+
             </div>
 
             <!-- Order Summary -->
@@ -193,16 +234,24 @@ if (isset($_POST['checkout'])) {
 
                 <div class="d-flex justify-content-between fw-bold">
                     <span>Total Payment</span>
-                    <span id="totalPayment" class="text-danger">₱<?=$totalPrice?></span>
+                    <span id="totalPayment" name="totalPayment" class="text-danger">₱<?=$totalPrice?></span>
                 </div>
+              
+                <input type="hidden" name="total_price" value="<?=$totalOrderPrice?>">
+                <input type="hidden" name="selected_items" value="<?=implode(',', $selectedItems)?>">
 
-                <button class="btn btn-primary mt-4 w-100">Place Order</button>
+                <!-- Payment Method -->
+                <!-- <input type="radio" name="payment_method" value="cod" checked> -->
+
+                <!-- Submit Button -->
+                <button type="submit" name="place_order" class="btn btn-primary mt-4 w-100">Place Order</button>
+</form>
             </div>
         </div>
     </div>
 </div>
 
-  
+
 
 
 
