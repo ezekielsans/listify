@@ -49,6 +49,7 @@ if (isset($_POST['delete'])) {
     </div>
 </form>
 </div>
+<?php if($items):?>
 <table class="table table-striped">
 <thead>
     <tr>
@@ -85,17 +86,12 @@ if (isset($_POST['delete'])) {
   </tr>
 </form>
   <?php }?>
+ 
 
   </tbody>
 </table>
 
 
-
-
-<div class="d-flex gap-5 align-items-center justify-content-center">
-
-
-</div>
 
  
 
@@ -132,10 +128,41 @@ if (isset($_POST['delete'])) {
   </f orm>
     </div>
 </div>
-
-
-
 </footer>
+
+
+<?php else:?>
+
+
+<div class="text-muted d-flex justify-content-center align-items-center vh-100 mb-5">
+  <div class="text-center">
+      <h3 class="text-muted mb-3">Seems so empty here...  
+      <svg viewBox="0 0 24 24" 
+           height="40px"
+           width="40px"
+           role="img" 
+           xmlns="http://www.w3.org/2000/svg" 
+           aria-labelledby="sadFaceIconTitle"
+           stroke="#828282" 
+           stroke-width="2" 
+           stroke-linecap="round" 
+           stroke-linejoin="round" 
+           fill="none" 
+           color="#000000">
+        <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+        <g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g>
+        <g id="SVGRepo_iconCarrier"> <title id="sadFaceIconTitle">sad Face</title>
+         <line stroke-linecap="round" x1="9" y1="9" x2="9" y2="9"></line> <line stroke-linecap="round" x1="15" y1="9" x2="15" y2="9"></line>
+          <path d="M8,16 C9.33333333,15.3333333 10.6656028,15.0003822 11.9968085,15.0011466 C13.3322695,15.0003822 14.6666667,15.3333333 16,16"></path> 
+          <circle cx="12" cy="12" r="10"></circle> 
+        </g>
+      </svg>
+              </h3>    
+      <a class="btn btn-success w-50"  href="../Homepage/homepage.php">Shop now</a>
+  </div>
+</div>
+<?php endif;?>
+
 
 <script>
 //referencing an id to a modal

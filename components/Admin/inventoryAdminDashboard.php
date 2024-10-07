@@ -65,7 +65,7 @@ if (isset($_POST['delete'])) {
     <?php foreach ($productsData as $product) {?>
     <tr>
       <th scope="row"><?=$counter++?></th>
-      <input type="hidden" name="ID" value="<?=$product['ID']?>">
+      <input type="hidden" name="ID" value="<?=$product['product_id']?>">
       <td><img src="/uploads/<?=$product['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  <?=$product['product_name']?></td>
       <td><?=$product['product_description']?></td>
       <td><?=$product['product_category']?></td>

@@ -55,42 +55,51 @@ $counter = 1;
       
       </h4>
       <!-- Shopping Cart Table -->
-      <table class="table table-hover border">
-        <thead>
-          <tr>
-            <th scope="col">#</th>
-            <th scope="col">Order ID</th>
-            <th scope="col">Order Date</th>
-            <th scope="col">Order Status</th>
-            <th scope="col">Total Price</th>
-            <th scope="col">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
           <?php foreach($userOrders as $order) {?>
-          <tr>
-            <th scope="row"><?=$counter++?></th>
-          
-            
-            <td><?=$order['order_id']?></td>
-            <td><?=$order['created_at']?></td>
-            <td><?=$order['order_status']?></td>
-            <td><?=$order['total_price']?></td>
-        
-           
-            <td><button class="btn btn-danger btn-sm">Cancel</button></td>
-          </tr>
-         <?php }?>
-        </tbody>
-      </table>
+<div class="container my-5 card py-5 px-5">
+    <!-- Product Info Row -->
+    <div class="row py-4 border-bottom">
+        <div class="col-md-2">
+            <!-- Product image -->
+            <img src="/uploads/<?=$order['product_image']?>" alt="Product Image" class="img-fluid">
+        </div>
+        <div class="col-md-7">
+            <!-- Product details -->
+            <h5 class="mb-1"> <?=$order['product_name']?></h5>
+            <p class="mb-1"><strong>Description:</strong> <?=$order['product_description']?></p>
+            <p class="mb-3"><strong>Quantity:</strong> x<?=$order['quantity']?></p>
 
-      <!-- Cart Summary -->
-      <div class="d-flex justify-content-between">
-        <span>Total:</span>
-        <strong>$45.00</strong>
-      </div>
-      <button class="btn btn-success mt-3 w-100">Proceed to Checkout</button>
+        </div>
+        <div class="col-md-3 text-end">
+            <!-- Price and Discount -->
+            <p class="text-muted mb-1"><del>₱239</del> <strong class="text-danger">₱ <?=number_format($order['product_price'])?></strong></p>
+        </div>
     </div>
+
+    <!-- Order Total and Action Buttons -->
+  
+    <div class="row align-items-end py-4">
+    <!-- Order Total -->
+    <div class="col text-end">
+        <p class="mb-0">Order Total: <strong class="text-danger">₱<?=number_format($order['total_price'])?></strong></p>
+    </div>
+    </div>
+    <!-- Action Buttons -->
+    <div class="col text-end">
+        <a href="#" class="btn btn-danger me-2">Cancel Order</a>
+        <!-- <a href="#" class="btn btn-outline-secondary me-2">Contact Seller</a> -->
+        <a href="#" class="btn btn-outline-secondary">View Product</a>
+    </div>
+
+</div>
+         <?php }?>
+
+
+    
+
+  
+    </div>
+    
   </div>
 </div>
 
