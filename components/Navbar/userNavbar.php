@@ -82,10 +82,10 @@ $cartItems = $orders->countCartItems($userId);
 <?php endif;?>
                 
 
-<div class="dropdown text-end ">
+<div class="dropdown text-end " style="margin-right: 1.5rem;">
           <a href="#" id="dropdownToggle" class="d-block link-body-emphasis text-decoration-none dropdown-toggle  text-white mx-2" data-bs-toggle="dropdown" aria-expanded="true">
           <img src="/uploads/<?=$user['user_image']?>" alt="Profile Image" width="32" height="32" class="rounded-circle">
-          <?=$user['first_name']?> <?=$user['last_name']?>
+            <?=$user['first_name']?> <?=$user['last_name']?>
         </a>
           <ul id="dropdownMenu" class="dropdown-menu text-small " style="position: absolute; inset: 0px auto auto 0px; margin: 0px; transform: translate3d(0px, 34px, 0px);" data-popper-placement="bottom-start">
 

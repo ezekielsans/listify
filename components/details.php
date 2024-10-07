@@ -6,6 +6,14 @@ include_once '../controllers/ordersController.php';
 $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 
+
+//create a function to check if order exist
+
+$productId = $_GET['ID'];
+
+$existingOrder = $orders->showSpecificUserOrder($user['user_id'],$productId); //
+
+print_r($existingOrder);
 $productId = $_GET['ID'];
 
 if (isset($productId)) {
@@ -92,16 +100,25 @@ if (isset($_POST['add_to_cart'])) {
   
     <?php else: ?>
 
+      <?php if($existingOrder):?>
+    <div class="input-group w-auto">
+      <button class="btn btn-outline-secondary" type="button" id="btn-decrement" aria-label="Decrease quantity">-</button>
+      <input type="number" name="quantity" id="quantity" class="form-control form-control-lg text-center" value="<?=$existingOrder['quantity']?>" min="1" max="<?=$product['product_stocks'];?>" style="width: 80px;">
+      <button class="btn btn-outline-secondary" type="button" id="btn-increment" aria-label="Increase quantity">+</button>
+    </div>  
+    <?php else:?>
+    
     <div class="input-group w-auto">
       <button class="btn btn-outline-secondary" type="button" id="btn-decrement" aria-label="Decrease quantity">-</button>
       <input type="number" name="quantity" id="quantity" class="form-control form-control-lg text-center" value="1" min="1" max="<?=$product['product_stocks'];?>" style="width: 80px;">
       <button class="btn btn-outline-secondary" type="button" id="btn-increment" aria-label="Increase quantity">+</button>
     </div>
-
+  <?php endif;?>
   <?php endif;?>
   </div>
   <p class="mb-3 text-muted"><?=$product['product_stocks'];?> stocks available</p>
 </div>
+
 <?php if ($product['product_stocks'] === 0): ?>
         <!-- Buttons (Add to Cart & Buy Now) -->
 <input type="hidden" name="productId" value="<?=$product['product_id'];?>">

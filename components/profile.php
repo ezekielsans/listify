@@ -58,6 +58,7 @@ $counter = 1;
           <?php foreach($userOrders as $order) {?>
 <div class="container my-5 card py-5 px-5">
     <!-- Product Info Row -->
+    <h5 class="text-muted">Order status: <?=$order['order_status']?></h5>
     <div class="row py-4 border-bottom">
         <div class="col-md-2">
             <!-- Product image -->
@@ -88,7 +89,7 @@ $counter = 1;
     <div class="col text-end">
         <a href="#" class="btn btn-danger me-2">Cancel Order</a>
         <!-- <a href="#" class="btn btn-outline-secondary me-2">Contact Seller</a> -->
-        <a href="#" class="btn btn-outline-secondary">View Product</a>
+        <a href="../components/details.php?ID=<?=$order['product_id']?>" class="btn btn-outline-secondary">View Product</a>
     </div>
 
 </div>

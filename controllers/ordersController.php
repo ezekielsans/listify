@@ -140,8 +140,9 @@ class Orders extends DbConnection
                                            FROM orders t1
                                            INNER JOIN order_items t2
                                            ON t1.order_id = t2.order_id
-                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_id 
-                                           WHERE user_id = :user_id AND t3.order_status = 'pending'");
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id 
+                                           WHERE user_id = :user_id 
+                                           AND t3.order_status = 'pending'");
             $statement->bindParam(":user_id", $userId);
             $statement->execute();
             $itemCount = $statement->fetchColumn();
@@ -261,7 +262,7 @@ public function updateOrder($orderId){
             $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("INSERT INTO orders (user_id, total_price, order_status,created_at)
-                                       VALUES(:user_id, 0, 'pending',NOW())");
+                                       VALUES(:user_id, 0, 1,NOW())");
             $statement->bindParam(":user_id", $userId);
             $statement->execute();
 
@@ -379,6 +380,31 @@ public function updateOrderStatus($orderId, $orderStatus){
 
     }
 
+
+
+
+
+    
+    public function showSpecificUserOrder($userId,$productId){
+
+
+        $pdo = $this->connect();
+        $statement = $pdo->prepare("SELECT  * 
+                                           FROM orders t1
+                                           JOIN order_items t2 ON t1.order_id = t2.order_id
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
+                                           JOIN products t4 ON t2.product_id = t4.product_id
+                                           WHERE t1.user_id = :user_id 
+                                           AND t4.product_id = :product_id
+                                           AND t3.order_status = 'placed'");
+        $statement->bindParam(":user_id", $userId);
+        $statement->bindParam(":product_id", $productId);
+        $statement->execute();
+
+        $existingOrder = $statement->fetch();
+        return $existingOrder;
+
+    }
 
 
 

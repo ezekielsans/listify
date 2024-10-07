@@ -1,6 +1,7 @@
 <?php
 include_once '../controllers/productController.php';
 include_once '../controllers/usersController.php';
+include_once '../controllers/ordersController.php';
 
 $users->startSession();
 
