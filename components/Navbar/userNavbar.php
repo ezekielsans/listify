@@ -1,10 +1,7 @@
 <?php
-
-
-$userId = $_SESSION['LoginUser']['ID']; 
-
 $users->startSession();
 
+$userId = $_SESSION['LoginUser']['ID']; 
 $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 // $userDetails = $users->getUserId($_SESSION['LoginUser']['ID']);
 // $userId = $userDetails['ID'];

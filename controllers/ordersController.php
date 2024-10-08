@@ -379,6 +379,64 @@ public function updateOrderStatus($orderId, $orderStatus){
         return $existingOrder;
 
     }
+  public function showUserOrdersToPay($userId){
+
+
+        $pdo = $this->connect();
+        $statement = $pdo->prepare("SELECT  * 
+                                           FROM orders t1
+                                           JOIN order_items t2 ON t1.order_id = t2.order_id
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
+                                           JOIN products t4 ON t2.product_id = t4.product_id
+                                           WHERE t1.user_id = :user_id 
+                                           AND t3.order_status = 'placed'");
+        $statement->bindParam(":user_id", $userId);
+        $statement->execute();
+
+        $existingOrder = $statement->fetchAll();
+        return $existingOrder;
+
+    }
+
+
+    
+    public function showUserOrdersToShip($userId){
+
+
+        $pdo = $this->connect();
+        $statement = $pdo->prepare("SELECT  * 
+                                           FROM orders t1
+                                           JOIN order_items t2 ON t1.order_id = t2.order_id
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
+                                           JOIN products t4 ON t2.product_id = t4.product_id
+                                           WHERE t1.user_id = :user_id 
+                                           AND t3.order_status = 'shipped'");
+        $statement->bindParam(":user_id", $userId);
+        $statement->execute();
+
+        $existingOrder = $statement->fetchAll();
+        return $existingOrder;
+
+    }
+
+    public function showUserOrdersToReceive($userId){
+
+
+        $pdo = $this->connect();
+        $statement = $pdo->prepare("SELECT  * 
+                                           FROM orders t1
+                                           JOIN order_items t2 ON t1.order_id = t2.order_id
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
+                                           JOIN products t4 ON t2.product_id = t4.product_id
+                                           WHERE t1.user_id = :user_id 
+                                           AND t3.order_status = 'out for delivery'");
+        $statement->bindParam(":user_id", $userId);
+        $statement->execute();
+
+        $existingOrder = $statement->fetchAll();
+        return $existingOrder;
+
+    }
 
 
 

@@ -19,8 +19,8 @@ $counter = 1;
         <?php include_once './Navbar/userNavbar.php';?>
         <?php endif; ?>
 
-<div class="container mb-5">
-  <h1 class="mb-5">My Profile</h1>
+<div class="container mt-5 mb-5">
+  <!-- <h1 class="mb-5">My Profile</h1> -->
 
   <div class="row">
     <!-- Left Side (Profile Section) -->
@@ -49,51 +49,50 @@ $counter = 1;
     </div>
 
     <!-- Right Side (Shopping Cart Section) -->
-    <div class="col-lg-8">
-      <h4 class="d-flex justify-content-between align-items-center mb-3">
-        <span class="text-primary">My orders</span>
-      
-      </h4>
-      <!-- Shopping Cart Table -->
-          <?php foreach($userOrders as $order) {?>
-<div class="container my-5 card py-5 px-5">
-    <!-- Product Info Row -->
-    <h5 class="text-muted">Order status: <?=$order['order_status']?></h5>
-    <div class="row py-4 border-bottom">
-        <div class="col-md-2">
-            <!-- Product image -->
-            <img src="/uploads/<?=$order['product_image']?>" alt="Product Image" class="img-fluid">
-        </div>
-        <div class="col-md-7">
-            <!-- Product details -->
-            <h5 class="mb-1"> <?=$order['product_name']?></h5>
-            <p class="mb-1"><strong>Description:</strong> <?=$order['product_description']?></p>
-            <p class="mb-3"><strong>Quantity:</strong> x<?=$order['quantity']?></p>
-
-        </div>
-        <div class="col-md-3 text-end">
-            <!-- Price and Discount -->
-            <p class="text-muted mb-1"><del>₱239</del> <strong class="text-danger">₱ <?=number_format($order['product_price'])?></strong></p>
-        </div>
-    </div>
-
-    <!-- Order Total and Action Buttons -->
+    <div class="col-lg-8 ">
+    <!-- Navigation Tabs with Underline Style -->
+    <ul class="nav nav-underline mb-3" id="pills-tab" role="tablist" style="display:flex;align-items:center; text-align:center;">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">My Orders</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-profile-tab" data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">To Pay</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">To Ship</button>
+  </li>  
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">To Receive</button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Completed</button>
+  </li> 
+   <li class="nav-item" role="presentation">
+    <button class="nav-link" id="pills-contact-tab" data-bs-toggle="pill" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Cancelled</button>
+  </li>
   
-    <div class="row align-items-end py-4">
-    <!-- Order Total -->
-    <div class="col text-end">
-        <p class="mb-0">Order Total: <strong class="text-danger">₱<?=number_format($order['total_price'])?></strong></p>
-    </div>
-    </div>
-    <!-- Action Buttons -->
-    <div class="col text-end">
-        <a href="#" class="btn btn-danger me-2">Cancel Order</a>
-        <!-- <a href="#" class="btn btn-outline-secondary me-2">Contact Seller</a> -->
-        <a href="../components/details.php?ID=<?=$order['product_id']?>" class="btn btn-outline-secondary">View Product</a>
-    </div>
+  
+</ul>
 
+
+
+
+<!-- Shopping Cart Table -->
+<div class="tab-content" id="pills-tabContent">
+  <div class="tab-pane fade show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
+<?php  include_once '../components/User/userOrders.php';?>
+  </div>
+  <div class="tab-pane fade" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
+  <?php  include_once '../components/User/userOrdersToReceive.php';?>
 </div>
-         <?php }?>
+  <div class="tab-pane fade" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
+  <?php  include_once '../components/User/userOrdersToShip.php';?>
+</div>
+  <div class="tab-pane fade" id="pills-disabled" role="tabpanel" aria-labelledby="pills-disabled-tab" tabindex="0">
+  <?php  include_once '../components/User/userOrdersToShip.php';?>
+</div>
+</div>
+ 
 
 
     
@@ -104,5 +103,56 @@ $counter = 1;
   </div>
 </div>
 
+
+<div class="modal fade mt-5" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p> Are you sure you want to delete this product?</p>
+            </div>
+            <div class="modal-footer">
+              <form action="" method="post">
+                <input type="hidden" id="deleteId" name="delete_id">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" name="delete" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script>
+//referencing an id to a modal
+document.addEventListener("DOMContentLoaded", function () {
+  const deleteModal = document.getElementById('deleteConfirmModal');
+    deleteModal.addEventListener('show.bs.modal', function (event) {
+      //whatever button i click
+      const button = event.relatedTarget;
+      //get something from this button
+      const userId = button.getAttribute('data-user-id');
+      
+      const deleteInput = document.getElementById('deleteId');
+      deleteInput.value = userId;
+    });
+    
+
+
+    const triggerTabList = document.querySelectorAll('#myTab button')
+triggerTabList.forEach(triggerEl => {
+  const tabTrigger = new bootstrap.Tab(triggerEl)
+
+  triggerEl.addEventListener('click', event => {
+    event.preventDefault()
+    tabTrigger.show()
+  })
+})
+
+    
+  });
+  
+</script>
 
 <?php include_once '../components/Footer/footer.php';?>

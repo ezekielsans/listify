@@ -85,7 +85,7 @@ if (isset($_POST['delete'])) {
         <?php }?>
         <td><?=$product['updated_at']?></td>
       <td>
-        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$product['ID']?>">Remove</button>
+        <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$product['product_id']?>">Remove</button>
         <a class="btn btn-primary mx-2" href="editProduct.php?ID=<?=$product['ID'];?>">Edit</a>
       </td>
     </tr>
