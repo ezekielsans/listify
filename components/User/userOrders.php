@@ -45,7 +45,7 @@ $counter = 1;
                 <a href="#" class="btn btn-outline-primary btn-sm me-2">Contact Seller</a>
                 <a href="details.php?ID=<?=$order['product_id']?>" class="btn btn-secondary btn-sm">View Product</a>
             </div>
-            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$order['product_id']?>">Cancel Order</button>
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$order['order_id']?>">Cancel Order</button>
         </div>
     </div>
 </div>

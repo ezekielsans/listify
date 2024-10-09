@@ -4,7 +4,7 @@
 $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 
-$userOrders = $orders->showUserOrders($user['user_id']);
+$userOrders = $orders->showUserOrdersToReceive($user['user_id']);
 
 //echo "<br/> user orders <br/>";
 //print_r($userOrders);

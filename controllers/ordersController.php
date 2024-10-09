@@ -11,25 +11,23 @@ class Orders extends DbConnection
             $pdo = $this->connect();
 
             // Check if the product is already added to cart (order_items table)
-            $statement = $pdo->prepare("SELECT  t1.order_id, t2.product_id, t2.quantity 
+            $statement = $pdo->prepare("SELECT  t1.order_id, t2.product_id, t2.quantity
                                                FROM orders t1
                                                JOIN order_items t2 ON t1.order_id = t2.order_id
-                                               JOIN order_status_lu t3 ON t1.order_status =  t3.order_status_id 
-                                               WHERE t1.user_id = :user_id 
+                                               JOIN order_status_lu t3 ON t1.order_status =  t3.order_status_id
+                                               WHERE t1.user_id = :user_id
                                                AND t2.product_id = :product_id
                                                AND t3.order_status = 'pending'");
             $statement->bindParam(':user_id', $userId);
             $statement->bindParam(':product_id', $productId);
-         
+
             $statement->execute();
             $existingOrder = $statement->fetch(PDO::FETCH_ASSOC);
 
-            
             if ($existingOrder) {
                 // If the product already exists in the cart, update the quantity
                 $orderId = $existingOrder['order_id'];
-                 $newQuantity = $existingOrder['quantity'] + $quantity;
-
+                $newQuantity = $existingOrder['quantity'] + $quantity;
 
                 $updateStatement = $pdo->prepare("UPDATE order_items
                                                         SET quantity = :quantity
@@ -40,25 +38,44 @@ class Orders extends DbConnection
                 $updateStatement->bindParam(':product_id', $productId);
                 $updateStatement->bindParam(':order_id', $orderId); // update for the existing order
                 $updateStatement->execute();
-                 
+
             } else {
-                $orderId =  $this->insertOrder($userId);
-                $this->insertOrderItem( $orderId,$productId, $productPrice, $quantity);
-            }     
-                return "Item added to cart successfully!";
+                $orderId = $this->insertOrder($userId);
+                $this->insertOrderItem($orderId, $productId, $productPrice, $quantity);
+            }
+            return "Item added to cart successfully!";
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cart operation failed: " . $e->getMessage());
         }
     }
 
+    public function cancelOrder($userId, $orderId)
+    {
 
-    public function removeFromCart($userId, $productId,$orderId)
+        try {
+            $pdo = $this->connect();
+
+            $statement = $pdo->prepare("UPDATE orders
+                                        SET order_status = 6
+                                        WHERE user_id =:user_id
+                                        AND order_id = :order_id");
+            $statement->bindParam(':user_id', $userId);
+            $statement->bindParam(':order_id', $orderId);
+            $statement->execute();
+            return "order cancelled";
+        } catch (PDOException $e) {
+            echo "Error canceling order" . $e->getMessage();
+        }
+
+    }
+
+    public function removeFromCart($userId, $productId, $orderId)
     {
         try {
             $pdo = $this->connect();
 
-            $statement = $pdo->prepare("DELETE t1 
+            $statement = $pdo->prepare("DELETE t1
                                                FROM order_items t1
                                                INNER JOIN products t2 ON t1.product_id = t2.product_id
                                                INNER JOIN orders t3 ON t1.order_id = t3.order_id
@@ -68,7 +85,6 @@ class Orders extends DbConnection
             $statement->bindParam(':productId', $productId);
             $statement->execute();
 
-
             $statement = $pdo->prepare("DELETE
                                                FROM orders t1
                                                WHERE user_id = :userId
@@ -76,8 +92,6 @@ class Orders extends DbConnection
             $statement->bindParam(':userId', $userId);
             $statement->bindParam(':orderId', $orderId);
             $statement->execute();
-
-
 
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
@@ -101,7 +115,9 @@ class Orders extends DbConnection
             $statement->bindParam(":user_id", $userId);
             $statement->execute();
             $items = $statement->fetchAll(PDO::FETCH_ASSOC);
-            return $items;} catch (PDOException $e) {
+            return $items;
+        
+        } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cannot retrieve cart items: " . $e->getMessage());
 
@@ -140,8 +156,8 @@ class Orders extends DbConnection
                                            FROM orders t1
                                            INNER JOIN order_items t2
                                            ON t1.order_id = t2.order_id
-                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id 
-                                           WHERE user_id = :user_id 
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
+                                           WHERE user_id = :user_id
                                            AND t3.order_status = 'pending'");
             $statement->bindParam(":user_id", $userId);
             $statement->execute();
@@ -153,7 +169,6 @@ class Orders extends DbConnection
         }
 
     }
-
 
     public function generateTransactionId()
     {
@@ -173,19 +188,17 @@ class Orders extends DbConnection
 
             $pendingOrder = $this->findPendingOrder($userId);
 
-            if(!$pendingOrder){
+            if (!$pendingOrder) {
                 throw new Exception("No pending order found for user.");
             }
 
             //update order status
-            $this -> updateOrderStatus($pendingOrder['order_id'],2) ;
-            
-            
-            $this->insertPayments($pendingOrder['order_id'], $paymentMethod,1 );
-            $this->insertShippingDetails($pendingOrder['order_id'], $shippingAddress,1);
+            $this->updateOrderStatus($pendingOrder['order_id'], 2);
+
+            $this->insertPayments($pendingOrder['order_id'], $paymentMethod, 1);
+            $this->insertShippingDetails($pendingOrder['order_id'], $shippingAddress, 1);
             $this->updateOrder($pendingOrder['order_id']);
-            
-            
+
             return "Order placed successfully!";
 
         } catch (PDOException $e) {
@@ -196,43 +209,39 @@ class Orders extends DbConnection
 
     }
 
+    public function updateOrder($orderId)
+    {
 
-public function updateOrder($orderId){
-
-
-    try {
-        $pdo = $this->connect();
+        try {
+            $pdo = $this->connect();
 
             //get the total
-        $statement = $pdo->prepare("SELECT SUM(product_price * quantity) as total
+            $statement = $pdo->prepare("SELECT SUM(product_price * quantity) as total
                                     FROM order_items
                                     WHERE order_id = :order_id");
-                                    $statement->bindParam(':order_id',$orderId);
-                                    $statement->execute();
+            $statement->bindParam(':order_id', $orderId);
+            $statement->execute();
 
-                                    $result = $statement->fetch(PDO::FETCH_ASSOC);     
-                                    
-                                    $totalPrice = $result['total'];
-        //update total in order table
-        $updateStmt = $pdo->prepare("UPDATE orders
+            $result = $statement->fetch(PDO::FETCH_ASSOC);
+
+            $totalPrice = $result['total'];
+            //update total in order table
+            $updateStmt = $pdo->prepare("UPDATE orders
                                      SET total_price = :totalPrice
                                      WHERE order_id = :orderId");
-        $updateStmt->bindParam(':totalPrice', $totalPrice);
-        $updateStmt->bindParam(':orderId', $orderId);
-        $updateStmt->execute();
-        return "Order total updated successfully!";
-    } catch (PDOException $e){
+            $updateStmt->bindParam(':totalPrice', $totalPrice);
+            $updateStmt->bindParam(':orderId', $orderId);
+            $updateStmt->execute();
+            return "Order total updated successfully!";
+        } catch (PDOException $e) {
             // Handle exception
-        error_log("Failed to update order total: " . $e->getMessage());
-        return "Error updating order total.";
+            error_log("Failed to update order total: " . $e->getMessage());
+            return "Error updating order total.";
 
+        }
     }
-}
 
-
-
-
-    public function insertOrderItem($orderId,$productId, $productPrice, $quantity)
+    public function insertOrderItem($orderId, $productId, $productPrice, $quantity)
     {
         try {
             $pdo = $this->connect();
@@ -246,7 +255,7 @@ public function updateOrder($orderId){
             $statement->bindParam(':quantity', $quantity);
             $statement->execute();
 
-            return "Success";  // Return the generated order_id
+            return "Success"; // Return the generated order_id
 
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
@@ -254,7 +263,6 @@ public function updateOrder($orderId){
             return false; // Return false in case of an error
         }
     }
-
 
     public function insertOrder($userId)
     {
@@ -266,9 +274,8 @@ public function updateOrder($orderId){
             $statement->bindParam(":user_id", $userId);
             $statement->execute();
 
-            $orderId = $pdo -> lastInsertId();
+            $orderId = $pdo->lastInsertId();
             return $orderId;
-            
 
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
@@ -278,14 +285,14 @@ public function updateOrder($orderId){
 
     }
 
-    public function findPendingOrder($userId){
-
+    public function findPendingOrder($userId)
+    {
 
         $pdo = $this->connect();
-        $statement = $pdo->prepare("SELECT  * 
+        $statement = $pdo->prepare("SELECT  *
                                            FROM orders t1
-                                           JOIN order_status_lu t2 ON t1.order_status = t2.order_status_id 
-                                           WHERE t1.user_id = :user_id 
+                                           JOIN order_status_lu t2 ON t1.order_status = t2.order_status_id
+                                           WHERE t1.user_id = :user_id
                                            AND t2.order_status = 'pending'");
         $statement->bindParam(":user_id", $userId);
         $statement->execute();
@@ -295,41 +302,36 @@ public function updateOrder($orderId){
 
     }
 
+    public function updateOrderStatus($orderId, $orderStatus)
+    {
 
-public function updateOrderStatus($orderId, $orderStatus){
-
-    $pdo = $this->connect();
-    //check if product is already added to cart
-    $statement = $pdo->prepare("UPDATE orders
+        $pdo = $this->connect();
+        //check if product is already added to cart
+        $statement = $pdo->prepare("UPDATE orders
                                        SET order_status = :order_status,
                                            updated_at = NOW()
                                        WHERE  order_id = :order_id");
-    $statement->bindParam(":order_id", $orderId);
-    $statement->bindParam(":order_status", $orderStatus);
-    $statement->execute();
+        $statement->bindParam(":order_id", $orderId);
+        $statement->bindParam(":order_status", $orderStatus);
+        $statement->execute();
 
+    }
 
-
-
-}
-
-
-
-    public function insertPayments($orderId, $paymentMethod,$paymentStatus)
+    public function insertPayments($orderId, $paymentMethod, $paymentStatus)
     {
 
         try {
             $transactionId = $this->generateTransactionId();
             $pdo = $this->connect();
 /**
-     add if statement if paymentMethod === "Cash on Delivery";
-    then pending 
-**/
+add if statement if paymentMethod === "Cash on Delivery";
+then pending
+ **/
             $statement = $pdo->prepare("INSERT INTO payments(order_id,payment_method,payment_status,transaction_id)
                                            VALUES (:order_id,:payment_method,:payment_status,:transaction_id)");
             $statement->bindParam(":order_id", $orderId);
             $statement->bindParam(":payment_method", $paymentMethod);
-            $statement->bindValue(":payment_status",$paymentStatus); //payment status default
+            $statement->bindValue(":payment_status", $paymentStatus); //payment status default
             $statement->bindParam(":transaction_id", $transactionId);
             $statement->execute();
 
@@ -338,7 +340,7 @@ public function updateOrderStatus($orderId, $orderStatus){
         }
     }
 
-    public function insertShippingDetails($orderId, $shippingAddress,$deliveryStatus)
+    public function insertShippingDetails($orderId, $shippingAddress, $deliveryStatus)
     {
 
         $trackingNumber = $this->generateTrackingNumber();
@@ -350,7 +352,7 @@ public function updateOrderStatus($orderId, $orderStatus){
             $statement->bindParam(":order_id", $orderId);
             $statement->bindParam(":shipping_address", $shippingAddress);
             $statement->bindParam(":tracking_number", $trackingNumber);
-            $statement->bindValue(":delivery_status",$deliveryStatus ); //$delivery status default
+            $statement->bindValue(":delivery_status", $deliveryStatus); //$delivery status default
 
             $statement->execute();
 
@@ -359,18 +361,16 @@ public function updateOrderStatus($orderId, $orderStatus){
         }
     }
 
-
-
-    public function showUserOrders($userId){
-
+    public function showUserOrders($userId)
+    {
 
         $pdo = $this->connect();
-        $statement = $pdo->prepare("SELECT  * 
+        $statement = $pdo->prepare("SELECT  *
                                            FROM orders t1
                                            JOIN order_items t2 ON t1.order_id = t2.order_id
                                            JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
                                            JOIN products t4 ON t2.product_id = t4.product_id
-                                           WHERE t1.user_id = :user_id 
+                                           WHERE t1.user_id = :user_id
                                            AND t3.order_status = 'placed'");
         $statement->bindParam(":user_id", $userId);
         $statement->execute();
@@ -379,16 +379,16 @@ public function updateOrderStatus($orderId, $orderStatus){
         return $existingOrder;
 
     }
-  public function showUserOrdersToPay($userId){
-
+    public function showUserOrdersToPay($userId)
+    {
 
         $pdo = $this->connect();
-        $statement = $pdo->prepare("SELECT  * 
+        $statement = $pdo->prepare("SELECT  *
                                            FROM orders t1
                                            JOIN order_items t2 ON t1.order_id = t2.order_id
                                            JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
                                            JOIN products t4 ON t2.product_id = t4.product_id
-                                           WHERE t1.user_id = :user_id 
+                                           WHERE t1.user_id = :user_id
                                            AND t3.order_status = 'placed'");
         $statement->bindParam(":user_id", $userId);
         $statement->execute();
@@ -398,18 +398,16 @@ public function updateOrderStatus($orderId, $orderStatus){
 
     }
 
-
-    
-    public function showUserOrdersToShip($userId){
-
+    public function showUserOrdersToShip($userId)
+    {
 
         $pdo = $this->connect();
-        $statement = $pdo->prepare("SELECT  * 
+        $statement = $pdo->prepare("SELECT  *
                                            FROM orders t1
                                            JOIN order_items t2 ON t1.order_id = t2.order_id
                                            JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
                                            JOIN products t4 ON t2.product_id = t4.product_id
-                                           WHERE t1.user_id = :user_id 
+                                           WHERE t1.user_id = :user_id
                                            AND t3.order_status = 'shipped'");
         $statement->bindParam(":user_id", $userId);
         $statement->execute();
@@ -419,16 +417,16 @@ public function updateOrderStatus($orderId, $orderStatus){
 
     }
 
-    public function showUserOrdersToReceive($userId){
-
+    public function showUserOrdersToReceive($userId)
+    {
 
         $pdo = $this->connect();
-        $statement = $pdo->prepare("SELECT  * 
+        $statement = $pdo->prepare("SELECT  *
                                            FROM orders t1
                                            JOIN order_items t2 ON t1.order_id = t2.order_id
                                            JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
                                            JOIN products t4 ON t2.product_id = t4.product_id
-                                           WHERE t1.user_id = :user_id 
+                                           WHERE t1.user_id = :user_id
                                            AND t3.order_status = 'out for delivery'");
         $statement->bindParam(":user_id", $userId);
         $statement->execute();
@@ -439,20 +437,54 @@ public function updateOrderStatus($orderId, $orderStatus){
     }
 
 
-
-
-
-    
-    public function showSpecificUserOrder($userId,$productId){
-
+    public function showUserOrdersCompleted($userId)
+    {
 
         $pdo = $this->connect();
-        $statement = $pdo->prepare("SELECT  * 
+        $statement = $pdo->prepare("SELECT  *
                                            FROM orders t1
                                            JOIN order_items t2 ON t1.order_id = t2.order_id
                                            JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
                                            JOIN products t4 ON t2.product_id = t4.product_id
-                                           WHERE t1.user_id = :user_id 
+                                           WHERE t1.user_id = :user_id
+                                           AND t3.order_status = 'completed'");
+        $statement->bindParam(":user_id", $userId);
+        $statement->execute();
+
+        $existingOrder = $statement->fetchAll();
+        return $existingOrder;
+
+    }
+
+    public function showUserOrdersCancelled($userId)
+    {
+
+        $pdo = $this->connect();
+        $statement = $pdo->prepare("SELECT  *
+                                           FROM orders t1
+                                           JOIN order_items t2 ON t1.order_id = t2.order_id
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
+                                           JOIN products t4 ON t2.product_id = t4.product_id
+                                           WHERE t1.user_id = :user_id
+                                           AND t3.order_status = 'cancelled'");
+        $statement->bindParam(":user_id", $userId);
+        $statement->execute();
+
+        $existingOrder = $statement->fetchAll();
+        return $existingOrder;
+
+    }
+
+    public function showSpecificUserOrder($userId, $productId)
+    {
+
+        $pdo = $this->connect();
+        $statement = $pdo->prepare("SELECT  *
+                                           FROM orders t1
+                                           JOIN order_items t2 ON t1.order_id = t2.order_id
+                                           JOIN order_status_lu t3 ON t1.order_status = t3.order_status_id
+                                           JOIN products t4 ON t2.product_id = t4.product_id
+                                           WHERE t1.user_id = :user_id
                                            AND t4.product_id = :product_id
                                            AND t3.order_status = 'placed'");
         $statement->bindParam(":user_id", $userId);
@@ -463,8 +495,6 @@ public function updateOrderStatus($orderId, $orderStatus){
         return $existingOrder;
 
     }
-
-
 
 }
 

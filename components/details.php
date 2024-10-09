@@ -51,9 +51,9 @@ if (isset($_POST['add_to_cart'])) {
 
 
 <?php if ($user['role']==="administrator"):?>
-        <?php include_once 'Navbar/adminNavbar.php';?>
+        <?php include_once '../components/Navbar/userNavbar.php';?>
         <?php else:?>
-        <?php include_once 'Navbar/userNavbar.php';?>
+        <?php include_once '../components/Navbar/userNavbar.php';?>
         <?php endif; ?>
 
 <main>

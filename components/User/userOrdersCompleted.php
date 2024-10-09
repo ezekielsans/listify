@@ -4,12 +4,15 @@
 $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 
-$userOrders = $orders->showUserOrdersToPay($user['user_id']);
-
+$userOrders = $orders->showUserOrdersCompleted($user['user_id']);
+// $activeTab ='myOrders'; 
 //echo "<br/> user orders <br/>";
 //print_r($userOrders);
 $counter = 1;
 ?>
+
+<?php if($userOrders):?>
+
 <?php foreach($userOrders as $order) {?>
     <div class="card my-4">
     <div class="card-body">
@@ -45,8 +48,16 @@ $counter = 1;
                 <a href="#" class="btn btn-outline-primary btn-sm me-2">Contact Seller</a>
                 <a href="details.php?ID=<?=$order['product_id']?>" class="btn btn-secondary btn-sm">View Product</a>
             </div>
-            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$order['product_id']?>">Cancel Order</button>
+            <button class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$order['order_id']?>"> Order</button>
         </div>
     </div>
 </div>
 <?php } ?>
+
+
+<?php else:?>
+<div class="mt-5 text-center ">
+    <h4 class="text-muted">No orders yet...</h4>
+    </div>
+
+ <?php endif;?>
