@@ -76,7 +76,7 @@ if (isset($_POST['deactivate'])) {
     <?php foreach ($usersData as $user) {?>
     <tr>
       <th scope="row"><?=$counter++?></th>
-      <input type="hidden" name="ID" value="<?=$user['ID']?>">
+      <input type="hidden" name="ID" value="<?=$user['user_id']?>">
       <td><img src="/uploads/<?=$user['user_image']?>" alt="Profile Image" width="32" height="32" class="rounded-circle"> <?=$user['first_name']?> <?=$user['last_name']?></td>
       <td><?=$user['email']?></td>
       <td><?=$user['created_at']?></td>
@@ -117,12 +117,12 @@ if (isset($_POST['deactivate'])) {
                 <?=$user['status']?></td>
         <?php }?>
         <?php }?>
-        <td><button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$user['ID']?>">Delete</button>
+        <td><button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$user['user_id']?>">Delete</button>
         <?php if (isset($user['status'])) {?>
           <?php if ($user['status'] === "inactive" || $user['status'] === "suspended") {?>
-            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#deactConfirmModal" data-user-id="<?=$user['ID']?>">Activate</button></td>
+            <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#deactConfirmModal" data-user-id="<?=$user['user_id']?>">Activate</button></td>
          <?php } else {?>
-                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deactConfirmModal" data-user-id="<?=$user['ID']?>">Deactivate</button></td>
+                <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#deactConfirmModal" data-user-id="<?=$user['user_id']?>">Deactivate</button></td>
         <?php }?>
          <?php }?>
         </tr>

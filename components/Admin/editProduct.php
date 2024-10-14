@@ -1,7 +1,7 @@
 <?php
-include_once 'productController.php';
-include_once 'usersController.php';
-$users->startSession();
+include_once '../../controllers/productController.php';
+include_once '../../controllers/usersController.php';
+//$users->startSession();
 $productId = $_GET['ID'];
 
 if (isset($productId)) {
@@ -27,15 +27,21 @@ if (isset($_POST['save'])) {
 }
 ?>
 <link rel="stylesheet" href="editProduct.css">
-<?php include_once 'components/header.php';?>
+<?php include_once '../../components/header.php';?>
 
 <main>
 
 <div class="container">
-<h1 class="my-5">Edit Product Form</h1>
+<div class="row">
+    <div class="col-12 d-flex justify-content-between align-items-center my-5">
+        <h1>Edit Product Form</h1>
+        <a href="../../components/Admin/inventoryAdminDashboard.php" class="btn btn-primary">Return</a>
+    </div>
+</div>
+
 <?php if ($product): ?>
 <form method="POST"  enctype="multipart/form-data">
-<input type="hidden" name="ID" id="product_id" class="form-control form-control-lg" value="<?=$product['ID'];?>">
+<input type="hidden" name="ID" id="product_id" class="form-control form-control-lg" value="<?=$product['product_id'];?>">
 <div class="mb-3">
 <label class="form-label">Product Name</label>
 <input type="text" name="product_name" id="product_name" class="form-control form-control-lg" value="<?=$product['product_name'];?>">
@@ -107,4 +113,4 @@ const addBtn =     document.getElementById('btn-increment');
 
 
 </script>
-<?php include_once 'components/footer.php';?>
+<?php include_once '../../components/Footer/footer.php';?>

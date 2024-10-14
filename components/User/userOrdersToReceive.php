@@ -10,6 +10,7 @@ $userOrders = $orders->showUserOrdersToReceive($user['user_id']);
 //print_r($userOrders);
 $counter = 1;
 ?>
+<?php if($userOrders):?>
 <?php foreach($userOrders as $order) {?>
     <div class="card my-4">
     <div class="card-body">
@@ -50,3 +51,8 @@ $counter = 1;
     </div>
 </div>
 <?php } ?>
+<?php else:?>
+    <div class="mt-5 text-center ">
+    <h4 class="text-muted">No orders yet...</h4>
+    </div>
+    <?php endif;?>

@@ -2,6 +2,8 @@
 
 require_once '../../controllers/usersController.php';
 require_once '../../controllers/productController.php';
+require_once '../../controllers/ordersController.php';
+
 $users->startSession();
 $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
@@ -10,6 +12,10 @@ $itemsPerPage = 10;
 $totalItems = $products->totalProducts($searchTerm);
 $totalPages = ceil($totalItems / $itemsPerPage);
 
+
+$orders = $orders->showOrders();  
+
+print_r($orders);
 //get all products
 $productsData = $products->getAllProducts($currentPage, $itemsPerPage, $searchTerm);
 $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm);
@@ -40,7 +46,7 @@ if (isset($_POST['delete'])) {
 <main>
 <div class="container">
 <div class="d-flex justify-content-between mt-5 gap-5" >
-<h2>Product Management Dashboard</h2>
+<h2>Order Management Dashboard</h2>
 <form class="w-25" method="get">
     <div class="input-group mb-3 ">
         <input class="form-control" type="search" name="search" placeholder="Search a product..." required>
@@ -52,24 +58,22 @@ if (isset($_POST['delete'])) {
 <thead>
     <tr>
       <th scope="col">#</th>
-      <th scope="col">Name</th>
-      <th scope="col">Description</th>
-      <th scope="col">Category</th>
-      <th scope="col">Price</th>
-      <th scope="col">Quantity</th>
+      <th scope="col">Customer Name</th>
+      <th scope="col">Customer Order</th>
+      <th scope="col">Order Status</th>
       <th scope="col">As Of</th>
       <th scope="col">Action</th>
     </tr>
   </thead>
   <tbody>
-    <?php foreach ($productsData as $product) {?>
+    <?php foreach ($orders as $order) {?>
     <tr>
       <th scope="row"><?=$counter++?></th>
-      <input type="hidden" name="ID" value="<?=$product['product_id']?>">
-      <td><img src="/uploads/<?=$product['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  <?=$product['product_name']?></td>
-      <td><?=$product['product_description']?></td>
-      <td><?=$product['product_category']?></td>
-      <td><?=number_format($product['product_price'], 2)?></td>
+      <input type="hidden" name="ID" value="<?=$order['order_id']?>">
+      <td><img src="/uploads/<?=$order['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  <?=$order['first_name']?> <?=$order['last_name']?></td>
+      <td><?=$order['product_description']?></td>
+      <td><?=$order['product_category']?></td>
+      <td><?=number_format($order['product_price'], 2)?></td>
 
 
 

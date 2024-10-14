@@ -41,7 +41,7 @@ $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
                 <a href="../Admin/inventoryAdminDashboard.php" class="nav-link">Inventory</a>
             </li> 
               <li class="nav-item">
-                <a href="/" class="nav-link">Orders</a>
+                <a href="../Admin/ordersAdminDashboard.php" class="nav-link">Orders</a>
             </li>
             
         </ul>
@@ -58,7 +58,7 @@ $user =  $users->getUserId($_SESSION['LoginUser']['ID']);
             <li><a class="dropdown-item" href="../profile.php">Profile</a></li>
             <li><a class="dropdown-item" href="#">Settings</a></li>
             <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="logout.php">Sign out</a></li>
+            <li><a class="dropdown-item" href="../logout.php">Sign out</a></li>
           </ul>
         </div>
         <?php else:?>

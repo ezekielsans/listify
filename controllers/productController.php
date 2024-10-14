@@ -31,6 +31,7 @@ class Products extends DbConnection
 
     }
 
+
     public function deleteProduct($productId)
     {
         try {
