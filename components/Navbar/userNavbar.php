@@ -3,12 +3,41 @@ $users->startSession();
 
 $userId = $_SESSION['LoginUser']['ID'];
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
-// $userDetails = $users->getUserId($_SESSION['LoginUser']['ID']);
-// $userId = $userDetails['ID'];
-
 $cartItems = $orders->countCartItems($userId);
 
-//$categories = $products->loadCategories();
+
+// Check if 'id' parameter exists in the URL
+$pageContent = ''; // Initialize a variable to hold the content to be displayed
+
+if (isset($_GET['id'])) {
+    $categoryId = $_GET['id'];
+
+    // Perform different actions based on the ID value
+    if ($categoryId == 1) {
+        $pageContent = '../Products/entertainment.php';
+    } elseif ($categoryId == 2) {
+        $pageContent = '../Products/cameras.php';
+    } elseif ($categoryId == 3) {
+        $pageContent = '../Products/laptopsAndComputers.php';
+    } 
+    elseif ($categoryId == 4) {
+        $pageContent = '../Products/homeAppliances.php';
+    }
+    elseif ($categoryId == 5) {
+        $pageContent = '../Products/motorGears.php';
+    }
+    elseif ($categoryId == 6) {
+        $pageContent = '../Products/hobbiesAndStationery.php';
+    } elseif ($categoryId == 7) {
+        $pageContent = '../Products/mensApprarel.php';
+    }else {
+        // If the category ID does not match any known values, set a default content
+        $pageContent = '../Products/womensApprarel.php';
+    }
+} else {
+    // If no 'id' parameter, set a default content
+    $pageContent = '../Homepage/homepage.php';
+}
 ?>
 
 <!DOCTYPE html>
@@ -18,7 +47,7 @@ $cartItems = $orders->countCartItems($userId);
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Listify</title>
     <link rel="shortcut icon" href="../assets/listify-fav-ico.png" type="image/x-icon">
-    <link rel="stylesheet" href="userNavbar.css">
+    <link rel="stylesheet" href="../Navbar/userNavbar.css">
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/css/bootstrap.min.css" integrity="sha512-jnSuA4Ss2PkkikSOLtYs8BlYIeeIK1h99ty4YfvRPAlzr377vr3CXDb7sb7eEEBYjDtcYj+AjBH3FLv5uSJuXg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 </head>
@@ -113,8 +142,17 @@ $cartItems = $orders->countCartItems($userId);
     <!-- Navbar items in the center -->
     <div class="collapse navbar-collapse justify-content-center" id="collapsibleNavbar">
     <div id="loadingMessage">Loading categories...</div>
-        <ul class="navbar-nav" id="categoryList" style="display:none;">
+        <ul class="navbar-nav flex-row" id="categoryList">
            
+           <!-- <li class="nav-item"><a class="nav-link" href="../Products/entertainment.php">Entertainment</a></li>
+           <li class="nav-item"><a class="nav-link" href="../Products/cameras.php">Cameras</a></li>
+           <li class="nav-item"><a class="nav-link" href="../Products/laptopsAndComputers.php">Laptops & Computers</a></li>
+           <li class="nav-item"><a class="nav-link" href="../Products/homeAppliances.php">Home Appliances</a></li>
+           <li class="nav-item"><a class="nav-link" href="../Products/motorGears.php">Motor Gears</a></li>
+           <li class="nav-item"><a class="nav-link" href="../Products/hobbiesAndStationery.php">Hobbies & Stationery</a></li>
+           <li class="nav-item"><a class="nav-link" href="../Products/mensApprarel.php">Men's Apparel</a></li>
+           <li class="nav-item"><a class="nav-link" href="../Products/womensApprarel.php">Women's Apparel</a></li> -->
+          
         </ul>
 
 
@@ -136,44 +174,38 @@ $cartItems = $orders->countCartItems($userId);
 
 
 <script>
-
 document.addEventListener('DOMContentLoaded', requestCategories);
-function requestCategories (){
+
+function requestCategories() {
     const loadingMessage = document.getElementById('loadingMessage');
     const categoryList = document.getElementById('categoryList');
 
-fetch("http://localhost/api/loadCategories.php",{method:"GET"})
-.then((res)=> res.json)
-.then((data)=> {
+    fetch("http://localhost/api/loadCategories.php", { method: "GET" })
+        .then((res) => res.json()) // Correctly call the json() function
+        .then((data) => {
+            loadingMessage.style.display = 'none';
+            categoryList.style.display = 'flex';
 
-    loadingMessage.style.display = 'none';
-    categoryList.style.display = 'block';
-    
-if(data.error){
-console.error(data.error);
-return;
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+
+            // Populate the category list
+            data.forEach((category) => {
+                const listItem = document.createElement('li');
+                listItem.classList.add('nav-item');
+
+                const link = document.createElement('a');
+                link.classList.add('nav-link');
+                link.href = `../Category/category.php?id=${encodeURIComponent(category.product_category_id)}`;
+                link.textContent = category.product_category;
+
+                listItem.appendChild(link);
+                categoryList.appendChild(listItem);
+            });
+        })
+        .catch((err) => console.error('Failed to fetch categories:', err));
 }
-
-
-
-const categoryList = document.getElementById("categoryList");
-data.forEach((category) => {
-    const listItem =document.createElement('li');
-    listItem.classList.add('nav-item');
-
-
-    const link  = document.createElement('a');
-    link.classList.add('nav-link','text-white');
-    link.href = `/category.php?id=${encodeURIComponent(category.product_category_id)}`;
-                    link.textContent = category.product_category;
-
-                    listItem.appendChild(link);
-                    categoryList.appendChild(listItem);
-});
-})
-.catch((err) => console.error('Failed to fetch categories:', err));
-}
-
-
 
 </script>

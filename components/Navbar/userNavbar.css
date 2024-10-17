@@ -1,0 +1,13 @@
+#categoryList li a{
+color: white;
+
+
+
+}
+
+#categoryList li a:hover{
+
+text-decoration: underline;
+
+
+}

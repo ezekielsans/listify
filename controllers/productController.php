@@ -78,6 +78,60 @@ class Products extends DbConnection
 
     }
 
+// get products via catergory
+
+
+
+public function getProductByCategory($categoryId,$currentPage, $itemsPerPage, $searchTerm)
+{
+    try {
+        $pdo = $this->connect();
+        $offset = ($currentPage - 1) * $itemsPerPage;
+
+        if (!empty($searchTerm)) {
+            print_r($searchTerm);
+
+            $query = "SELECT *
+                      FROM products
+                      WHERE product_name LIKE :searchTerm
+                      LIMIT  $offset , $itemsPerPage";
+            $statement = $pdo->prepare($query);
+            // Bind the parameters
+            $statement->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
+        } else {
+            $query = "SELECT *
+                      FROM products p
+                      JOIN product_category_lu pc ON p.product_category = pc.product_category_id
+                      WHERE product_category_id = :category_id
+                      LIMIT $offset , $itemsPerPage";
+            $statement = $pdo->prepare($query);
+            $statement->bindParam(":category_id", $categoryId);
+        }
+
+        $statement->execute();
+
+        // $statement->debugDumpParams();
+
+        $products = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $products;
+
+    } catch (PDOException $e) {
+        echo "Product Retrieval failed" . $e->getMessage();
+
+    }
+
+}
+
+
+
+
+
+
+
+
+
+
     public function getAllProducts($currentPage, $itemsPerPage, $searchTerm)
     {
         try {
@@ -165,7 +219,10 @@ class Products extends DbConnection
             } else {
 
                 $statement = $pdo->prepare("SELECT COUNT(*)
-                                     FROM products");
+                                     FROM products p 
+                                     INNER JOIN product_category_lu pc ON p.product_category = pc.product_category_id  
+                                     WHERE product_category = :category_id");
+                                     $statement->bindParam(':category_id',$categoryId);
             }
 
             $statement->execute();
