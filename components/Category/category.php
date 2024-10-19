@@ -32,22 +32,68 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 
 <main>
 
-<div class="container">
-    <div>
-<img src="../../assets/login-page-design-1.png"   class="img-fluid mt-4 w-100" alt="..." style=" max-height: 600px; width: auto;">
-</div>
-<div class="d-flex justify-content-between mt-5 gap-5" >
-<h1 >Products</h1>
-<form class="w-25" method="get">
-    <div class="input-group mb-3 ">
-        <input class="form-control" type="search" name="search" placeholder="Search a product..." required>
-        <button type="submit" class="btn btn-primary text-white input-group-append" >Search</button>
-    </div>
-</form>
+<div class="container mt-4">
+    <div class="row">
+           <!-- Filter Sidebar -->
+           <div class="col-md-3">
+            <div class="border-end pe-3">
+                <h5>Filter</h5>
+                <!-- Apparel Filter -->
+                <div class="mb-4">
+                    <h6>Apparel</h6>
+                    <form>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="apparel" value="jackets" id="apparelJackets">
+                            <label class="form-check-label" for="apparelJackets">Jackets</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="apparel" value="gloves" id="apparelGloves">
+                            <label class="form-check-label" for="apparelGloves">Gloves</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="apparel" value="pants" id="apparelPants">
+                            <label class="form-check-label" for="apparelPants">Pants</label>
+                        </div>
+                        <!-- Add more apparel options as needed -->
+                    </form>
+                </div>
+                <!-- Brand Filter -->
+                <div class="mb-4">
+                    <h6>Shop by Brand</h6>
+                    <form>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="brand" value="100%" id="brand100">
+                            <label class="form-check-label" for="brand100">100%</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="brand" value="dainese" id="brandDainese">
+                            <label class="form-check-label" for="brandDainese">Dainese</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="brand" value="evs" id="brandEvs">
+                            <label class="form-check-label" for="brandEvs">EVS</label>
+                        </div>
+                        <!-- Add more brand options as needed -->
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- Product List and Sort Options -->
+        <div class="col-md-9">
+            
+                    <label for="sort-by" class="form-label me-2">Sort by:</label>
+                    <select class="form-select d-inline-block w-auto" id="sort-by">
+                        <option value="featured">Featured</option>
+                        <option value="price-low-high">Price: Low to High</option>
+                        <option value="price-high-low">Price: High to Low</option>
+                        <option value="newest">Newest</option>
+                    </select>
+            
+      
 
-</div>
 
-<div class="mt-3 mb-5">
+
+<div class="row mt-3 mb-5">
     <?php if (isset($_SESSION['LoginUser']) && ($user['role'] === "administrator")) : ?>
         <a href="addProduct.php" class="btn btn-lg bg-primary text-white mb-5"> Add New Product</a>
         <?php endif;?>
@@ -57,7 +103,7 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 
         </div>
 
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 mb-5">
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-3 mb-5 gap-5">
 <?php foreach ($items as $item) { ?>
     <a href="../details.php?ID=<?=$item['product_id'];?>" class="text-decoration-none">
 
@@ -115,6 +161,13 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 
 
 <p>showing total of <?=$totalItems?> products</p>
+</div>
+</div>
+
+
+
+
+</div>
 </div>
 </div>
 </div>

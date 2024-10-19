@@ -102,7 +102,7 @@ public function getProductByCategory($categoryId,$currentPage, $itemsPerPage, $s
             $query = "SELECT *
                       FROM products p
                       JOIN product_category_lu pc ON p.product_category = pc.product_category_id
-                      WHERE product_category_id = :category_id
+                      WHERE pc.product_category_id = :category_id
                       LIMIT $offset , $itemsPerPage";
             $statement = $pdo->prepare($query);
             $statement->bindParam(":category_id", $categoryId);
