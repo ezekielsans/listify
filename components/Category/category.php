@@ -2,6 +2,8 @@
 require_once '../../controllers/productController.php';
 require_once '../../controllers/usersController.php';
 require_once '../../controllers/ordersController.php';
+
+
 $users->startSession();
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
 
@@ -14,7 +16,40 @@ $totalItems = $products->totalProducts($searchTerm);
 $totalPages = ceil($totalItems / $itemsPerPage);
 
 $reviews = 0;
-$categoryId = $_GET['id'];
+
+
+
+
+if (isset($_GET['id'])) {
+    
+    $categoryId = $_GET['id'];
+
+    // Perform different actions based on the ID value
+    if ($categoryId == 1) {
+        $pageContent = '../Products/entertainment.php';
+    } elseif ($categoryId == 2) {
+        $pageContent = '../Products/cameras.php';
+    } elseif ($categoryId == 3) {
+        $pageContent = '../Products/laptopsAndComputers.php';
+    } 
+    elseif ($categoryId == 4) {
+        $pageContent = '../Products/homeAppliances.php';
+    }
+    elseif ($categoryId == 5) {
+        $pageContent = '../Products/motorGears.php';
+    }
+    elseif ($categoryId == 6) {
+        $pageContent = '../Products/hobbiesAndStationery.php';
+    } elseif ($categoryId == 7) {
+        $pageContent = '../Products/mensApprarel.php';
+    }else {
+        // If the category ID does not match any known values, set a default content
+        $pageContent = '../Products/womensApprarel.php';
+    }
+} else {
+    // If no 'id' parameter, set a default content
+    $pageContent = '../Homepage/homepage.php';
+}
 
 $items = $products->getProductByCategory($categoryId,$currentPage, $itemsPerPage, $searchTerm);
 print_r($items);

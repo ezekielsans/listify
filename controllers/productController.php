@@ -221,7 +221,7 @@ public function getProductByCategory($categoryId,$currentPage, $itemsPerPage, $s
                 $statement = $pdo->prepare("SELECT COUNT(*)
                                      FROM products p 
                                      INNER JOIN product_category_lu pc ON p.product_category = pc.product_category_id  
-                                     WHERE product_category = :category_id");
+                                     WHERE p.product_category = :category_id");
                                      $statement->bindParam(':category_id',$categoryId);
             }
 

@@ -2,15 +2,20 @@
 require_once '../../controllers/productController.php';
 require_once '../../controllers/usersController.php';
 require_once '../../controllers/ordersController.php';
+
+
 $users->startSession();
+
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
+
+
 
 
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
 
 $currentPage = $_GET['page'] ?? 1;
 $itemsPerPage = 8;
-$totalItems = $products->totalProducts($searchTerm);
+$totalItems = $products->totalProducts($searchTerm); 
 $totalPages = ceil($totalItems / $itemsPerPage);
 
 $reviews = 0;
@@ -23,32 +28,14 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 <?php include_once '../header.php';?>
 <?php if ($user['role']==="administrator"):?>
         <?php include_once '../Navbar/adminNavbar.php';?>
+        
         <?php else:?>
+
         <?php include_once '../Navbar/userNavbar.php';?>
         <?php endif; ?>
 
 <main>
-<div id="carouselExample" class="carousel slide mt-4">
-  <div class="carousel-inner">
-    <div class="carousel-item active">
-      <img src="../../assets/login-page-design-1.png" height="300px" class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="../../assets/login-page-design-1.png"  height="300px" class="d-block w-100" alt="...">
-    </div>
-    <div class="carousel-item">
-      <img src="../../assets/login-page-design-1.png"  height="300px" class="d-block w-100" alt="...">
-    </div>
-  </div>
-  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExample" data-bs-slide="prev">
-    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Previous</span>
-  </button>
-  <button class="carousel-control-next" type="button" data-bs-target="#carouselExample" data-bs-slide="next">
-    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-    <span class="visually-hidden">Next</span>
-  </button>
-</div>
+
 <div class="container">
     <div>
 <img src="../../assets/login-page-design-1.png"   class="img-fluid mt-4 w-100" alt="..." style=" max-height: 600px; width: auto;">
@@ -137,4 +124,5 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 </div>
 
 </main>
+
 <?php include_once '../Footer/footer.php';?>

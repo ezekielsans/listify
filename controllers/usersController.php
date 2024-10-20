@@ -330,7 +330,6 @@ class Users extends DbConnection
                                                       t2.city,
                                                       t2.postal_code,
                                                       t2.country
-
                                                 FROM users t1
                                                 LEFT JOIN addresses t2 ON t1.user_id = t2.user_id 
                                                 WHERE t1.user_id = :userId");
