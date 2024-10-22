@@ -1,0 +1,19 @@
+#categoryList li a{
+color: white;
+
+
+
+}
+
+#categoryList li a:hover{
+
+text-decoration: underline;
+
+
+}
+
+
+.cf-icon-svg {
+    fill: #607D8B;
+    stroke: #607D8B;
+}

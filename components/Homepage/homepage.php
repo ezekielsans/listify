@@ -37,17 +37,35 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 <main>
 
 <div class="container">
-    <div>
-<img src="../../assets/login-page-design-1.png"   class="img-fluid mt-4 w-100" alt="..." style=" max-height: 600px; width: auto;">
+
+
+<!-- Banner -->
+<section class="banner my-4">
+    <div class="container position-relative">
+        <h2>Grab Up to 50% Off On Selected Headphones</h2>
+        <a href="#" class="btn btn-primary mt-3">Buy Now</a>
+        <img src="../../assets/login-page-design-1.png"   class="img-fluid mt-4 w-100" alt="..." >
+    </div>
+</section>
+
+
+<!-- Filters -->
+<div class="container mb-4">
+    <div class="d-flex justify-content-between">
+        <div class="btn-group">
+            <button type="button" class="btn btn-outline-secondary">Headphone Type</button>
+            <button type="button" class="btn btn-outline-secondary">Price</button>
+            <button type="button" class="btn btn-outline-secondary">Review</button>
+            <button type="button" class="btn btn-outline-secondary">Color</button>
+            <button type="button" class="btn btn-outline-secondary">Material</button>
+            <button type="button" class="btn btn-outline-secondary">Offer</button>
+        </div>
+        <button class="btn btn-outline-secondary">Sort By</button>
+    </div>
 </div>
+
 <div class="d-flex justify-content-between mt-5 gap-5" >
 <h1 >Products</h1>
-<form class="w-25" method="get">
-    <div class="input-group mb-3 ">
-        <input class="form-control" type="search" name="search" placeholder="Search a product..." required>
-        <button type="submit" class="btn btn-primary text-white input-group-append" >Search</button>
-    </div>
-</form>
 
 </div>
 

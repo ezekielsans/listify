@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Generation Time: Oct 06, 2024 at 11:13 PM
--- Server version: 9.0.1
+-- Generation Time: Oct 22, 2024 at 12:07 AM
+-- Server version: 9.1.0
 -- PHP Version: 8.2.8
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -144,7 +144,7 @@ INSERT INTO `order_status_lu` (`order_status_id`, `order_status`) VALUES
 CREATE TABLE `payments` (
   `payment_id` int NOT NULL,
   `order_id` int NOT NULL,
-  `payment_method` varchar(50) DEFAULT NULL,
+  `payment_method` int DEFAULT NULL,
   `payment_status` int DEFAULT NULL,
   `transaction_id` varchar(255) DEFAULT NULL,
   `payment_date` timestamp NULL DEFAULT NULL
@@ -155,8 +155,31 @@ CREATE TABLE `payments` (
 --
 
 INSERT INTO `payments` (`payment_id`, `order_id`, `payment_method`, `payment_status`, `transaction_id`, `payment_date`) VALUES
-(5, 21, 'on', 1, 'LSTRANS67020a7520a87172818699765248', NULL),
-(6, 22, 'on', 1, 'LSTRANS67020a7530d93172818699775559', NULL);
+(5, 21, 1, 1, 'LSTRANS67020a7520a87172818699765248', NULL),
+(6, 22, 1, 1, 'LSTRANS67020a7530d93172818699775559', NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `payment_methods_lu`
+--
+
+CREATE TABLE `payment_methods_lu` (
+  `payment_methods_id` int NOT NULL,
+  `payment_method` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `payment_methods_lu`
+--
+
+INSERT INTO `payment_methods_lu` (`payment_methods_id`, `payment_method`) VALUES
+(1, 'Credit Card'),
+(2, 'Debit Card'),
+(3, 'Cash on Delivery'),
+(4, 'Mobile Payment'),
+(5, 'E-Wallet'),
+(6, 'Direct Debit');
 
 -- --------------------------------------------------------
 
@@ -186,10 +209,11 @@ INSERT INTO `payment_status_lu` (`payment_status_id`, `payment_status`) VALUES
 
 CREATE TABLE `products` (
   `product_id` int NOT NULL,
+  `promotion_id` int DEFAULT NULL,
   `product_image` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `product_name` varchar(255) NOT NULL,
   `product_description` varchar(255) NOT NULL,
-  `product_category` varchar(255) NOT NULL,
+  `product_category` int NOT NULL,
   `product_price` decimal(19,4) NOT NULL,
   `product_stocks` int NOT NULL,
   `added_by` varchar(255) NOT NULL,
@@ -202,18 +226,81 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `product_image`, `product_name`, `product_description`, `product_category`, `product_price`, `product_stocks`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(7, '1726414608225_14.jpg', 'Pandesal', 'this is a pandesal', 'Food', 50.0000, 10, '', 'admin@email.test', '2024-09-08 08:26:39', '2024-09-23 21:17:23'),
-(9, '1726414608225_14.jpg', 'PineApple', 'this is a pineapple', 'fruits', 55.0000, 0, '', 'admin@email.test', '2024-09-08 11:07:51', '2024-09-23 21:22:52'),
-(12, '1726414608225_14.jpg', 'Camera', 'this is  a camera', 'Tools', 16600.0000, 50, '', '', '2024-09-08 11:33:23', '2024-09-08 11:33:23'),
-(13, '1726414608225_14.jpg', 'Mocha', 'Coffe flavored test', 'Coffee', 300.0000, 50, '', '', '2024-09-15 15:01:38', '2024-09-15 15:01:38'),
-(14, '1726414608225_14.jpg', 'DJI Action 3', 'Action camera test 3,updated', 'Camera', 25500.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-15 15:25:18', '2024-09-15 15:36:48'),
-(15, '1726414608225_14.jpg', 'Kiwi', 'This is a test', 'Fruits', 40.0000, 50, '', '', '2024-09-08 08:26:39', '2024-09-08 08:26:39'),
-(16, '1726414608225_14.jpg', 'chia seeds', 'test 1', 'fruits', 50.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:27:34', '2024-09-16 13:27:34'),
-(17, '1726414608225_14.jpg', 'colgate', 'test', 'Daily', 25.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:27:53', '2024-09-16 13:27:53'),
-(18, '1726414608225_14.jpg', 'Internet', 'test 4', 'Tool', 30.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:28:27', '2024-09-16 13:28:27'),
-(19, '1726414608225_14.jpg', 'Rambutan', 'test 5', 'Fruits', 40.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:28:40', '2024-09-16 13:28:40'),
-(21, '1726414608225_14.jpg', 'Strawberry ', 'test', 'Fruits', 60.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:36:54', '2024-09-16 13:36:54');
+INSERT INTO `products` (`product_id`, `promotion_id`, `product_image`, `product_name`, `product_description`, `product_category`, `product_price`, `product_stocks`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(7, 0, '1726414608225_14.jpg', 'Pandesal', 'this is a pandesal', 1, 50.0000, 10, '', 'admin@email.test', '2024-09-08 08:26:39', '2024-09-23 21:17:23'),
+(9, 0, '1726414608225_14.jpg', 'PineApple', 'this is a pineapple', 1, 55.0000, 0, '', 'admin@email.test', '2024-09-08 11:07:51', '2024-09-23 21:22:52'),
+(12, 0, '1726414608225_14.jpg', 'Camera', 'this is  a camera', 1, 16600.0000, 50, '', '', '2024-09-08 11:33:23', '2024-09-08 11:33:23'),
+(13, 0, '1726414608225_14.jpg', 'Mocha', 'Coffe flavored test', 2, 300.0000, 50, '', '', '2024-09-15 15:01:38', '2024-09-15 15:01:38'),
+(14, 0, '1726414608225_14.jpg', 'DJI Action 3', 'Action camera test 3,updated', 2, 25500.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-15 15:25:18', '2024-09-15 15:36:48'),
+(15, 0, '1726414608225_14.jpg', 'Kiwi', 'This is a test', 2, 40.0000, 50, '', '', '2024-09-08 08:26:39', '2024-09-08 08:26:39'),
+(16, 0, '1726414608225_14.jpg', 'chia seeds', 'test 1', 3, 50.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:27:34', '2024-09-16 13:27:34'),
+(17, 0, '1726414608225_14.jpg', 'colgate', 'test', 3, 25.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:27:53', '2024-09-16 13:27:53'),
+(18, 0, '1726414608225_14.jpg', 'Internet', 'test 4', 3, 30.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:28:27', '2024-09-16 13:28:27'),
+(19, 0, '1726414608225_14.jpg', 'Rambutan', 'test 5', 4, 40.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:28:40', '2024-09-16 13:28:40'),
+(21, 0, '1726414608225_14.jpg', 'Strawberry ', 'test', 4, 60.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:36:54', '2024-09-16 13:36:54');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `product_category_lu`
+--
+
+CREATE TABLE `product_category_lu` (
+  `product_category_id` int NOT NULL,
+  `product_category` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `product_category_lu`
+--
+
+INSERT INTO `product_category_lu` (`product_category_id`, `product_category`) VALUES
+(1, 'entertainment'),
+(2, 'cameras'),
+(3, 'hobbies & stationery'),
+(4, 'home appliances'),
+(5, 'laptops and computers'),
+(6, 'men\'s apprarel'),
+(7, 'women\'s apprarel'),
+(8, 'motor gears');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `promotion`
+--
+
+CREATE TABLE `promotion` (
+  `promotion_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `discounted_price` decimal(10,2) NOT NULL,
+  `start_date` timestamp NOT NULL,
+  `end_date` timestamp NOT NULL,
+  `promotion_type` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `promotion_type_lu`
+--
+
+CREATE TABLE `promotion_type_lu` (
+  `promotion_type_id` int NOT NULL,
+  `promotion_type` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `promotion_type_lu`
+--
+
+INSERT INTO `promotion_type_lu` (`promotion_type_id`, `promotion_type`) VALUES
+(1, 'Flash Sale'),
+(2, 'New Customer Discount'),
+(3, '50% off'),
+(4, 'Summer Sale'),
+(5, 'Christmas Sale'),
+(6, 'Free Shipping');
 
 -- --------------------------------------------------------
 
@@ -318,7 +405,14 @@ ALTER TABLE `order_status_lu`
 ALTER TABLE `payments`
   ADD PRIMARY KEY (`payment_id`),
   ADD KEY `order_id` (`order_id`),
-  ADD KEY `payment_status_fkey` (`payment_status`);
+  ADD KEY `payment_status_fkey` (`payment_status`),
+  ADD KEY `payment_method_fkey` (`payment_method`);
+
+--
+-- Indexes for table `payment_methods_lu`
+--
+ALTER TABLE `payment_methods_lu`
+  ADD PRIMARY KEY (`payment_methods_id`);
 
 --
 -- Indexes for table `payment_status_lu`
@@ -330,7 +424,28 @@ ALTER TABLE `payment_status_lu`
 -- Indexes for table `products`
 --
 ALTER TABLE `products`
-  ADD PRIMARY KEY (`product_id`);
+  ADD PRIMARY KEY (`product_id`),
+  ADD KEY `product_category_fkey` (`product_category`);
+
+--
+-- Indexes for table `product_category_lu`
+--
+ALTER TABLE `product_category_lu`
+  ADD PRIMARY KEY (`product_category_id`);
+
+--
+-- Indexes for table `promotion`
+--
+ALTER TABLE `promotion`
+  ADD PRIMARY KEY (`promotion_id`),
+  ADD KEY `promotion_type_fkey` (`promotion_type`),
+  ADD KEY `product_id_fkey` (`product_id`);
+
+--
+-- Indexes for table `promotion_type_lu`
+--
+ALTER TABLE `promotion_type_lu`
+  ADD PRIMARY KEY (`promotion_type_id`);
 
 --
 -- Indexes for table `shipping_details`
@@ -387,6 +502,12 @@ ALTER TABLE `payments`
   MODIFY `payment_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
+-- AUTO_INCREMENT for table `payment_methods_lu`
+--
+ALTER TABLE `payment_methods_lu`
+  MODIFY `payment_methods_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
 -- AUTO_INCREMENT for table `payment_status_lu`
 --
 ALTER TABLE `payment_status_lu`
@@ -397,6 +518,24 @@ ALTER TABLE `payment_status_lu`
 --
 ALTER TABLE `products`
   MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `product_category_lu`
+--
+ALTER TABLE `product_category_lu`
+  MODIFY `product_category_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+
+--
+-- AUTO_INCREMENT for table `promotion`
+--
+ALTER TABLE `promotion`
+  MODIFY `promotion_id` int NOT NULL AUTO_INCREMENT;
+
+--
+-- AUTO_INCREMENT for table `promotion_type_lu`
+--
+ALTER TABLE `promotion_type_lu`
+  MODIFY `promotion_type_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `shipping_details`
@@ -438,8 +577,22 @@ ALTER TABLE `order_items`
 -- Constraints for table `payments`
 --
 ALTER TABLE `payments`
+  ADD CONSTRAINT `payment_method_fkey` FOREIGN KEY (`payment_method`) REFERENCES `payment_methods_lu` (`payment_methods_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
   ADD CONSTRAINT `payment_status_fkey` FOREIGN KEY (`payment_status`) REFERENCES `payment_status_lu` (`payment_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
-  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`);
+  ADD CONSTRAINT `payments_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `orders` (`order_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `products`
+--
+ALTER TABLE `products`
+  ADD CONSTRAINT `product_category_fkey` FOREIGN KEY (`product_category`) REFERENCES `product_category_lu` (`product_category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `promotion`
+--
+ALTER TABLE `promotion`
+  ADD CONSTRAINT `product_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `promotion_type_fkey` FOREIGN KEY (`promotion_type`) REFERENCES `promotion_type_lu` (`promotion_type_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `shipping_details`
