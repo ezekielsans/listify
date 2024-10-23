@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Generation Time: Oct 22, 2024 at 12:07 AM
+-- Generation Time: Oct 23, 2024 at 11:52 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.2.8
 
@@ -228,7 +228,7 @@ CREATE TABLE `products` (
 
 INSERT INTO `products` (`product_id`, `promotion_id`, `product_image`, `product_name`, `product_description`, `product_category`, `product_price`, `product_stocks`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
 (7, 0, '1726414608225_14.jpg', 'Pandesal', 'this is a pandesal', 1, 50.0000, 10, '', 'admin@email.test', '2024-09-08 08:26:39', '2024-09-23 21:17:23'),
-(9, 0, '1726414608225_14.jpg', 'PineApple', 'this is a pineapple', 1, 55.0000, 0, '', 'admin@email.test', '2024-09-08 11:07:51', '2024-09-23 21:22:52'),
+(9, 0, '1726414608225_14.jpg', 'PineApple', 'this is a pineapple', 1, 55.0000, 0, '', 'admin@email.test', '2024-10-23 11:07:51', '2024-09-23 21:22:52'),
 (12, 0, '1726414608225_14.jpg', 'Camera', 'this is  a camera', 1, 16600.0000, 50, '', '', '2024-09-08 11:33:23', '2024-09-08 11:33:23'),
 (13, 0, '1726414608225_14.jpg', 'Mocha', 'Coffe flavored test', 2, 300.0000, 50, '', '', '2024-09-15 15:01:38', '2024-09-15 15:01:38'),
 (14, 0, '1726414608225_14.jpg', 'DJI Action 3', 'Action camera test 3,updated', 2, 25500.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-15 15:25:18', '2024-09-15 15:36:48'),
@@ -267,6 +267,23 @@ INSERT INTO `product_category_lu` (`product_category_id`, `product_category`) VA
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `product_reviews`
+--
+
+CREATE TABLE `product_reviews` (
+  `review_id` int NOT NULL,
+  `product_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `rating` int NOT NULL,
+  `comment` text NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `review_status` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `promotion`
 --
 
@@ -278,6 +295,15 @@ CREATE TABLE `promotion` (
   `end_date` timestamp NOT NULL,
   `promotion_type` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `promotion`
+--
+
+INSERT INTO `promotion` (`promotion_id`, `product_id`, `discounted_price`, `start_date`, `end_date`, `promotion_type`) VALUES
+(1, 7, 25.00, '2024-10-23 11:07:51', '2024-10-23 21:07:51', 3),
+(2, 9, 35.00, '2024-10-23 11:07:51', '2024-10-23 21:07:51', 3),
+(3, 12, 14000.00, '2024-10-23 11:07:51', '2024-10-23 21:07:51', 3);
 
 -- --------------------------------------------------------
 
@@ -301,6 +327,26 @@ INSERT INTO `promotion_type_lu` (`promotion_type_id`, `promotion_type`) VALUES
 (4, 'Summer Sale'),
 (5, 'Christmas Sale'),
 (6, 'Free Shipping');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `review_status_lu`
+--
+
+CREATE TABLE `review_status_lu` (
+  `review_status_id` int NOT NULL,
+  `review_status` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `review_status_lu`
+--
+
+INSERT INTO `review_status_lu` (`review_status_id`, `review_status`) VALUES
+(1, 'pending'),
+(2, 'approved'),
+(3, 'rejected');
 
 -- --------------------------------------------------------
 
@@ -434,6 +480,15 @@ ALTER TABLE `product_category_lu`
   ADD PRIMARY KEY (`product_category_id`);
 
 --
+-- Indexes for table `product_reviews`
+--
+ALTER TABLE `product_reviews`
+  ADD PRIMARY KEY (`review_id`),
+  ADD KEY `prod_rev_prod_id_fkey` (`product_id`),
+  ADD KEY `prod_rev_user_id_fkey` (`user_id`),
+  ADD KEY `prod_rev_prod_rev_fkey` (`review_status`);
+
+--
 -- Indexes for table `promotion`
 --
 ALTER TABLE `promotion`
@@ -446,6 +501,12 @@ ALTER TABLE `promotion`
 --
 ALTER TABLE `promotion_type_lu`
   ADD PRIMARY KEY (`promotion_type_id`);
+
+--
+-- Indexes for table `review_status_lu`
+--
+ALTER TABLE `review_status_lu`
+  ADD PRIMARY KEY (`review_status_id`);
 
 --
 -- Indexes for table `shipping_details`
@@ -526,16 +587,28 @@ ALTER TABLE `product_category_lu`
   MODIFY `product_category_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
+-- AUTO_INCREMENT for table `product_reviews`
+--
+ALTER TABLE `product_reviews`
+  MODIFY `review_id` int NOT NULL AUTO_INCREMENT;
+
+--
 -- AUTO_INCREMENT for table `promotion`
 --
 ALTER TABLE `promotion`
-  MODIFY `promotion_id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `promotion_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `promotion_type_lu`
 --
 ALTER TABLE `promotion_type_lu`
   MODIFY `promotion_type_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+
+--
+-- AUTO_INCREMENT for table `review_status_lu`
+--
+ALTER TABLE `review_status_lu`
+  MODIFY `review_status_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `shipping_details`
@@ -586,6 +659,14 @@ ALTER TABLE `payments`
 --
 ALTER TABLE `products`
   ADD CONSTRAINT `product_category_fkey` FOREIGN KEY (`product_category`) REFERENCES `product_category_lu` (`product_category_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+
+--
+-- Constraints for table `product_reviews`
+--
+ALTER TABLE `product_reviews`
+  ADD CONSTRAINT `prod_rev_prod_id_fkey` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `prod_rev_prod_rev_fkey` FOREIGN KEY (`review_status`) REFERENCES `review_status_lu` (`review_status_id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  ADD CONSTRAINT `prod_rev_user_id_fkey` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 --
 -- Constraints for table `promotion`
