@@ -19,3 +19,23 @@
     background-color: #4CAF50;
     color: #fff;
 }
+
+
+.category-btn {
+    border-radius: 20px;
+    color: white;
+    background-color: #2E7D32;
+    padding: 10px 20px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+.category-btn:hover {
+    background-color: #388E3C; /* Darker green on hover */
+    transform: scale(1.05);    /* Slightly increase size on hover */
+}
+
+.category-btn:focus {
+    outline: none;
+}

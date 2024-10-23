@@ -88,17 +88,17 @@ $cartItems = $orders->countCartItems($userId);
                     <div class="cart-icon" style="position: relative; margin-right:12px;">
                         <span class="badge rounded-pill"
                             style="background-color:#4CAF50; position: absolute; top: -3px; right: -5px;"><?= $cartItems; ?></span>
-                        <a href="../../components/User/userCart.php" class="nav-link">
-                            <svg width="35px" height="35px" viewBox="0 0 512 512" fill="#fff0f0" stroke="#fff0f0">
-                                <path
-                                    d="M7.10542736e-15,-1.42108547e-14 L70.3622093,-1.42108547e-14 L89.7493333,85.3333333 L378.389061,85.3333333 L337.246204,277.333333 L89.6377907,277.333333 L36.288,42.6666667 L7.10542736e-15,42.6666667 L7.10542736e-15,-1.42108547e-14 Z M325.610667,128 L99.456,128 L123.690667,234.666667 L302.741333,234.666667 L325.610667,128 Z M138.666667,384 C156.339779,384 170.666667,369.673112 170.666667,352 C170.666667,334.326888 156.339779,320 138.666667,320 C120.993555,320 106.666667,334.326888 106.666667,352 C106.666667,369.673112 120.993555,384 138.666667,384 Z M288,384 C305.673112,384 320,369.673112 320,352 C320,334.326888 305.673112,320 288,320 C270.326888,320 256,334.326888 256,352 C256,369.673112 270.326888,384 288,384 Z">
-                                </path>
-                            </svg>
-                        </a>
+
+                        <svg width="35px" height="35px" viewBox="0 0 512 512" fill="#4CAF50" stroke="#fff0f0">
+                            <path
+                                d="M7.10542736e-15,-1.42108547e-14 L70.3622093,-1.42108547e-14 L89.7493333,85.3333333 L378.389061,85.3333333 L337.246204,277.333333 L89.6377907,277.333333 L36.288,42.6666667 L7.10542736e-15,42.6666667 L7.10542736e-15,-1.42108547e-14 Z M325.610667,128 L99.456,128 L123.690667,234.666667 L302.741333,234.666667 L325.610667,128 Z M138.666667,384 C156.339779,384 170.666667,369.673112 170.666667,352 C170.666667,334.326888 156.339779,320 138.666667,320 C120.993555,320 106.666667,334.326888 106.666667,352 C106.666667,369.673112 120.993555,384 138.666667,384 Z M288,384 C305.673112,384 320,369.673112 320,352 C320,334.326888 305.673112,320 288,320 C270.326888,320 256,334.326888 256,352 C256,369.673112 270.326888,384 288,384 Z">
+                            </path>
+                        </svg>
+
                     </div>
                 <?php else: // User is not logged in ?>
                     <ul class="navbar-nav ms-3 d-flex flex-row ms-3 align-items-center">
-                         <li class="nav-item me-3">
+                        <li class="nav-item me-3">
                             <a class="nav-link d-flex align-items-center" href="../Login/login.php">
                                 <svg width="35px" height="35px" viewBox="0 0 24 24" fill="none"
                                     xmlns="http://www.w3.org/2000/svg" stroke="#0000">
@@ -108,83 +108,24 @@ $cartItems = $orders->countCartItems($userId);
                                 </svg>
                                 <h6 class="ms-2 font-weight-bold">Account</h6>
                             </a>
-                            </li>
-                            <li class="nav-item"><a class="nav-link  d-flex flex-column align-items-center"
-                                    href="../../components/User/userCart.php">
-                                    <div class="cart-icon" style="position: relative; margin-right:12px;">
-                                        <span class="badge rounded-pill"
-                                            style="background-color:#4CAF50; position: absolute; top: -3px; right: -5px;"><?= $cartItems; ?></span>
+                        </li>
+                        <li class="nav-item"><a class="nav-link  d-flex flex-column align-items-center"
+                                href="../../components/User/userCart.php">
+                                <div class="cart-icon" style="position: relative; margin-right:12px;">
+                                    <span class="badge rounded-pill"
+                                        style="background-color:#4CAF50; position: absolute; top: -3px; right: -5px;"><?= $cartItems; ?></span>
 
-                                        <svg width="35px" height="35px" viewBox="0 0 512 512" fill="#4CAF50"
-                                            stroke="#fff0f0">
-                                            <path
-                                                d="M7.10542736e-15,-1.42108547e-14 L70.3622093,-1.42108547e-14 L89.7493333,85.3333333 L378.389061,85.3333333 L337.246204,277.333333 L89.6377907,277.333333 L36.288,42.6666667 L7.10542736e-15,42.6666667 L7.10542736e-15,-1.42108547e-14 Z M325.610667,128 L99.456,128 L123.690667,234.666667 L302.741333,234.666667 L325.610667,128 Z M138.666667,384 C156.339779,384 170.666667,369.673112 170.666667,352 C170.666667,334.326888 156.339779,320 138.666667,320 C120.993555,320 106.666667,334.326888 106.666667,352 C106.666667,369.673112 120.993555,384 138.666667,384 Z M288,384 C305.673112,384 320,369.673112 320,352 C320,334.326888 305.673112,320 288,320 C270.326888,320 256,334.326888 256,352 C256,369.673112 270.326888,384 288,384 Z">
-                                            </path>
-                                        </svg>
+                                    <svg width="35px" height="35px" viewBox="0 0 512 512" fill="#4CAF50" stroke="#fff0f0">
+                                        <path
+                                            d="M7.10542736e-15,-1.42108547e-14 L70.3622093,-1.42108547e-14 L89.7493333,85.3333333 L378.389061,85.3333333 L337.246204,277.333333 L89.6377907,277.333333 L36.288,42.6666667 L7.10542736e-15,42.6666667 L7.10542736e-15,-1.42108547e-14 Z M325.610667,128 L99.456,128 L123.690667,234.666667 L302.741333,234.666667 L325.610667,128 Z M138.666667,384 C156.339779,384 170.666667,369.673112 170.666667,352 C170.666667,334.326888 156.339779,320 138.666667,320 C120.993555,320 106.666667,334.326888 106.666667,352 C106.666667,369.673112 120.993555,384 138.666667,384 Z M288,384 C305.673112,384 320,369.673112 320,352 C320,334.326888 305.673112,320 288,320 C270.326888,320 256,334.326888 256,352 C256,369.673112 270.326888,384 288,384 Z">
+                                        </path>
+                                    </svg>
 
-                                    </div>
-                                </a></li>
+                                </div>
+                            </a></li>
                     </ul>
 
                 <?php endif; ?>
             </div>
         </div>
     </nav>
-
-    <nav class="navbar navbar-expand-sm" style="background-color:#2E7D32;">
-        <div class="container-fluid">
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse justify-content-center" id="collapsibleNavbar">
-                <div id="loadingMessage" style="font-size:1rem">Loading categories...</div>
-                <ul id="categoryList" class="navbar-nav flex-row" style="display:flex"></ul>
-            </div>
-        </div>
-    </nav>
-
-    <script>document.addEventListener('DOMContentLoaded', requestCategories);
-
-        function requestCategories() {
-            const loadingMessage = document.getElementById('loadingMessage');
-            if (!loadingMessage) {
-                console.error('Loading Message element not found');
-                return;
-            }
-
-            const categoryList = document.getElementById('categoryList');
-
-            if (!categoryList) {
-                console.error('Category list element not found');
-                return;
-            }
-
-            fetch("http://localhost/api/loadCategories.php", { method: "GET" })
-                .then((res) => res.json())
-                .then((data) => {
-                    loadingMessage.style.display = 'none';
-                    categoryList.style.display = 'flex';
-
-                    if (data.error) {
-                        console.error(data.error);
-                        return;
-                    }
-
-                    data.forEach((category) => {
-                        const listItem = document.createElement('li');
-                        listItem.classList.add('nav-item');
-                        const link = document.createElement('a');
-                        link.classList.add('nav-link');
-                        link.href = `../Category/category.php?id=${encodeURIComponent(category.product_category_id)}`;
-                        link.textContent = category.product_category;
-
-                        listItem.appendChild(link);
-                        categoryList.appendChild(listItem);
-                    });
-                })
-                .catch((err) => console.error('Failed to fetch categories:', err));
-        }
-
-
-    </script>
