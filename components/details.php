@@ -39,10 +39,6 @@ if (isset($_POST['add_to_cart'])) {
     print_r($_POST['quantity']);
     echo "<br>";
 
-    //print_r($productId );
-   // $total_price = $_POST['product_price'] * $_POST['quantity'];
- //   print_r($total_price);
-    //$products->createOrder($_POST['userId'], $total_price, $_POST['productId'], $_POST['product_price'],$_POST['quantity']); 
     $orders->addToCart($_POST['userId'],  $_POST['productId'], $_POST['product_price'],$_POST['quantity']);
     echo "Added to cart";
 }
@@ -62,9 +58,9 @@ if (isset($_POST['add_to_cart'])) {
 <?php if ($product): ?>
 
 <input type="hidden" value="<?=$product['product_id'];?>">
- <h1 class="mt-5"><?=$product['product_category'];?> Details</h1>
 
-<div class="d-flex justify-content-between mb-5">
+
+<div class="d-flex justify-content-between mt-5 mb-5">
     <div class="col">
   <img src="/uploads/<?=$product['product_image'];?>" class="card-img-top rounded img-fluid" alt="product-image" style="height: 400px; width: 400px; object-fit: cover;" >
   </div>
@@ -139,7 +135,11 @@ if (isset($_POST['add_to_cart'])) {
         <?php endif;?>
 
     </form>
+
+
 </div>
+
+
 
 <!-- Toast Notification -->
 <div class="toast align-items-center text-bg-primary border-0 top-50 start-50 translate-middle" id="liveToast" role="alert" aria-live="assertive" aria-atomic="true">
@@ -150,6 +150,10 @@ if (isset($_POST['add_to_cart'])) {
     <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
   </div>
 </div>
+
+
+
+
 
 
 </div>
@@ -172,7 +176,38 @@ if (isset($_POST['add_to_cart'])) {
 <!-- <a class="mx-5 btn btn-primary" href="index.php"> Return </a> -->
 
 </div>
+
+
+
+
+
+
+
+
 </div>
+<div class="container mt-4">
+    <h3>Related products you might like</h3>
+    <div class="row">
+        <!-- Example Product Card -->
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="card">
+                <div class="position-absolute top-0 start-0">
+                    <span class="badge bg-danger">Top seller</span>
+                </div>
+                <img src="path/to/image1.jpg" class="card-img-top" alt="TJABBA">
+                <div class="card-body">
+                    <h5 class="card-title">TJABBA</h5>
+                    <p class="card-text">Magazine file</p>
+                    <p class="text-primary fw-bold">₱30/2 pieces</p>
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">★ ★ ★ ★ ☆ (15)</small>
+                        <small class="text-success">In stock in Pasay City</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        </div>
 
 <?php else: ?>
     <h3 class="mt-5">Product does not exist</h3>

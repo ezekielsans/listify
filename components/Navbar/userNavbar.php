@@ -41,26 +41,18 @@ $cartItems = $orders->countCartItems($userId);
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav me-auto">
-                    <li class="nav-item"><a class="nav-link" href="#">Categories</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Deals</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">What's New</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Delivery</a></li>
-                </ul>
-                <form class="d-flex align-items-center">
-                    <div class="input-group">
-                        <input type="text" class="form-control" placeholder="Search Product" aria-label="Search">
-                        <button class="btn btn-outline-secondary" type="submit" aria-label="Search Button">
-                            <svg fill="#607D8B" viewBox="-2 0 19 19" xmlns="http://www.w3.org/2000/svg"
-                                class="cf-icon-svg" stroke="#607D8B" width="20" height="20">
-                                <path
-                                    d="M14.147 15.488a1.112 1.112 0 0 1-1.567 0l-3.395-3.395a5.575 5.575 0 1 1 1.568-1.568l3.394 3.395a1.112 1.112 0 0 1 0 1.568zm-6.361-3.903a4.488 4.488 0 1 0-1.681.327 4.443 4.443 0 0 0 1.68-.327z">
-                                </path>
-                            </svg>
-                        </button>
-                    </div>
-                </form>
+           
+             
+                <form class="d-flex flex-grow-1 mx-4">
+            <div class="input-group w-50">
+                <span class="input-group-text bg-light border-0">
+                    <svg width="20" height="20" fill="#607D8B" viewBox="-2 0 19 19" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M14.147 15.488a1.112 1.112 0 0 1-1.567 0l-3.395-3.395a5.575 5.575 0 1 1 1.568-1.568l3.394 3.395a1.112 1.112 0 0 1 0 1.568zm-6.361-3.903a4.488 4.488 0 1 0-1.681.327 4.443 4.443 0 0 0 1.68-.327z"></path>
+                    </svg>
+                </span>
+                <input type="text" class="form-control border-0 rounded-pill" placeholder="What are you looking for?">
+            </div>
+        </form>
 
 
                 <?php if ($user): // User is logged in ?>
@@ -106,7 +98,7 @@ $cartItems = $orders->countCartItems($userId);
                                         d="M12 4C9.79 4 8 5.79 8 8C8 10.21 9.79 12 12 12C14.21 12 16 10.21 16 8C16 5.79 14.21 4 12 4ZM14 8C14 6.9 13.1 6 12 6C10.9 6 10 6.9 10 8C10 9.1 10.9 10 12 10C13.1 10 14 9.1 14 8ZM18 18C17.8 17.29 14.7 16 12 16C9.31 16 6.23 17.28 6 18H18ZM4 18C4 15.34 9.33 14 12 14C14.67 14 20 15.34 20 18V20H4V18Z"
                                         fill="#4CAF50"></path>
                                 </svg>
-                                <h6 class="ms-2 font-weight-bold">Account</h6>
+                                <h6 class="ms-2 font-weight-bold">Login</h6>
                             </a>
                         </li>
                         <li class="nav-item"><a class="nav-link  d-flex flex-column align-items-center"

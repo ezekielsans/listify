@@ -56,7 +56,7 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 
         <!-- Filters -->
         <div class="d-flex justify-content-between mt-5 mb-5 gap-5">
-            <h1>Categories</h1>
+            <h4>Categories</h4>
 
 
         </div>
@@ -77,7 +77,7 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 
 
         <div class="d-flex justify-content-between mt-5 gap-5">
-            <h1>Hot Deals</h1>
+            <h4>Hot Deals</h4>
 
         </div>
 
@@ -95,24 +95,25 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
                 <?php foreach ($items as $item) { ?>
                     <a href="../details.php?ID=<?= $item['product_id']; ?>" class="text-decoration-none">
 
-                        <div class="card" style="width: 18rem;">
-                            <img class="card-img-top" src="/uploads/<?= $item['product_image'] ?>" height="300"
-                                alt="Card image cap">
+                        <div class="card  h-100" style="width: 18rem;">
+                            <img class="card-img-top" src="../../uploads/<?= $item['product_image'] ?>" height="300"
+                            alt="Card image cap">
                             <div class="card-body">
                                 <div class="d-flex flex-column">
-                                    <h4 class="card-title"><?= $item['product_name'] ?></h4>
+                                    <h5 class="card-title"><?= $item['product_name'] ?></h5>
+                                    <p class="card-text"><?= $item['product_description'] ?></p>
 
                                     <!-- Price display -->
                                     <div class="d-flex align-items-baseline">
                                         <?php if (!empty($item['discounted_price'])): ?>
                                             <!-- Show original price as strikethrough when on sale -->
-                                            <h5 class="text-muted text-decoration-line-through me-2">
+                                            <h4 class="text-muted text-decoration-line-through me-2">
                                                 <?= "₱" . number_format(round($item['product_price'], 2)) ?>
-                                            </h5>
+                                            </h4>
                                             <!-- Show sale price -->
-                                            <h5 class="text-danger">
+                                            <h4 class="text-danger">
                                                 <?= "₱" . number_format(round($item['discounted_price'], 2)) ?>
-                                            </h5>
+                                            </h4>
                                         <?php else: ?>
                                             <!-- Show only original price if not on sale -->
                                             <h5><?= "₱" . number_format(round($item['product_price'], 2)) ?></h5>
@@ -129,14 +130,14 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
                                         for ($i = 1; $i <= $maxStars; $i++) {
                                             if ($i <= floor($rating)) {
                                                 // Full Star
-                                                echo '<svg fill="#FFD700" height="25px" 
+                                                echo '<svg fill="#FFD700" height="20px" 
                                             viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="m12.673 10.779.798 4.02c.221 1.11-.407 1.566-1.395 1.013L8.5 13.81l-3.576 2.002c-.988.553-1.616.097-1.395-1.013l.397-2.001.401-2.02-1.51-1.397-1.498-1.385c-.832-.769-.592-1.507.532-1.64l2.026-.24 2.044-.242 1.717-3.722c.474-1.028 1.25-1.028 1.724 0l1.717 3.722 2.044.242 2.026.24c1.124.133 1.364.871.533 1.64L14.184 9.38z"></path></svg>';
                                             } elseif ($i - $rating <= 0.5) {
                                                 // Half Star
-                                                echo '<svg fill="url(#half)" height="25px" viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><defs><linearGradient id="half"><stop offset="50%" stop-color="#FFD700"/><stop offset="50%" stop-color="#DEDEDE"/></linearGradient></defs><path d="m12.673 10.779.798 4.02c.221 1.11-.407 1.566-1.395 1.013L8.5 13.81l-3.576 2.002c-.988.553-1.616.097-1.395-1.013l.397-2.001.401-2.02-1.51-1.397-1.498-1.385c-.832-.769-.592-1.507.532-1.64l2.026-.24 2.044-.242 1.717-3.722c.474-1.028 1.25-1.028 1.724 0l1.717 3.722 2.044.242 2.026.24c1.124.133 1.364.871.533 1.64L14.184 9.38z"></path></svg>';
+                                                echo '<svg fill="url(#half)" height="20px" viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><defs><linearGradient id="half"><stop offset="50%" stop-color="#FFD700"/><stop offset="50%" stop-color="#DEDEDE"/></linearGradient></defs><path d="m12.673 10.779.798 4.02c.221 1.11-.407 1.566-1.395 1.013L8.5 13.81l-3.576 2.002c-.988.553-1.616.097-1.395-1.013l.397-2.001.401-2.02-1.51-1.397-1.498-1.385c-.832-.769-.592-1.507.532-1.64l2.026-.24 2.044-.242 1.717-3.722c.474-1.028 1.25-1.028 1.724 0l1.717 3.722 2.044.242 2.026.24c1.124.133 1.364.871.533 1.64L14.184 9.38z"></path></svg>';
                                             } else {
                                                 // Empty Star
-                                                echo '<svg fill="#DEDEDE" height="25px" viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="m12.673 10.779.798 4.02c.221 1.11-.407 1.566-1.395 1.013L8.5 13.81l-3.576 2.002c-.988.553-1.616.097-1.395-1.013l.397-2.001.401-2.02-1.51-1.397-1.498-1.385c-.832-.769-.592-1.507.532-1.64l2.026-.24 2.044-.242 1.717-3.722c.474-1.028 1.25-1.028 1.724 0l1.717 3.722 2.044.242 2.026.24c1.124.133 1.364.871.533 1.64L14.184 9.38z"></path></svg>';
+                                                echo '<svg fill="#DEDEDE" height="20px" viewBox="-1 0 19 19" xmlns="http://www.w3.org/2000/svg" class="cf-icon-svg"><path d="m12.673 10.779.798 4.02c.221 1.11-.407 1.566-1.395 1.013L8.5 13.81l-3.576 2.002c-.988.553-1.616.097-1.395-1.013l.397-2.001.401-2.02-1.51-1.397-1.498-1.385c-.832-.769-.592-1.507.532-1.64l2.026-.24 2.044-.242 1.717-3.722c.474-1.028 1.25-1.028 1.724 0l1.717 3.722 2.044.242 2.026.24c1.124.133 1.364.871.533 1.64L14.184 9.38z"></path></svg>';
                                             }
                                         }
                                         ?>
@@ -200,11 +201,11 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
                     listItem.classList.add('nav-item');
 
                     const button = document.createElement('button');
-                    button.classList.add('btn','category-btn');
+                    button.classList.add('btn', 'category-btn');
                     button.style.borderRadius = '20px';
                     button.style.color = 'white';
                     button.style.backgroundColor = '#2E7D32';
-                   
+
                     // const link = document.createElement('a');
                     // link.classList.add('nav-link');
                     // link.textContent = category.product_category;

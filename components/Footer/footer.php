@@ -1,11 +1,11 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.3/js/bootstrap.bundle.min.js" integrity="sha512-7Pi/otdlbbCR+LnW+F7PwFcSDJOuUJB3OxtEHbg4vSMvzvJjde4Po1v4BR9Gdc9aXNUNFVUY+SK51wWT8WF0Gg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <footer>
 
-<div class="px-5 mt-5 border-top" style="background-color: #43A047;">
-  <footer class="py-5 px-5 text-white">
+<div class="px-5 mt-5 border-top bg-light">
+  <footer class="py-5 px-5 text-dark">
     <div class="row">
       <div class="col-6 col-md-2 mb-3">
-        <h5>CUSTOMER CARE</h5>
+        <h6>CUSTOMER CARE</h6>
         <ul class="nav flex-column ">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Terms & Condition</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Privacy Policy</a></li>
@@ -16,7 +16,7 @@
       </div>
 
       <div class="col-6 col-md-2 mb-3">
-        <h5>QUICK LINKS</h5>
+        <h6>QUICK LINKS</h6>
         <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
@@ -28,7 +28,7 @@
       </div>
 
       <div class="col-6 col-md-2 mb-3">
-        <h5>Section</h5>
+        <h6>Section</h6>
         <ul class="nav flex-column">
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Home</a></li>
           <li class="nav-item mb-2"><a href="#" class="nav-link p-0 text-body-secondary">Features</a></li>
@@ -40,7 +40,7 @@
 
       <div class="col-md-5 offset-md-1 mb-3">
         <form>
-          <h5>Subscribe to our newsletter</h5>
+          <h6>Subscribe to our newsletter</h6>
           <p>Monthly digest of what's new and exciting from us.</p>
           <div class="d-flex flex-column flex-sm-row w-100 gap-2">
             <label for="newsletter1" class="visually-hidden">Email address</label>

@@ -146,8 +146,9 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
         <img class="card-img-top" src="/uploads/<?=$item['product_image']?>" height="300" alt="Card image cap">
         <div class="card-body">
             <div class="d-flex flex-column">
-                <h4 class="card-title"><?=$item['product_name']?></h4>
-                <h5 class="card-title"><?="₱".number_format(round($item['product_price'], 2))?></h5>
+                <h5 class="card-title"><?=$item['product_name']?></h5>
+                <p class="card-title"><?=$item['product_description']?></p>
+                <h4 class="card-title"><?="₱".number_format(round($item['product_price'], 2))?></h4>
 
                 <!-- Display stars -->
                 <div class="d-flex align-items-center mb-2">

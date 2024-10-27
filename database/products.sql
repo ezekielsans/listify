@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: db:3306
--- Generation Time: Oct 23, 2024 at 11:52 PM
+-- Generation Time: Oct 27, 2024 at 01:11 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.2.8
 
@@ -82,14 +82,6 @@ CREATE TABLE `orders` (
   `updated_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
---
--- Dumping data for table `orders`
---
-
-INSERT INTO `orders` (`order_id`, `user_id`, `total_price`, `order_status`, `created_at`, `updated_at`) VALUES
-(21, 24, 150.00, 2, '2024-10-06 03:56:21', '2024-10-06 22:47:39'),
-(22, 24, 160.00, 2, '2024-10-06 03:56:26', '2024-10-06 22:47:48');
-
 -- --------------------------------------------------------
 
 --
@@ -103,14 +95,6 @@ CREATE TABLE `order_items` (
   `quantity` int NOT NULL DEFAULT '1',
   `product_price` decimal(10,2) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `order_items`
---
-
-INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`, `product_price`) VALUES
-(20, 21, 7, 3, 50.00),
-(21, 22, 19, 4, 40.00);
 
 -- --------------------------------------------------------
 
@@ -149,14 +133,6 @@ CREATE TABLE `payments` (
   `transaction_id` varchar(255) DEFAULT NULL,
   `payment_date` timestamp NULL DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `payments`
---
-
-INSERT INTO `payments` (`payment_id`, `order_id`, `payment_method`, `payment_status`, `transaction_id`, `payment_date`) VALUES
-(5, 21, 1, 1, 'LSTRANS67020a7520a87172818699765248', NULL),
-(6, 22, 1, 1, 'LSTRANS67020a7530d93172818699775559', NULL);
 
 -- --------------------------------------------------------
 
@@ -209,7 +185,6 @@ INSERT INTO `payment_status_lu` (`payment_status_id`, `payment_status`) VALUES
 
 CREATE TABLE `products` (
   `product_id` int NOT NULL,
-  `promotion_id` int DEFAULT NULL,
   `product_image` varchar(255) CHARACTER SET latin1 COLLATE latin1_swedish_ci DEFAULT NULL,
   `product_name` varchar(255) NOT NULL,
   `product_description` varchar(255) NOT NULL,
@@ -226,18 +201,87 @@ CREATE TABLE `products` (
 -- Dumping data for table `products`
 --
 
-INSERT INTO `products` (`product_id`, `promotion_id`, `product_image`, `product_name`, `product_description`, `product_category`, `product_price`, `product_stocks`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
-(7, 0, '1726414608225_14.jpg', 'Pandesal', 'this is a pandesal', 1, 50.0000, 10, '', 'admin@email.test', '2024-09-08 08:26:39', '2024-09-23 21:17:23'),
-(9, 0, '1726414608225_14.jpg', 'PineApple', 'this is a pineapple', 1, 55.0000, 0, '', 'admin@email.test', '2024-10-23 11:07:51', '2024-09-23 21:22:52'),
-(12, 0, '1726414608225_14.jpg', 'Camera', 'this is  a camera', 1, 16600.0000, 50, '', '', '2024-09-08 11:33:23', '2024-09-08 11:33:23'),
-(13, 0, '1726414608225_14.jpg', 'Mocha', 'Coffe flavored test', 2, 300.0000, 50, '', '', '2024-09-15 15:01:38', '2024-09-15 15:01:38'),
-(14, 0, '1726414608225_14.jpg', 'DJI Action 3', 'Action camera test 3,updated', 2, 25500.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-15 15:25:18', '2024-09-15 15:36:48'),
-(15, 0, '1726414608225_14.jpg', 'Kiwi', 'This is a test', 2, 40.0000, 50, '', '', '2024-09-08 08:26:39', '2024-09-08 08:26:39'),
-(16, 0, '1726414608225_14.jpg', 'chia seeds', 'test 1', 3, 50.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:27:34', '2024-09-16 13:27:34'),
-(17, 0, '1726414608225_14.jpg', 'colgate', 'test', 3, 25.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:27:53', '2024-09-16 13:27:53'),
-(18, 0, '1726414608225_14.jpg', 'Internet', 'test 4', 3, 30.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:28:27', '2024-09-16 13:28:27'),
-(19, 0, '1726414608225_14.jpg', 'Rambutan', 'test 5', 4, 40.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:28:40', '2024-09-16 13:28:40'),
-(21, 0, '1726414608225_14.jpg', 'Strawberry ', 'test', 4, 60.0000, 50, 'test4@email.com', 'test4@email.com', '2024-09-16 13:36:54', '2024-09-16 13:36:54');
+INSERT INTO `products` (`product_id`, `product_image`, `product_name`, `product_description`, `product_category`, `product_price`, `product_stocks`, `added_by`, `updated_by`, `created_at`, `updated_at`) VALUES
+(1, 'tv_50inch.jpg', '50-inch 4K Smart TV', 'High-definition 50-inch 4K TV with smart features', 1, 599.9900, 50, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(2, 'home_theater.jpg', 'Home Theater System', '5.1 surround sound system with Bluetooth', 1, 299.9900, 30, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(3, 'gaming_console.jpg', 'Gaming Console', 'Latest gaming console with 1TB storage', 1, 399.9900, 20, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(4, 'bluetooth_speaker.jpg', 'Bluetooth Speaker', 'Portable Bluetooth speaker with powerful bass', 1, 49.9900, 100, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(5, 'soundbar.jpg', 'Soundbar', 'High-quality soundbar for TVs and music', 1, 149.9900, 40, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(6, 'vr_headset.jpg', 'VR Headset', 'Virtual reality headset compatible with gaming consoles', 1, 199.9900, 15, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(7, 'dvd_player.jpg', 'DVD Player', 'High-definition DVD player with HDMI output', 1, 39.9900, 80, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(8, 'smart_projector.jpg', 'Smart Projector', 'Portable projector with built-in streaming apps', 1, 299.9900, 10, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(9, 'karaoke_machine.jpg', 'Karaoke Machine', 'Karaoke system with two microphones', 1, 99.9900, 25, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(10, 'noise_cancelling_headphones.jpg', 'Noise Cancelling Headphones', 'Over-ear headphones with active noise cancellation', 1, 129.9900, 60, 'admin', 'admin', '2024-10-26 00:37:34', '2024-10-26 00:37:34'),
+(11, 'dslr_camera.jpg', 'Digital SLR Camera', 'High-resolution DSLR camera with 24MP sensor', 2, 799.9900, 30, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(12, 'compact_camera.jpg', 'Compact Camera', 'Pocket-sized digital camera with 16MP sensor', 2, 199.9900, 50, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(13, 'action_camera.jpg', 'Action Camera', 'Waterproof action camera with 4K recording', 2, 299.9900, 40, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(14, 'mirrorless_camera.jpg', 'Mirrorless Camera', 'Lightweight mirrorless camera with interchangeable lenses', 2, 599.9900, 20, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(15, 'camera_lens.jpg', 'Camera Lens 50mm f/1.8', 'Standard prime lens for DSLR and mirrorless cameras', 2, 99.9900, 70, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(16, 'camera_tripod.jpg', 'Camera Tripod', 'Adjustable tripod for cameras and smartphones', 2, 49.9900, 80, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(17, 'camera_bag.jpg', 'Camera Bag', 'Weather-resistant camera bag with multiple compartments', 2, 79.9900, 60, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(18, 'drone_camera.jpg', 'Drone with Camera', 'Quadcopter drone with HD camera and live streaming', 2, 399.9900, 15, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(19, 'camera_stabilizer.jpg', 'Camera Stabilizer', 'Handheld gimbal stabilizer for smooth video recording', 2, 149.9900, 35, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(20, 'camera_flash.jpg', 'External Camera Flash', 'External flash unit compatible with DSLR cameras', 2, 59.9900, 50, 'admin', 'admin', '2024-10-26 00:37:46', '2024-10-26 00:37:46'),
+(21, 'sketching_set.jpg', 'Artistic Sketching Set', 'Complete set of pencils, charcoal, and erasers', 3, 19.9900, 100, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(22, 'calligraphy_kit.jpg', 'Calligraphy Kit', 'Calligraphy pen set with different nibs and inks', 3, 29.9900, 80, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(23, 'model_kit.jpg', 'Model Building Kit', 'Plastic model kit for building airplanes and cars', 3, 49.9900, 60, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(24, 'puzzle.jpg', '1000-piece Puzzle', 'Challenging jigsaw puzzle for hobbyists', 3, 15.9900, 150, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(25, 'scrapbooking_supplies.jpg', 'Scrapbooking Supplies', 'Set of stickers, paper, and embellishments for scrapbooking', 3, 24.9900, 70, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(26, 'board_game.jpg', 'Board Game', 'Strategy board game for 2-6 players', 3, 39.9900, 50, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(27, 'painting_set.jpg', 'Watercolor Painting Set', 'Watercolor paints with brushes and paper', 3, 34.9900, 80, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(28, 'origami_paper.jpg', 'Origami Paper Pack', '100 sheets of colored origami paper', 3, 9.9900, 200, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(29, 'knitting_kit.jpg', 'Knitting Starter Kit', 'Yarn, needles, and patterns for beginners', 3, 29.9900, 40, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(30, 'notebook_set.jpg', 'Notebook Set', 'Pack of 3 spiral-bound notebooks', 3, 12.9900, 90, 'admin', 'admin', '2024-10-26 00:37:54', '2024-10-26 00:37:54'),
+(31, 'air_fryer.jpg', 'Air Fryer', 'Healthier way to fry food using air instead of oil', 4, 89.9900, 40, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(32, 'vacuum_cleaner.jpg', 'Vacuum Cleaner', 'Bagless vacuum cleaner with HEPA filter', 4, 129.9900, 35, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(33, 'microwave.jpg', 'Microwave Oven', '1000W microwave with convection features', 4, 99.9900, 25, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(34, 'blender.jpg', 'High-Power Blender', 'Blender with multiple speed settings and pulse function', 4, 59.9900, 50, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(35, 'rice_cooker.jpg', 'Electric Rice Cooker', 'Rice cooker with keep-warm function', 4, 39.9900, 60, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(36, 'dishwasher.jpg', 'Dishwasher', 'Energy-efficient dishwasher with multiple cleaning modes', 4, 299.9900, 20, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(37, 'coffee_maker.jpg', 'Coffee Maker', 'Programmable coffee maker with built-in grinder', 4, 49.9900, 45, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(38, 'electric_kettle.jpg', 'Electric Kettle', 'Fast-boil kettle with auto shut-off', 4, 19.9900, 80, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(39, 'dehumidifier.jpg', 'Dehumidifier', 'Portable dehumidifier for controlling room humidity', 4, 89.9900, 30, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(40, 'induction_cooktop.jpg', 'Induction Cooktop', 'Portable induction cooktop with multiple heat settings', 4, 79.9900, 25, 'admin', 'admin', '2024-10-26 00:38:01', '2024-10-26 00:38:01'),
+(41, 'gaming_laptop.jpg', 'Gaming Laptop', 'High-performance laptop with 16GB RAM and 1TB SSD', 5, 1299.9900, 20, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(42, 'desktop_computer.jpg', 'Desktop Computer', 'All-in-one desktop with 27-inch screen', 5, 999.9900, 15, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(43, 'ultrabook.jpg', 'Ultrabook', 'Lightweight laptop with 8GB RAM and 512GB SSD', 5, 799.9900, 30, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(44, '2_in_1_laptop.jpg', '2-in-1 Convertible Laptop', 'Laptop with touchscreen and detachable keyboard', 5, 699.9900, 25, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(45, 'computer_monitor.jpg', 'Computer Monitor', '24-inch Full HD monitor with adjustable stand', 5, 149.9900, 50, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(46, 'wireless_keyboard.jpg', 'Wireless Keyboard and Mouse Combo', 'Wireless keyboard and mouse set', 5, 29.9900, 100, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(47, 'ssd_drive.jpg', '1TB SSD Drive', 'High-speed solid-state drive for computers', 5, 99.9900, 60, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(48, 'external_hard_drive.jpg', 'External Hard Drive', '2TB external hard drive with USB 3.0', 5, 59.9900, 70, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(49, 'gaming_mouse.jpg', 'Gaming Mouse', 'High-precision gaming mouse with customizable buttons', 5, 39.9900, 80, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(50, 'cooling_pad.jpg', 'Laptop Cooling Pad', 'Cooling pad with adjustable fan speed', 5, 19.9900, 90, 'admin', 'admin', '2024-10-26 00:38:07', '2024-10-26 00:38:07'),
+(51, 'mens_tshirt.jpg', 'Men\'s T-Shirt', '100% cotton T-shirt with round neck', 6, 9.9900, 150, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(52, 'mens_jeans.jpg', 'Men\'s Jeans', 'Slim fit jeans with stretchable fabric', 6, 29.9900, 60, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(53, 'mens_jacket.jpg', 'Men\'s Jacket', 'Waterproof jacket with hoodie', 6, 59.9900, 40, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(54, 'mens_sneakers.jpg', 'Men\'s Sneakers', 'Comfortable sneakers for casual wear', 6, 39.9900, 80, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(55, 'mens_watch.jpg', 'Men\'s Wristwatch', 'Classic wristwatch with leather strap', 6, 49.9900, 50, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(56, 'mens_belt.jpg', 'Men\'s Leather Belt', 'Durable leather belt with metal buckle', 6, 19.9900, 100, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(57, 'mens_sunglasses.jpg', 'Men\'s Sunglasses', 'Polarized sunglasses with UV protection', 6, 29.9900, 90, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(58, 'mens_hat.jpg', 'Men\'s Hat', 'Stylish hat for casual or formal wear', 6, 14.9900, 70, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(59, 'mens_socks.jpg', 'Men\'s Socks Pack', 'Pack of 5 cotton blend socks', 6, 9.9900, 200, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(60, 'mens_gloves.jpg', 'Men\'s Gloves', 'Winter gloves with touchscreen capability', 6, 14.9900, 60, 'admin', 'admin', '2024-10-26 00:38:14', '2024-10-26 00:38:14'),
+(61, 'womens_dress.jpg', 'Women\'s Casual Dress', 'Floral print casual dress for summer', 7, 24.9900, 70, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(62, 'womens_handbag.jpg', 'Women\'s Handbag', 'Leather handbag with adjustable strap', 7, 39.9900, 50, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(63, 'womens_jeans.jpg', 'Women\'s Skinny Jeans', 'Stretchable skinny jeans for women', 7, 29.9900, 60, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(64, 'womens_jacket.jpg', 'Women\'s Denim Jacket', 'Classic denim jacket for casual wear', 7, 49.9900, 30, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(65, 'womens_sneakers.jpg', 'Women\'s Sneakers', 'Comfortable and stylish sneakers', 7, 34.9900, 40, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(66, 'womens_scarf.jpg', 'Women\'s Scarf', 'Soft and cozy scarf for winter', 7, 14.9900, 80, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(67, 'womens_watch.jpg', 'Women\'s Wristwatch', 'Stylish wristwatch with metal band', 7, 59.9900, 30, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(68, 'womens_hat.jpg', 'Women\'s Hat', 'Stylish hat for sunny days', 7, 19.9900, 100, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(69, 'womens_sunglasses.jpg', 'Women\'s Sunglasses', 'Trendy sunglasses with UV protection', 7, 24.9900, 70, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(70, 'womens_boots.jpg', 'Women\'s Boots', 'Fashionable boots with a comfortable fit', 7, 69.9900, 40, 'admin', 'admin', '2024-10-26 00:38:22', '2024-10-26 00:38:22'),
+(71, 'motorcycle_helmet.jpg', 'Motorcycle Helmet', 'Full-face motorcycle helmet with visor', 8, 89.9900, 25, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(72, 'motorcycle_gloves.jpg', 'Motorcycle Gloves', 'Protective gloves with reinforced padding', 8, 19.9900, 80, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(73, 'motorcycle_jacket.jpg', 'Motorcycle Jacket', 'Leather jacket with protective padding', 8, 129.9900, 20, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(74, 'motorcycle_boots.jpg', 'Motorcycle Boots', 'Durable boots for motorcycling', 8, 69.9900, 30, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(75, 'motorcycle_pants.jpg', 'Motorcycle Pants', 'Protective pants with reinforced areas', 8, 79.9900, 40, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(76, 'motorcycle_backpack.jpg', 'Motorcycle Backpack', 'Compact backpack designed for riders', 8, 49.9900, 60, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(77, 'motorcycle_knee_pads.jpg', 'Motorcycle Knee Pads', 'Protective knee pads for motorcyclists', 8, 19.9900, 90, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(78, 'motorcycle_handle_grips.jpg', 'Motorcycle Handle Grips', 'Comfortable grips for motorcycle handlebars', 8, 14.9900, 70, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(79, 'motorcycle_cover.jpg', 'Motorcycle Cover', 'Waterproof cover for motorcycles', 8, 24.9900, 100, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35'),
+(80, 'motorcycle_saddlebags.jpg', 'Motorcycle Saddlebags', 'Durable saddlebags for extra storage', 8, 59.9900, 30, 'admin', 'admin', '2024-10-26 00:38:35', '2024-10-26 00:38:35');
 
 -- --------------------------------------------------------
 
@@ -290,20 +334,11 @@ CREATE TABLE `product_reviews` (
 CREATE TABLE `promotion` (
   `promotion_id` int NOT NULL,
   `product_id` int NOT NULL,
-  `discounted_price` decimal(10,2) NOT NULL,
+  `discounted_price` decimal(10,2) DEFAULT NULL,
   `start_date` timestamp NOT NULL,
   `end_date` timestamp NOT NULL,
   `promotion_type` int NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `promotion`
---
-
-INSERT INTO `promotion` (`promotion_id`, `product_id`, `discounted_price`, `start_date`, `end_date`, `promotion_type`) VALUES
-(1, 7, 25.00, '2024-10-23 11:07:51', '2024-10-23 21:07:51', 3),
-(2, 9, 35.00, '2024-10-23 11:07:51', '2024-10-23 21:07:51', 3),
-(3, 12, 14000.00, '2024-10-23 11:07:51', '2024-10-23 21:07:51', 3);
 
 -- --------------------------------------------------------
 
@@ -363,14 +398,6 @@ CREATE TABLE `shipping_details` (
   `shipped_at` datetime DEFAULT NULL,
   `delivered_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
---
--- Dumping data for table `shipping_details`
---
-
-INSERT INTO `shipping_details` (`shipping_id`, `order_id`, `shipping_address`, `tracking_number`, `delivery_status`, `shipped_at`, `delivered_at`) VALUES
-(1, 21, '21 dinar st. camella 3-1, Las Pinas , Philippines', 'LSTRACKING67020a7522484172818699744848', 1, NULL, NULL),
-(2, 22, '21 dinar st. camella 3-1, Las Pinas , Philippines', 'LSTRACKING67020a7535641172818699717621', 1, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -578,7 +605,7 @@ ALTER TABLE `payment_status_lu`
 -- AUTO_INCREMENT for table `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `product_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `product_category_lu`
