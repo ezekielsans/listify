@@ -77,6 +77,7 @@ $cartItems = $orders->countCartItems($userId);
                     </div>
 
                     <!-- Cart Icon Display -->
+                    <a href="../../components/User/userCart.php" class="nav-link">
                     <div class="cart-icon" style="position: relative; margin-right:12px;">
                         <span class="badge rounded-pill"
                             style="background-color:#4CAF50; position: absolute; top: -3px; right: -5px;"><?= $cartItems; ?></span>
@@ -88,6 +89,7 @@ $cartItems = $orders->countCartItems($userId);
                         </svg>
 
                     </div>
+                    </a>
                 <?php else: // User is not logged in ?>
                     <ul class="navbar-nav ms-3 d-flex flex-row ms-3 align-items-center">
                         <li class="nav-item me-3">

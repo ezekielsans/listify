@@ -98,7 +98,7 @@ if (isset($_POST['delete'])) {
 </div>
 </main>
 
-<footer>
+
 
 
 <div class="fixed-bottom  container-fluid p-3 bg-white border w-75">

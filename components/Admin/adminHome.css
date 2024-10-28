@@ -1,0 +1,37 @@
+     /* Sidebar styling */
+     .sidebar {
+        min-height: 100vh;
+        background-color: #343a40;
+        color: white;
+    }
+    .sidebar .nav-link {
+        color: #adb5bd;
+    }
+    .sidebar .nav-link.active {
+        color: white;
+    }
+    /* Main content padding */
+    .main-content {
+        padding: 20px;
+    }
+    /* Info card styling */
+    .info-card {
+        border-radius: 8px;
+        background-color: #f8f9fa;
+        padding: 20px;
+        text-align: center;
+    }
+    .info-card h5 {
+        font-size: 18px;
+        font-weight: 600;
+        color: #495057;
+    }
+    .info-card p {
+        font-size: 24px;
+        font-weight: bold;
+        margin: 0;
+    }
+    .info-card small {
+        font-size: 14px;
+        color: #6c757d;
+    }

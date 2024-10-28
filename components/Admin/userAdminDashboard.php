@@ -43,14 +43,10 @@ if (isset($_POST['deactivate'])) {
 
 
 ?>
-<?php if ($user['role']==="administrator"):?>
-        <?php include_once '../Navbar/adminNavbar.php';?>
-        <?php else:?>
-        <?php include_once '../Navbar/userNavbar.php';?>
-        <?php endif; ?>
+
 
 <main>
-<div class="container">
+<div class="mx-5 my-5">
 <div class="d-flex justify-content-between mt-5 gap-5" >
 <h2>User Management Dashboard</h2>
 <form class="w-25" method="get">
@@ -195,4 +191,3 @@ if (isset($_POST['deactivate'])) {
 </main>
 
 <script src="modal.js"></script>
-<?php include_once '../Footer/footer.php';?>

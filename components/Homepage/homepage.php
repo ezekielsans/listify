@@ -7,7 +7,11 @@ require_once '../../controllers/ordersController.php';
 $users->startSession();
 
 $user = $users->getUserId($_SESSION['LoginUser']['ID']);
-
+// Redirect if user is an administrator
+if (isset($user['role']) && $user['role'] === "administrator") {
+    header('Location: ../Admin/adminHome.php');
+    exit();
+}
 
 
 
@@ -26,13 +30,8 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 ?>
 
 <?php include_once '../header.php'; ?>
-<?php if ($user['role'] === "administrator"): ?>
-    <?php include_once '../Navbar/adminNavbar.php'; ?>
+<?php include_once '../Navbar/userNavbar.php'; ?>
 
-<?php else: ?>
-
-    <?php include_once '../Navbar/userNavbar.php'; ?>
-<?php endif; ?>
 
 <main>
 
@@ -97,7 +96,7 @@ $pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm
 
                         <div class="card  h-100" style="width: 18rem;">
                             <img class="card-img-top" src="../../uploads/<?= $item['product_image'] ?>" height="300"
-                            alt="Card image cap">
+                                alt="Card image cap">
                             <div class="card-body">
                                 <div class="d-flex flex-column">
                                     <h5 class="card-title"><?= $item['product_name'] ?></h5>
