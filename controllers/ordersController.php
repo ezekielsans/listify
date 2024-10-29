@@ -104,22 +104,31 @@ class Orders extends DbConnection
 
     public function showOrders()
     {
-        try { $pdo = $this->connect();
+        try {
+            $pdo = $this->connect();
             //check if product is already added to cart
-            $statement = $pdo->prepare("SELECT *
+            $statement = $pdo->prepare("SELECT  o.order_id,
+                                                       o.created_at,
+                                                        u.user_id,
+                                                        oi.quantity,
+                                                        o.total_price,
+                                                        olu.order_status,
+                                                        u.user_image,
+                                                        u.last_name,
+                                                        u.first_name,
+                                                        p.product_name,
+                                                           p.product_price
+     
+                                                    
                                                 FROM orders o
                                                 INNER JOIN order_items oi ON o.order_id = oi.order_id
-                                                INNER JOIN shipping_details s ON o.order_id = s.order_id
-                                                INNER JOIN delivery_status_lu dsl ON s.delivery_status = dsl.delivery_status_id 
-                                                INNER JOIN payments payments ON o.order_id = payments.order_id
-                                                INNER JOIN payment_status_lu psl ON payments.payment_status = psl.payment_status_id
-                                                INNER JOIN products p ON oi.product_id = p.product_id
-                                                INNER JOIN order_status_lu osl ON o.order_status = osl.order_status_id
-                                                INNER JOIN users u ON o.user_id = u.user_id");
-                                                            $statement->execute();
+                                                INNER JOIN order_status_lu olu ON o.order_status = olu.order_status_id
+                                                INNER JOIN users u ON o.user_id = u.user_id
+                                                INNER JOIN products p ON oi.product_id = p.product_id");
+            $statement->execute();
             $items = $statement->fetchAll(PDO::FETCH_ASSOC);
             return $items;
-        
+
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cannot retrieve cart items: " . $e->getMessage());
@@ -132,7 +141,8 @@ class Orders extends DbConnection
 
     public function showCartItems($userId)
     {
-        try { $pdo = $this->connect();
+        try {
+            $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("SELECT *
                                 FROM order_items t1
@@ -146,7 +156,7 @@ class Orders extends DbConnection
             $statement->execute();
             $items = $statement->fetchAll(PDO::FETCH_ASSOC);
             return $items;
-        
+
         } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cannot retrieve cart items: " . $e->getMessage());
@@ -157,7 +167,8 @@ class Orders extends DbConnection
 
     public function showCheckoutItems($userId, $itemId)
     {
-        try { $pdo = $this->connect();
+        try {
+            $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("SELECT *
                                            FROM products t1
@@ -169,7 +180,8 @@ class Orders extends DbConnection
             $statement->bindParam(":product_id", $itemId);
             $statement->execute();
             $items = $statement->fetch(PDO::FETCH_ASSOC);
-            return $items;} catch (PDOException $e) {
+            return $items;
+        } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cannot retrieve cart items: " . $e->getMessage());
 
@@ -180,7 +192,8 @@ class Orders extends DbConnection
     public function countCartItems($userId)
     {
 
-        try { $pdo = $this->connect();
+        try {
+            $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("SELECT COUNT(*)
                                            FROM orders t1
@@ -192,7 +205,8 @@ class Orders extends DbConnection
             $statement->bindParam(":user_id", $userId);
             $statement->execute();
             $itemCount = $statement->fetchColumn();
-            return $itemCount;} catch (PDOException $e) {
+            return $itemCount;
+        } catch (PDOException $e) {
             // Log the error or handle it appropriately
             error_log("Cannot retrieve cart items: " . $e->getMessage());
 
@@ -353,10 +367,10 @@ class Orders extends DbConnection
         try {
             $transactionId = $this->generateTransactionId();
             $pdo = $this->connect();
-/**
-add if statement if paymentMethod === "Cash on Delivery";
-then pending
- **/
+            /**
+            add if statement if paymentMethod === "Cash on Delivery";
+            then pending
+             **/
             $statement = $pdo->prepare("INSERT INTO payments(order_id,payment_method,payment_status,transaction_id)
                                            VALUES (:order_id,:payment_method,:payment_status,:transaction_id)");
             $statement->bindParam(":order_id", $orderId);

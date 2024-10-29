@@ -55,6 +55,7 @@ if (isset($_POST['delete'])) {
       <th scope="col">#</th>
       <th scope="col">Customer Name</th>
       <th scope="col">Customer Order</th>
+      <th scope="col">Quantity</th>
       <th scope="col">Order Status</th>
       <th scope="col">As Of</th>
       <th scope="col">Action</th>
@@ -65,24 +66,12 @@ if (isset($_POST['delete'])) {
     <tr>
       <th scope="row"><?=$counter++?></th>
       <input type="hidden" name="ID" value="<?=$order['order_id']?>">
-      <td><img src="/uploads/<?=$order['product_image']?>" alt="Profile Image" width="50" height="50" class="rounded">  <?=$order['first_name']?> <?=$order['last_name']?></td>
-      <td><?=$order['product_description']?></td>
-      <td><?=$order['product_category']?></td>
+      <td><?=$order['first_name']?> <?=$order['last_name']?></td>
+      <td><?=$order['product_name']?></td>
+      <td><?=$order['order_status']?></td>
       <td><?=number_format($order['product_price'], 2)?></td>
 
-
-
-      <?php if (isset($product['product_stocks'])) {?>
-      <?php if ($product['product_stocks'] != 0 && $product['product_stocks'] <=10 ){ ?>
-        <td><?=$product['product_stocks']?> <p class="text-muted" style="color:red">low stocks</p></td>
-        <?php } elseif ($product['product_stocks'] === 0){?>
-          <td><?=$product['product_stocks']?> <p  style="color:red">out of stock</p></td>
-          
-          <?php } else {?>
-          <td><?=$product['product_stocks']?></td>
-        <?php }?>
-        <?php }?>
-        <td><?=$product['updated_at']?></td>
+        <td><?=$order['created_at']?></td>
       <td>
         <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal" data-user-id="<?=$product['product_id']?>">Remove</button>
         <a class="btn btn-primary mx-2" href="editProduct.php?ID=<?=$product['product_id'];?>">Edit</a>
@@ -148,4 +137,3 @@ document.addEventListener("DOMContentLoaded", function () {
   });
   
 </script>
-<?php include_once '../Footer/footer.php';?>
