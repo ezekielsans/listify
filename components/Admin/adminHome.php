@@ -15,7 +15,7 @@ require_once '../../controllers/ordersController.php';
         <!-- Sidebar -->
         <nav class="col-md-2 d-none d-md-block sidebar">
             <div class="d-flex flex-column p-3">
-                <h4 class="text-center">Listify Admin</h4>
+                <h4 class="text-center">Listify Admin Panel</h4>
                 <hr>
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -120,8 +120,7 @@ require_once '../../controllers/ordersController.php';
         <!-- Main content -->
         <main class="col-md-10 main-content">
             <div id="content-area">
-                <h3>Welcome to E-Shop Admin</h3>
-                <p>Select a page from the sidebar to load content.</p>
+               <?php require_once '../Admin/dashboardSummary.php'?>
             </div>
         </main>
     </div>
@@ -137,8 +136,10 @@ require_once '../../controllers/ordersController.php';
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function () {
             document.getElementById("content-area").innerHTML = this.responseText;
+        
         };
         xhttp.open("GET", page, true);
         xhttp.send();
+        
     }
 </script>

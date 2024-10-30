@@ -6,9 +6,11 @@
     }
     .sidebar .nav-link {
         color: #adb5bd;
+        cursor: pointer;
     }
     .sidebar .nav-link.active {
         color: white;
+        cursor: pointer;
     }
     /* Main content padding */
     .main-content {
