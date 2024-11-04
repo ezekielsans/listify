@@ -101,7 +101,6 @@ class Orders extends DbConnection
     }
 
 
-
     public function showOrders()
     {
         try {
@@ -539,6 +538,46 @@ class Orders extends DbConnection
         return $existingOrder;
 
     }
+
+    // for dashboard purposes
+    public function countOrders()
+    {
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT COUNT(*) AS total_orders FROM orders");
+            $statement->execute();
+
+            // fetchColumn() will retrieve the count directly without needing an argument
+            $result = $statement->fetchColumn();
+            return $result;
+
+        } catch (PDOException $e) {
+            echo "Error counting orders: " . $e->getMessage();
+            return null; // return null or a default value on failure
+        }
+    }
+
+
+    public function countPendingOrders()
+    {
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT count(*)  as pending_orders
+                                        FROM orders o 
+                                        INNER JOIN order_status_lu orl  ON  o.order_status = orl.order_status_id 
+                                        WHERE orl.order_status = 'pending'");
+            $statement->execute();
+
+            // fetchColumn() will retrieve the count directly without needing an argument
+            $result = $statement->fetchColumn();
+            return $result;
+
+        } catch (PDOException $e) {
+            echo "Error counting orders: " . $e->getMessage();
+            return null; // return null or a default value on failure
+        }
+    }
+
 
 }
 
