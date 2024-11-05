@@ -5,7 +5,7 @@ require_once '../../controllers/productController.php';
 require_once '../../controllers/ordersController.php';
 
 $users->startSession();
-$user = $users->getUserId($_SESSION['LoginUser']['ID']);
+//$user = $users->getUserId($_SESSION['LoginUser']['ID']);
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
 $currentPage = $_GET['page'] ?? 1;
 $itemsPerPage = 10;
@@ -133,6 +133,23 @@ if (isset($_POST['delete'])) {
             <td><?= number_format($order['total_price'], 2) ?></td>
             <td>
               <?php if ($order['order_status'] == 'pending'): ?>
+                <span class=" badge-warning p-2 px-3 rounded-pill" style=" background-color: #ffcc80; color: #9c5600;">
+                  <?= $order['order_status'] ?> </span>
+              <?php elseif ($order['order_status'] == 'placed'): ?>
+                <span class="badge badge-warning p-2 px-3 rounded-pill" style="background-color: #80c8ff; color: #004b99;">
+                  <?= $order['order_status'] ?> </span>
+              <?php elseif ($order['order_status'] == 'shipped'): ?>
+                <span class="badge badge-warning p-2 px-3 rounded-pill"
+                  style=" background-color: #ffcc80; color: #9c5600; "> <?= $order['order_status'] ?> </span>
+              <?php elseif ($order['order_status'] == 'paid'): ?>
+                <span class="badge badge-warning p-2 px-3 rounded-pill" style="background-color: #b3e5fc; color: #007bb5;">
+                  <?= $order['order_status'] ?> </span>
+              <?php elseif ($order['order_status'] == 'completed'): ?>
+                <span class="badge badge-warning p-2 px-3 rounded-pill" style="background-color: #b2dfdb; color: #004d40;">
+                  <?= $order['order_status'] ?> </span>
+              <?php elseif ($order['order_status'] == 'canceled'): ?>
+                <span class="badge badge-secondary p-2 px-3 rounded-pill"
+                  style="background-color: #ffcdd2; color: #b71c1c;"> <?= $order['order_status'] ?> </span>
               <?php endif ?>
 
 

@@ -13,7 +13,7 @@ class Users extends DbConnection
         try {
             $pdo = $this->connect();
             $statement = $pdo->prepare("DELETE FROM users WHERE user_id = :userId");
-            $statement->bindParam(':userId',$userId);
+            $statement->bindParam(':userId', $userId);
             $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
@@ -29,7 +29,7 @@ class Users extends DbConnection
             $statement = $pdo->prepare("UPDATE users
                                                SET status = 'inactive' 
                                                WHERE user_id = :userId");
-            $statement->bindParam(':userId',$userId);
+            $statement->bindParam(':userId', $userId);
             $statement->execute();
             //echo "Product deleted successfully";
         } catch (PDOException $e) {
@@ -44,7 +44,7 @@ class Users extends DbConnection
 
     // public function editUser($newProductName, $newProductCategory, $newProductDescription, $LoginUser, $productId)
 
-    public function getAllUsers($currentPage, $itemsPerPage,$searchTerm)
+    public function getAllUsers($currentPage, $itemsPerPage, $searchTerm)
     {
         try {
             $pdo = $this->connect();
@@ -53,7 +53,7 @@ class Users extends DbConnection
 
             if (!empty($searchTerm)) {
                 //print_r($searchTerm);
-                
+
                 $query = "SELECT *
                           FROM users
                           WHERE CONCAT(first_name,' ',last_name) LIKE :searchTerm 
@@ -81,15 +81,15 @@ class Users extends DbConnection
 
     }
 
-    public function generatePageLinks($totalPages, $currentPage, $searchTerm )
+    public function generatePageLinks($totalPages, $currentPage, $searchTerm)
     {
 
         if ($totalPages > 1) {
 
-            $links =  ""; 
+            $links = "";
             if ($currentPage > 1) {
 
-                $prevPageLink = ($searchTerm !== "") ? "?page=".($currentPage - 1)."&search=$searchTerm" : "?page=".($currentPage - 1 );
+                $prevPageLink = ($searchTerm !== "") ? "?page=" . ($currentPage - 1) . "&search=$searchTerm" : "?page=" . ($currentPage - 1);
                 $links .= "<li class='page-item'><a class='page-link' href='$prevPageLink'>&laquo; Previous </a></li>";
 
             }
@@ -97,15 +97,15 @@ class Users extends DbConnection
             for ($page = 1; $page <= $totalPages; $page++) {
 
                 $activeClass = ($page == $currentPage) ? 'active' : '';
-               
-               $pageLink = ($searchTerm !== "") ? "?page=$page&search=$searchTerm" : "?page=$page";
+
+                $pageLink = ($searchTerm !== "") ? "?page=$page&search=$searchTerm" : "?page=$page";
                 $links .= "<li class='page-item'><a href='$pageLink' class='$activeClass page-link'>$page </a></li>";
 
             }
 
             if ($currentPage < $totalPages) {
 
-                $nextPageLink =($searchTerm !== "") ? "?page=".($currentPage + 1)."&search=$searchTerm":"?page=".($currentPage + 1 );
+                $nextPageLink = ($searchTerm !== "") ? "?page=" . ($currentPage + 1) . "&search=$searchTerm" : "?page=" . ($currentPage + 1);
                 $links .= "<li class='page-item'><a href='$nextPageLink' class='$activeClass page-link'>Next &raquo;</a></li>";
 
             }
@@ -126,13 +126,13 @@ class Users extends DbConnection
                 $statement = $pdo->prepare("SELECT COUNT(*)
                                                     FROM products
                                                     WHERE product_name LIKE :searchTerm");
-                                                     
-                $statement->bindValue(':searchTerm', "%$searchTerm%",PDO::PARAM_STR);
+
+                $statement->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
             } else {
 
                 $statement = $pdo->prepare("SELECT COUNT(*)
                                      FROM products");
-                                      }
+            }
 
             $statement->execute();
             $totalItems = $statement->fetchColumn();
@@ -229,46 +229,47 @@ class Users extends DbConnection
 
     /* USER CREATION */
 
-    public function registerUser($first_name,$last_name,$email, $password,$mobile_number)
-    {try {
-        $pdo = $this->connect();
-        //check if user exist
-        $statement = $pdo->prepare("SELECT *
+    public function registerUser($first_name, $last_name, $email, $password, $mobile_number)
+    {
+        try {
+            $pdo = $this->connect();
+            //check if user exist
+            $statement = $pdo->prepare("SELECT *
                                  FROM users WHERE email = :email");
-        $statement->bindParam(':email',$email);
-        $statement->execute();
-        $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
-        if ($statementResult) {
+            $statement->bindParam(':email', $email);
+            $statement->execute();
+            $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
+            if ($statementResult) {
 
-            return "User already exists";
+                return "User already exists";
 
-        }
-        //encrypt password
-        $hashPassword = password_hash($password, PASSWORD_DEFAULT);
-        $statement = $pdo->prepare("INSERT INTO users(email,password,first_name,last_name,mobile_number,role,status)
+            }
+            //encrypt password
+            $hashPassword = password_hash($password, PASSWORD_DEFAULT);
+            $statement = $pdo->prepare("INSERT INTO users(email,password,first_name,last_name,mobile_number,role,status)
                                            VALUES(:email,:password,:first_name,:last_name,:mobile_number,'customer','active')");
-        $statement->bindParam(':email',$email);
-        $statement->bindParam(':password', $hashPassword);
-        $statement->bindParam(':first_name', $first_name);
-        $statement->bindParam(':last_name', $last_name);
-        $statement->bindParam(':mobile_number', $mobile_number);
-        $statement->execute();
-       
-        return "success";
-    
-    } catch (PDOException $e) {
-        echo "Register failed" . $e->getMessage();
+            $statement->bindParam(':email', $email);
+            $statement->bindParam(':password', $hashPassword);
+            $statement->bindParam(':first_name', $first_name);
+            $statement->bindParam(':last_name', $last_name);
+            $statement->bindParam(':mobile_number', $mobile_number);
+            $statement->execute();
+
+            return "success";
+
+        } catch (PDOException $e) {
+            echo "Register failed" . $e->getMessage();
+        }
+
+
     }
 
 
-}
 
 
 
 
 
-
-    
     public function startSession()
     {
         error_reporting(E_ALL);
@@ -281,34 +282,34 @@ class Users extends DbConnection
     public function login($email, $password)
     {
         try {
-        $pdo = $this->connect();
-        //check if user exist
-        $statement = $pdo->prepare("SELECT *
+            $pdo = $this->connect();
+            //check if user exist
+            $statement = $pdo->prepare("SELECT *
                                  FROM users WHERE email = :email");
-        $statement->bindParam(':email',$email);
-        $statement->execute();
+            $statement->bindParam(':email', $email);
+            $statement->execute();
 
-        $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
+            $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
 
-        if ($statementResult) {
-            if (password_verify($password, $statementResult['password'])) {
-               // session_start();
-                return $statementResult;
-          
+            if ($statementResult) {
+                if (password_verify($password, $statementResult['password'])) {
+                    // session_start();
+                    return $statementResult;
+
+                } else {
+                    return "Invalid Credentials";
+
+                }
+
             } else {
-                return "Invalid Credentials";
+                return "User not found";
 
             }
 
-        } else {
-            return "User not found";
-
+        } catch (PDOException $e) {
+            echo "Register failed" . $e->getMessage();
         }
-
-    } catch (PDOException $e) {
-        echo "Register failed" . $e->getMessage();
     }
-}
 
 
 
@@ -333,10 +334,10 @@ class Users extends DbConnection
                                                 FROM users t1
                                                 LEFT JOIN addresses t2 ON t1.user_id = t2.user_id 
                                                 WHERE t1.user_id = :userId");
-            $statement->bindParam(':userId',$userId);
+            $statement->bindParam(':userId', $userId);
             $statement->execute();
             $user = $statement->fetch(PDO::FETCH_ASSOC);
-         
+
             return $user;
 
         } catch (PDOException $e) {
@@ -348,7 +349,7 @@ class Users extends DbConnection
 
 
 
-    public function editUserProfile($newFirstName, $newLastName, $newEmail, $newRole, $userId, $address1,$address2,$city,$postalCode,$country)
+    public function editUserProfile($newFirstName, $newLastName, $newEmail, $newRole, $userId, $address1, $address2, $city, $postalCode, $country)
     {
         try {
             $pdo = $this->connect();
@@ -362,15 +363,15 @@ class Users extends DbConnection
                                             last_name = :newLastName,
                                             role = :newRole
                                         WHERE user_id = :userId");
-            $statement->bindParam(':newEmail',$newEmail);
-            $statement->bindParam( ':newFirstName',$newFirstName);
-            $statement->bindParam(':newLastName',$newLastName);
+            $statement->bindParam(':newEmail', $newEmail);
+            $statement->bindParam(':newFirstName', $newFirstName);
+            $statement->bindParam(':newLastName', $newLastName);
             $statement->bindParam(':newRole', $newRole);
-            $statement->bindParam(':userId',  $userId);
+            $statement->bindParam(':userId', $userId);
             $statement->execute();
 
 
-            $this->insertAddress($userId,$address1,$address2,$city,$postalCode,$country);
+            $this->insertAddress($userId, $address1, $address2, $city, $postalCode, $country);
             // echo "Product Updated successfully";
 
         } catch (PDOException $e) {
@@ -382,35 +383,35 @@ class Users extends DbConnection
 
 
 
-    public function insertAddress($userId,$address1,$address2,$city,$postalCode,$country)
+    public function insertAddress($userId, $address1, $address2, $city, $postalCode, $country)
     {
         try {
-        $pdo = $this->connect();
-        //check if user exist
-        $statement = $pdo->prepare("INSERT INTO addresses (user_id, address_line1,address_line2,city,postal_code,country) 
+            $pdo = $this->connect();
+            //check if user exist
+            $statement = $pdo->prepare("INSERT INTO addresses (user_id, address_line1,address_line2,city,postal_code,country) 
                                            VALUES(:user_id, :address_line1,:address_line2, :city, :postal_code, :country)");
-        $statement->bindParam(':user_id',$userId);
-        $statement->bindParam(':address_line1',$address1);
-        $statement->bindParam(':address_line2',$address2);
-        $statement->bindParam(':city',$city);
-        $statement->bindParam(':postal_code',$postalCode);
-        $statement->bindParam(':country',$country);
-        $statement->execute();
-    
-    
-        // $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
-        // if ($statementResult) {
-        //     $statement = $pdo->prepare("INSERT INTO addresses (address_line2) VALUES (:address)");
-        //     $statement->bindParam(':address',$address);
-        //     $statement->execute();
-        // }
-        return "success";
-    
-    } catch (PDOException $e) {
-        echo "Register failed" . $e->getMessage();
-    }
-    
-    
+            $statement->bindParam(':user_id', $userId);
+            $statement->bindParam(':address_line1', $address1);
+            $statement->bindParam(':address_line2', $address2);
+            $statement->bindParam(':city', $city);
+            $statement->bindParam(':postal_code', $postalCode);
+            $statement->bindParam(':country', $country);
+            $statement->execute();
+
+
+            // $statementResult = $statement->fetch(PDO::FETCH_ASSOC);
+            // if ($statementResult) {
+            //     $statement = $pdo->prepare("INSERT INTO addresses (address_line2) VALUES (:address)");
+            //     $statement->bindParam(':address',$address);
+            //     $statement->execute();
+            // }
+            return "success";
+
+        } catch (PDOException $e) {
+            echo "Register failed" . $e->getMessage();
+        }
+
+
     }
 
 
@@ -434,11 +435,58 @@ class Users extends DbConnection
         }
 
     }
-    
+
+
+
+    //for dashboard
+
+
+
+    public function countAllUsers()
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT COUNT(*) as users_count
+                                                FROM users");
+            $statement->execute();
+            $user = $statement->fetchColumn();
+            return $user;
+
+        } catch (PDOException $e) {
+            echo "failed to count users" . $e->getMessage();
+
+        }
+
+    }
+
+
+
+
+
+
+    public function countActiveUsers()
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT COUNT(*) as users_count
+                                                FROM users
+                                                WHERE status = 'active'");
+            $statement->execute();
+            $user = $statement->fetchColumn();
+            return $user;
+
+        } catch (PDOException $e) {
+            echo "failed to count users" . $e->getMessage();
+
+        }
+
+    }
 
 }
 
-    
+
 
 
 
