@@ -484,6 +484,47 @@ class Users extends DbConnection
 
     }
 
+
+    public function countAdminUsers()
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT COUNT(*) as users_count
+                                                FROM users
+                                                WHERE role = 'administrator'");
+            $statement->execute();
+            $user = $statement->fetchColumn();
+            return $user;
+
+        } catch (PDOException $e) {
+            echo "failed to count users" . $e->getMessage();
+
+        }
+
+    }
+
+
+    public function countNewUsers()
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT COUNT(*) as users_count
+                                               FROM users
+                                               WHERE YEAR(created_at) = YEAR(CURRENT_DATE)
+                                               AND MONTH(created_at) = MONTH(CURRENT_DATE)");
+            $statement->execute();
+            $user = $statement->fetchColumn();
+            return $user;
+
+        } catch (PDOException $e) {
+            echo "failed to count new users" . $e->getMessage();
+
+        }
+
+    }
+
 }
 
 

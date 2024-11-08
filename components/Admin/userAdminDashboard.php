@@ -9,6 +9,8 @@ $users->startSession();
 
 $usersCount = $users->countAllUsers();
 $activeUsersCount = $users->countActiveUsers();
+$adminUsersCount = $users->countAdminUsers();
+$newUsersCount = $users->countNewUsers();
 
 
 
@@ -105,8 +107,8 @@ if (isset($_POST['deactivate'])) {
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">Admin Users</h6>
-            <?php if ($ordersCount): ?>
-              <h3 class="card-text"><?= $ordersCount ?></h3>
+            <?php if ($adminUsersCount): ?>
+              <h3 class="card-text"><?= $adminUsersCount ?></h3>
               <small>+20.1% from last month</small>
             <?php else: ?>
               <h3 class="card-text">0</h3>
@@ -119,8 +121,8 @@ if (isset($_POST['deactivate'])) {
         <div class="card">
           <div class="card-body">
             <h6 class="card-title">New Users(This Month)</h6>
-            <?php if ($ordersCount): ?>
-              <h3 class="card-text"><?= $ordersCount ?></h3>
+            <?php if ($newUsersCount): ?>
+              <h3 class="card-text"><?= $newUsersCount ?></h3>
               <small>+20.1% from last month</small>
             <?php else: ?>
               <h3 class="card-text">0</h3>

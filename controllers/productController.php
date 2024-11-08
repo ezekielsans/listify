@@ -78,50 +78,50 @@ class Products extends DbConnection
 
     }
 
-// get products via catergory
+    // get products via catergory
 
 
 
-public function getProductByCategory($categoryId,$currentPage, $itemsPerPage, $searchTerm)
-{
-    try {
-        $pdo = $this->connect();
-        $offset = ($currentPage - 1) * $itemsPerPage;
+    public function getProductByCategory($categoryId, $currentPage, $itemsPerPage, $searchTerm)
+    {
+        try {
+            $pdo = $this->connect();
+            $offset = ($currentPage - 1) * $itemsPerPage;
 
-        if (!empty($searchTerm)) {
-            print_r($searchTerm);
+            if (!empty($searchTerm)) {
+                print_r($searchTerm);
 
-            $query = "SELECT *
+                $query = "SELECT *
                       FROM products
                       WHERE product_name LIKE :searchTerm
                       LIMIT  $offset , $itemsPerPage";
-            $statement = $pdo->prepare($query);
-            // Bind the parameters
-            $statement->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
-        } else {
-            $query = "SELECT *
+                $statement = $pdo->prepare($query);
+                // Bind the parameters
+                $statement->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);
+            } else {
+                $query = "SELECT *
                       FROM products p
                       JOIN product_category_lu pc ON p.product_category = pc.product_category_id
                       WHERE pc.product_category_id = :category_id
                       LIMIT $offset , $itemsPerPage";
-            $statement = $pdo->prepare($query);
-            $statement->bindParam(":category_id", $categoryId);
+                $statement = $pdo->prepare($query);
+                $statement->bindParam(":category_id", $categoryId);
+            }
+
+            $statement->execute();
+
+            // $statement->debugDumpParams();
+
+            $products = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+            return $products;
+
+        } catch (PDOException $e) {
+            echo "Product Retrieval failed" . $e->getMessage();
+
         }
 
-        $statement->execute();
-
-        // $statement->debugDumpParams();
-
-        $products = $statement->fetchAll(PDO::FETCH_ASSOC);
-
-        return $products;
-
-    } catch (PDOException $e) {
-        echo "Product Retrieval failed" . $e->getMessage();
-
     }
-
-}
 
 
     public function getAllProducts($currentPage, $itemsPerPage, $searchTerm)
@@ -260,7 +260,7 @@ public function getProductByCategory($categoryId,$currentPage, $itemsPerPage, $s
                                      FROM products p 
                                      INNER JOIN product_category_lu pc ON p.product_category = pc.product_category_id  
                                      WHERE p.product_category = :category_id");
-                                     $statement->bindParam(':category_id',$categoryId);
+                $statement->bindParam(':category_id', $categoryId);
             }
 
             $statement->execute();
@@ -353,6 +353,64 @@ public function getProductByCategory($categoryId,$currentPage, $itemsPerPage, $s
 
         } catch (PDOException $e) {
             echo "Insertion failed" . $e->getMessage();
+        }
+
+    }
+
+    //for products dashboard
+
+
+    public function countTotalProducts()
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT COUNT(*) as total_products
+                                               FROM products");
+            $statement->execute();
+            $result = $statement->fetchColumn();
+
+            return $result;
+            // echo "Product Updated successfully";
+
+        } catch (PDOException $e) {
+            echo "count total products failed" . $e->getMessage();
+        }
+
+    }
+    public function totalProductsSum()
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT SUM(product_price) as total_product_price
+                                               FROM products");
+            $statement->execute();
+            $result = $statement->fetchColumn();
+
+            return $result;
+            // echo "Product Updated successfully";
+
+        } catch (PDOException $e) {
+            echo "count total products failed" . $e->getMessage();
+        }
+
+    }
+    public function totalStocks()
+    {
+
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT SUM(product_stocks) as total_stocks
+                                               FROM products");
+            $statement->execute();
+            $result = $statement->fetchColumn();
+
+            return $result;
+            // echo "Product Updated successfully";
+
+        } catch (PDOException $e) {
+            echo "count total products failed" . $e->getMessage();
         }
 
     }

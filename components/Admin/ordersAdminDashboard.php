@@ -38,8 +38,15 @@ if (isset($_POST['delete'])) {
     echo "Error deleting";
 
   }
-  //   echo"Error deleting ".error_reporting();
 }
+//   echo"Error deleting ".error_reporting();
+
+//update order status
+//   if (isset($_POST['save'])) {
+//     $orderId = $_POST['order_id'];
+//     $orderStatus = $_POST['order_status'];
+//     $notes = $_POST['notes'];
+// }
 
 ?>
 
@@ -118,7 +125,8 @@ if (isset($_POST['delete'])) {
           <th scope="col">Quantity</th>
           <th scope="col">Total Price</th>
           <th scope="col">Order Status</th>
-          <th scope="col">As Of</th>
+          <th scope="col">Shipping Status</th>
+          <th scope="col">Order Date</th>
           <th scope="col">Action</th>
         </tr>
       </thead>
@@ -130,7 +138,7 @@ if (isset($_POST['delete'])) {
             <td><?= $order['first_name'] ?>   <?= $order['last_name'] ?></td>
             <td><?= $order['product_name'] ?></td>
             <td><?= $order['quantity'] ?></td>
-            <td><?= number_format($order['total_price'], 2) ?></td>
+            <td><?= "₱" . number_format($order['total_price'], 2) ?></td>
             <td>
               <?php if ($order['order_status'] == 'pending'): ?>
                 <span class=" badge-warning p-2 px-3 rounded-pill" style=" background-color: #ffcc80; color: #9c5600;">
@@ -151,16 +159,32 @@ if (isset($_POST['delete'])) {
                 <span class="badge badge-secondary p-2 px-3 rounded-pill"
                   style="background-color: #ffcdd2; color: #b71c1c;"> <?= $order['order_status'] ?> </span>
               <?php endif ?>
-
-
             </td>
-
-
+            <td>
+              <?= $order['delivery_status'] ?>
+            </td>
             <td><?= $order['created_at'] ?></td>
             <td>
-              <a class="btn btn-primary mx-2" href="editProduct.php?ID=<?= $product['product_id']; ?>">Update</a>
+              <!-- <a class="btn btn-primary mx-2" href="editProduct.php?ID=">Update</a>
               <button class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteConfirmModal"
-                data-user-id="<?= $product['product_id'] ?>">Remove</button>
+                data-user-id="">Remove</button> -->
+
+
+              <!-- Dropdown for Actions -->
+              <div class="dropdown">
+                <button class="btn   btn-sm" type="button" id="dropdownMenuButton<?= $order['order_id'] ?>"
+                  data-bs-toggle="dropdown" aria-expanded="false">
+                  &#8230;
+                </button>
+                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton<?= $order['order_id'] ?>">
+                  <li><a class="dropdown-item" href="view_order.php?order_id=<?= $order['order_id'] ?>">View details</a>
+                  </li>
+                  <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#updateStatusModal"
+                    data-order-id="<?= $order['order_id'] ?>" data-order-status="<?= $order['order_status'] ?>">
+                    Update status
+                  </button>
+                </ul>
+              </div>
             </td>
           </tr>
         <?php } ?>
@@ -168,60 +192,175 @@ if (isset($_POST['delete'])) {
       </tbody>
     </table>
 
-    <div class="d-flex gap-5 align-items-center justify-content-center">
-      <div class=" text-center">
-        <nav aria-label="Page navigation">
-          <ul class="pagination  justify-content-center">
-            <?= $pageLinks; ?>
-          </ul>
-        </nav>
-        <p>showing total of <?= $totalItems ?> products</p>
-      </div>
-    </div>
 
-    <!-- Modal for delete -->
-    <div class="modal fade mt-5" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+
+    <!-- view order Status Modal -->
+    <div class="modal fade" id="orderDetailsModal" tabindex="-1" aria-labelledby="orderDetailsModalLabel"
       aria-hidden="true">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+            <h5 class="modal-title" id="orderDetailsModalLabel">Order Details</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
+
+
+
           <div class="modal-body">
-            <p> Are you sure you want to delete this product?</p>
+            <h6><strong>Customer:</strong> <span id="customerName"></span></h6>
+            <p><strong>Total Price:</strong> $<span id="totalPrice"></span></p>
+            <p><strong>Order Status:</strong> <span id="orderStatus"></span></p>
+            <p><strong>Shipping Status:</strong> <span id="shippingStatus"></span></p>
+            <p><strong>Order Date:</strong> <span id="orderDate"></span></p>
+            <p><strong>Last Updated:</strong> <span id="updatedDate"></span></p>
           </div>
           <div class="modal-footer">
-            <form action="" method="post">
-              <input type="hidden" id="deleteId" name="delete_id">
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-              <button type="submit" name="delete" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
-            </form>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
           </div>
+
         </div>
       </div>
     </div>
 
 
+    <form id="updateStatusForm" method="post" action="update_status.php">
+
+      <!-- Update Status Modal -->
+      <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="updateStatusModalLabel">Update Order Status</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <form id="updateStatusForm" method="post" action="update_status.php">
+              <div class="modal-body">
+                <input type="hidden" id="orderId" name="order_id">
+
+                <div class="mb-3">
+                  <label for="orderStatus" class="form-label">Status</label>
+                  <select class="form-select" id="orderStatus" name="order_status">
+                    <option value="Processing">Processing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                    <option value="Cancelled">Cancelled</option>
+                  </select>
+                </div>
+
+                <div class="mb-3">
+                  <label for="orderNotes" class="form-label">Notes</label>
+                  <textarea class="form-control" id="orderNotes" name="notes"
+                    placeholder="Add any notes about this status change"></textarea>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button name="save" type="submit" class="btn btn-primary">Save changes</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+
+
+      <!-- Modal for delete -->
+      <div class="modal fade mt-5" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="deleteConfirmModalLabel">Confirm Deletion</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+              <p> Are you sure you want to delete this product?</p>
+            </div>
+
+            <div class="modal-footer">
+              <form action="" method="post">
+                <input type="hidden" id="deleteId" name="delete_id">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="submit" name="delete" class="btn btn-danger" id="confirmDeleteBtn">Delete</button>
+              </form>
+            </div>
+
+
+          </div>
+        </div>
+      </div>
+
+
   </div>
-  </div>
+
 </main>
 
 <script>
   //referencing an id to a modal
   document.addEventListener("DOMContentLoaded", function () {
+
+
+
     var deleteModal = document.getElementById('deleteConfirmModal');
     deleteModal.addEventListener('show.bs.modal', function (event) {
-      //whatever button i click
       var button = event.relatedTarget;
-      //get something from this button
-      var userId = button.getAttribute('data-user-id');
-
+      var orderId = button.getAttribute('data-order-id'); // Corrected from 'data-user-id'
       var deleteInput = document.getElementById('deleteId');
-      deleteInput.value = userId;
+      deleteInput.value = orderId;
+    });
+
+    const updateStatusModal = document.getElementById('updateStatusModal');
+    updateStatusModal.addEventListener('show.bs.modal', (event) => {
+      const button = event.relatedTarget;
+      const orderId = button.getAttribute('data-order-id');
+      const orderStatus = button.getAttribute('data-order-status');
+
+      console.log("Order ID:", orderId);
+      console.log("Order Status:", orderStatus);
+
+      const modalOrderId = updateStatusModal.querySelector('#orderId');
+      const modalOrderStatus = updateStatusModal.querySelector('#orderStatus');
+
+      modalOrderId.value = orderId;
+      modalOrderStatus.value = orderStatus;
+    });
+
+
+
+    const orderDetailsModal = document.getElementById('orderDetailsModal');
+
+    orderDetailsModal.addEventListener('show.bs.modal', (event) => {
+      const button = event.relatedTarget;
+
+      // Extract data attributes
+      const orderId = button.getAttribute('data-order-id');
+      const customerName = button.getAttribute('data-customer');
+      const totalPrice = button.getAttribute('data-total-price');
+      const orderStatus = button.getAttribute('data-order-status');
+      const shippingStatus = button.getAttribute('data-shipping-status');
+      const orderDate = button.getAttribute('data-order-date');
+      const updatedDate = button.getAttribute('data-updated-date');
+
+      // Populate modal fields
+      orderDetailsModal.querySelector('#customerName').textContent = customerName;
+      orderDetailsModal.querySelector('#totalPrice').textContent = totalPrice;
+      orderDetailsModal.querySelector('#orderStatus').textContent = orderStatus;
+      orderDetailsModal.querySelector('#shippingStatus').textContent = shippingStatus;
+      orderDetailsModal.querySelector('#orderDate').textContent = orderDate;
+      orderDetailsModal.querySelector('#updatedDate').textContent = updatedDate;
     });
 
 
   });
+
+
+
+
+
+
+
 
 </script>

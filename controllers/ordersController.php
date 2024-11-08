@@ -107,7 +107,7 @@ class Orders extends DbConnection
             $pdo = $this->connect();
             //check if product is already added to cart
             $statement = $pdo->prepare("SELECT  o.order_id,
-                                                       o.created_at,
+                                                        o.created_at,
                                                         u.user_id,
                                                         oi.quantity,
                                                         o.total_price,
@@ -116,14 +116,16 @@ class Orders extends DbConnection
                                                         u.last_name,
                                                         u.first_name,
                                                         p.product_name,
-                                                           p.product_price
-     
-                                                    
-                                                FROM orders o
-                                                INNER JOIN order_items oi ON o.order_id = oi.order_id
-                                                INNER JOIN order_status_lu olu ON o.order_status = olu.order_status_id
-                                                INNER JOIN users u ON o.user_id = u.user_id
-                                                INNER JOIN products p ON oi.product_id = p.product_id");
+                                                        p.product_price,
+                                                        sd.tracking_number,
+                                                        dsl.delivery_status
+                                                        FROM orders o
+                                                        INNER JOIN order_items oi ON o.order_id = oi.order_id
+                                                        INNER JOIN order_status_lu olu ON o.order_status = olu.order_status_id
+                                                        INNER JOIN users u ON o.user_id = u.user_id
+                                                        INNER JOIN products p ON oi.product_id = p.product_id
+                                                        INNER JOIN shipping_details sd ON o.order_id = sd.order_id
+                                                        INNER JOIN delivery_status_lu dsl ON sd.delivery_status = dsl.delivery_status_id ");
             $statement->execute();
             $items = $statement->fetchAll(PDO::FETCH_ASSOC);
             return $items;
@@ -357,6 +359,44 @@ class Orders extends DbConnection
         $statement->bindParam(":order_id", $orderId);
         $statement->bindParam(":order_status", $orderStatus);
         $statement->execute();
+
+    }
+
+
+    public function updateOrderAndShippingStatus($orderId, $shippingStatus)
+    {
+
+        try {
+
+            $pdo = $this->connect();
+            //check if product is already added to cart
+            $statement = $pdo->prepare("UPDATE orders
+                                               SET order_status = 3,
+                                               updated_at = NOW()
+                                           WHERE  order_id = :order_id");
+            $statement->bindParam(":order_id", $orderId);
+            $statement->execute();
+        } catch (PDOException $e) {
+            error_log("unable to update order status" . $e->getMessage());
+
+        }
+
+
+        try {
+            $pdo = $this->connect();
+            //check if product is already added to cart
+            $statement = $pdo->prepare("UPDATE orders
+                                               SET order_status = 3,
+                                               updated_at = NOW()
+                                   WHERE  order_id = :order_id");
+            $statement->bindParam(":order_id", $orderId);
+            $statement->execute();
+        } catch (PDOException $e) {
+            error_log("unable to update shipping status" . $e->getMessage());
+
+        }
+
+
 
     }
 
