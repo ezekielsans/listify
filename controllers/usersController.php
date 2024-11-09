@@ -266,10 +266,6 @@ class Users extends DbConnection
 
 
 
-
-
-
-
     public function startSession()
     {
         error_reporting(E_ALL);

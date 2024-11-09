@@ -120,7 +120,13 @@ require_once '../../controllers/ordersController.php';
         <!-- Main content -->
         <main class="col-md-10 main-content">
             <div id="content-area">
-               <?php require_once '../Admin/dashboardSummary.php'?>
+                <?php //session_start();
+                if (isset($_GET['page'])) {
+                    $_SESSION['currentPage'] = $_GET['page'];
+                }
+                $page = $_SESSION['currentPage'] ?? 'dashboardSummary.php';
+                require_once "../Admin/{$page}";
+                ?>
             </div>
         </main>
     </div>
@@ -136,10 +142,10 @@ require_once '../../controllers/ordersController.php';
         const xhttp = new XMLHttpRequest();
         xhttp.onload = function () {
             document.getElementById("content-area").innerHTML = this.responseText;
-        
+            history.pushState(null, '', `?page=${page}`);
         };
-        xhttp.open("GET", page, true);
+        xhttp.open("GET", `${page}`, true);
         xhttp.send();
-        
+
     }
 </script>

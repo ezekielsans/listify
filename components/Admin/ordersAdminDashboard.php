@@ -4,27 +4,31 @@ require_once '../../controllers/usersController.php';
 require_once '../../controllers/productController.php';
 require_once '../../controllers/ordersController.php';
 
-$users->startSession();
+//$users->startSession();
 //$user = $users->getUserId($_SESSION['LoginUser']['ID']);
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
-$currentPage = $_GET['page'] ?? 1;
-$itemsPerPage = 10;
-$totalItems = $products->totalProducts($searchTerm);
-$totalPages = ceil($totalItems / $itemsPerPage);
+
 
 
 $ordersCount = $orders->countOrders();
 $pendingOrdersCount = $orders->countPendingOrders();
 
 
-$orders = $orders->showOrders();
+//   echo"Error deleting ".error_reporting();
 
 
 
-print_r($orders);
-//get all products
-$productsData = $products->getAllProducts($currentPage, $itemsPerPage, $searchTerm);
-$pageLinks = $products->generatePageLinks($totalPages, $currentPage, $searchTerm);
+
+$status = $orders->showStatus();
+$userOrders = $orders->showOrders();
+print_r($userOrders);
+
+
+
+
+
+
+
 
 $counter = 1;
 
@@ -39,14 +43,26 @@ if (isset($_POST['delete'])) {
 
   }
 }
-//   echo"Error deleting ".error_reporting();
+
 
 //update order status
-//   if (isset($_POST['save'])) {
-//     $orderId = $_POST['order_id'];
-//     $orderStatus = $_POST['order_status'];
-//     $notes = $_POST['notes'];
-// }
+if (isset($_POST['save'])) {
+  $orderId = $_POST['order_id'];
+  $statusId = $_POST['order_status'];
+  echo '<br>';
+  echo "order Id";
+  print_r($orderId);
+  echo '<br>';
+  echo "order Status";
+  print_r($statusId);
+  echo '<br>';
+
+  if ($orderId != null && $statusId != null) {
+    $orders->updateOrderAndShippingStatus($orderId, $statusId);
+  }
+
+}
+
 
 ?>
 
@@ -131,7 +147,7 @@ if (isset($_POST['delete'])) {
         </tr>
       </thead>
       <tbody>
-        <?php foreach ($orders as $order) { ?>
+        <?php foreach ($userOrders as $order) { ?>
           <tr>
             <th scope="row"><?= $counter++ ?></th>
             <input type="hidden" name="ID" value="<?= $order['order_id'] ?>">
@@ -181,7 +197,7 @@ if (isset($_POST['delete'])) {
                   </li>
                   <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#updateStatusModal"
                     data-order-id="<?= $order['order_id'] ?>" data-order-status="<?= $order['order_status'] ?>">
-                    Update status
+                    Update status (Order ID: <?= $order['order_id'] ?>)
                   </button>
                 </ul>
               </div>
@@ -223,10 +239,10 @@ if (isset($_POST['delete'])) {
     </div>
 
 
-    <form id="updateStatusForm" method="post" action="update_status.php">
 
-      <!-- Update Status Modal -->
-      <div class="modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel"
+    <!-- Update Status Modal -->
+    <form id="updateStatusForm" method="post">
+      <div class=" modal fade" id="updateStatusModal" tabindex="-1" aria-labelledby="updateStatusModalLabel"
         aria-hidden="true">
         <div class="modal-dialog">
           <div class="modal-content">
@@ -234,17 +250,16 @@ if (isset($_POST['delete'])) {
               <h5 class="modal-title" id="updateStatusModalLabel">Update Order Status</h5>
               <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <form id="updateStatusForm" method="post" action="update_status.php">
+            <form id="updateStatusForm" method="post">
               <div class="modal-body">
-                <input type="hidden" id="orderId" name="order_id">
+                <div class=" mb-3">
 
-                <div class="mb-3">
+                  <input type="hidden" id="modalOrderId" name="order_id">
                   <label for="orderStatus" class="form-label">Status</label>
                   <select class="form-select" id="orderStatus" name="order_status">
-                    <option value="Processing">Processing</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                    <option value="Cancelled">Cancelled</option>
+                    <?php foreach ($status as $s) { ?>
+                      <option value="<?= $s['delivery_status_id']; ?>"> <?= $s['delivery_status']; ?></option>
+                    <?php } ?>
                   </select>
                 </div>
 
@@ -303,7 +318,7 @@ if (isset($_POST['delete'])) {
   document.addEventListener("DOMContentLoaded", function () {
 
 
-
+    //for delete of item
     var deleteModal = document.getElementById('deleteConfirmModal');
     deleteModal.addEventListener('show.bs.modal', function (event) {
       var button = event.relatedTarget;
@@ -312,26 +327,43 @@ if (isset($_POST['delete'])) {
       deleteInput.value = orderId;
     });
 
+
+
+
+
+    // For updating the status
     const updateStatusModal = document.getElementById('updateStatusModal');
+    const modalOrderId = updateStatusModal.querySelector('#modalOrderId');
+
     updateStatusModal.addEventListener('show.bs.modal', (event) => {
       const button = event.relatedTarget;
       const orderId = button.getAttribute('data-order-id');
       const orderStatus = button.getAttribute('data-order-status');
-
-      console.log("Order ID:", orderId);
-      console.log("Order Status:", orderStatus);
-
-      const modalOrderId = updateStatusModal.querySelector('#orderId');
       const modalOrderStatus = updateStatusModal.querySelector('#orderStatus');
 
+      // Set the values for the input fields
       modalOrderId.value = orderId;
       modalOrderStatus.value = orderStatus;
+
+      // Log to verify the orderId is set correctly
+      console.log("Order ID set in the modal:", modalOrderId.value);
+      console.log("Order Status set in the modal:", modalOrderStatus.value);
+
+      // Add an event listener to capture the selected status value when the user changes it
+      modalOrderStatus.addEventListener('change', (event) => {
+        const selectedStatusId = event.target.value;
+        console.log("Selected Delivery Status ID:", selectedStatusId);
+      });
+
+      // Get the initial selected value (if needed)
+      const initialStatusId = modalOrderStatus.value;
+      console.log("Initial Delivery Status ID:", initialStatusId);
     });
 
 
 
+    //to show order details
     const orderDetailsModal = document.getElementById('orderDetailsModal');
-
     orderDetailsModal.addEventListener('show.bs.modal', (event) => {
       const button = event.relatedTarget;
 

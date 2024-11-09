@@ -63,6 +63,13 @@ class Orders extends DbConnection
             $statement->bindParam(':user_id', $userId);
             $statement->bindParam(':order_id', $orderId);
             $statement->execute();
+
+            $statement = $pdo->prepare("UPDATE shippping_details
+                                                SET delivery_status = 4
+                                                WHERE order_id = :order_id");
+
+            $statement->bindParam(':order_id', $orderId);
+            $statement->execute();
             return "order cancelled";
         } catch (PDOException $e) {
             echo "Error canceling order" . $e->getMessage();
@@ -361,44 +368,80 @@ class Orders extends DbConnection
         $statement->execute();
 
     }
-
-
-    public function updateOrderAndShippingStatus($orderId, $shippingStatus)
+    public function updateOrderAndShippingStatus($orderId, $statusId)
     {
-
-        try {
-
-            $pdo = $this->connect();
-            //check if product is already added to cart
-            $statement = $pdo->prepare("UPDATE orders
-                                               SET order_status = 3,
-                                               updated_at = NOW()
-                                           WHERE  order_id = :order_id");
-            $statement->bindParam(":order_id", $orderId);
-            $statement->execute();
-        } catch (PDOException $e) {
-            error_log("unable to update order status" . $e->getMessage());
-
-        }
-
-
         try {
             $pdo = $this->connect();
-            //check if product is already added to cart
-            $statement = $pdo->prepare("UPDATE orders
-                                               SET order_status = 3,
-                                               updated_at = NOW()
-                                   WHERE  order_id = :order_id");
-            $statement->bindParam(":order_id", $orderId);
-            $statement->execute();
+            $pdo->beginTransaction();
+
+            // Define status mappings
+            $orderStatuses = [
+                1 => 2, // Pending -> Processing
+                2 => 3, // Shipped
+                3 => 6, // Returned
+                4 => 3  // Cancelled
+            ];
+
+            $deliveryStatuses = [
+                1 => 1, // Pending
+                2 => 2, // Shipped
+                3 => 3, // Returned
+                4 => 6  // Cancelled
+            ];
+
+            // Get the corresponding status codes
+            $orderStatus = $orderStatuses[$statusId] ?? null;
+            $deliveryStatus = $deliveryStatuses[$statusId] ?? null;
+
+            if ($orderStatus === null || $deliveryStatus === null) {
+                throw new InvalidArgumentException("Invalid status ID: $statusId");
+            }
+
+            // Log status IDs for debugging
+            error_log("Updating order ID: $orderId with status ID: $statusId (Order status: $orderStatus, Delivery status: $deliveryStatus)");
+
+            // Update orders table
+            $updateOrderStmt = $pdo->prepare(
+                "UPDATE orders
+                SET order_status = :order_status,
+                    updated_at = NOW()
+                 WHERE order_id = :order_id
+            "
+            );
+            $updateOrderStmt->bindParam(":order_status", $orderStatus);
+            $updateOrderStmt->bindParam(":order_id", $orderId);
+            $updateOrderStmt->execute();
+
+            // Update shipping_details table
+            $updateShippingStmt = $pdo->prepare(
+                "UPDATE shipping_details
+                SET delivery_status = :delivery_status,
+                    shipped_at = CASE WHEN :delivery_status = 2 THEN NOW() ELSE NULL END
+                WHERE order_id = :order_id"
+            );
+            $updateShippingStmt->bindParam(":delivery_status", $deliveryStatus);
+            $updateShippingStmt->bindParam(":order_id", $orderId);
+            $updateShippingStmt->execute();
+
+            // Commit the transaction
+            $pdo->commit();
+
+            return "Success";
+
         } catch (PDOException $e) {
-            error_log("unable to update shipping status" . $e->getMessage());
-
+            // Roll back the transaction in case of an error
+            $pdo->rollBack();
+            error_log("Order update failed: " . $e->getMessage());
+            return false;
+        } catch (InvalidArgumentException $e) {
+            error_log($e->getMessage());
+            return false;
         }
-
-
-
     }
+
+
+
+
 
     public function insertPayments($orderId, $paymentMethod, $paymentStatus)
     {
@@ -614,6 +657,25 @@ class Orders extends DbConnection
 
         } catch (PDOException $e) {
             echo "Error counting orders: " . $e->getMessage();
+            return null; // return null or a default value on failure
+        }
+    }
+
+
+    public function showStatus()
+    {
+        try {
+            $pdo = $this->connect();
+            $statement = $pdo->prepare("SELECT *  
+                                        FROM delivery_status_lu");
+            $statement->execute();
+
+            // fetchColumn() will retrieve the count directly without needing an argument
+            $result = $statement->fetchAll(PDO::FETCH_ASSOC);
+            return $result;
+
+        } catch (PDOException $e) {
+            echo "Error retrieving shipping status: " . $e->getMessage();
             return null; // return null or a default value on failure
         }
     }
