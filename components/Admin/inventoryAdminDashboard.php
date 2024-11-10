@@ -13,7 +13,7 @@ $totalStocks = $products->totalStocks();
 
 //$user =  $users->getUserId($_SESSION['LoginUser']['ID']);
 $searchTerm = isset($_GET['search']) ? $_GET['search'] : "";
-$currentPage = $_GET['page'] ?? 1;
+$currentPage = 1;
 $itemsPerPage = 10;
 $totalItems = $products->totalProducts($searchTerm);
 $totalPages = ceil($totalItems / $itemsPerPage);

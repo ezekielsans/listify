@@ -125,6 +125,7 @@ require_once '../../controllers/ordersController.php';
                     $_SESSION['currentPage'] = $_GET['page'];
                 }
                 $page = $_SESSION['currentPage'] ?? 'dashboardSummary.php';
+                $page = basename($page);
                 require_once "../Admin/{$page}";
                 ?>
             </div>

@@ -118,7 +118,6 @@ class Products extends DbConnection
 
         } catch (PDOException $e) {
             echo "Product Retrieval failed" . $e->getMessage();
-
         }
 
     }
