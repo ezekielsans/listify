@@ -379,14 +379,16 @@ class Orders extends DbConnection
                 1 => 2, // Pending -> Processing
                 2 => 3, // Shipped
                 3 => 6, // Returned
-                4 => 3  // Cancelled
+                4 => 3,  // Cancelled
+                5 => 5  // Completed
             ];
 
             $deliveryStatuses = [
                 1 => 1, // Pending
                 2 => 2, // Shipped
                 3 => 3, // Returned
-                4 => 6  // Cancelled
+                4 => 6,  // Cancelled
+                5 => 5  // Completed
             ];
 
             // Get the corresponding status codes
